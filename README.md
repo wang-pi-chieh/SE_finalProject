@@ -2,6 +2,32 @@
 
 本專案為第 1 組「高雄大學獎助學金申請與管理系統」實作與需求報告整理。為了符合老師要求的 git 分工紀錄，後續開發以六位組員各自負責一個功能模組為原則，讓每個人的 git diff、commit 與測試紀錄都能明確呈現。
 
+## 報告需求缺口與負責分工
+
+下表為依照目前程式碼比對需求報告後整理出的缺少功能與待補項目。後續六位組員應以自己的 branch 完成對應功能，並在 `SE_finalProject/test/reviews/` 補上實際測試或 review 紀錄。
+
+| 報告需求 | 目前狀態 | 負責分工 |
+| --- | --- | --- |
+| UC005 匯入獎助單位資料 | 缺。沒有管理端匯入頁、沒有 CSV/XLSX/API 匯入、沒有預覽與人工確認流程。 | 陳鐿中 |
+| UC006/UC022/UC030 Email 或站內通知 | 缺後端。程式沒有 `mail()`、SMTP、PHPMailer，也沒有 notification table。現在只是前端依申請狀態臨時產生通知卡片。 | 吳茹婷、胡詠瀚、陳鐿中 |
+| UC010 管理員檢視不同角色頁面 | 缺。沒有 readonly preview mode，也沒有角色頁面模擬入口。 | 王碧婕 |
+| UC011 可選欄位匯出系統報表 | 部分。只有預算 PDF 和審查端 PDF，沒有欄位選擇、期間選擇、隱私檢查、CSV/XLSX/文字檔匯出。 | 陳鐿中 |
+| UC012 備份狀態、排程、還原驗證 | 部分。只有手動下載備份。沒有自動排程、備份狀態表、還原功能、還原測試報告。現有備份程式還有既有 fallback：ZIP 失敗會改下載 SQL。見 `api/create_backup.php:167`。 | 王碧婕 |
+| UC013 問題回報與追蹤 | 缺。沒有 issue report table、API、頁面、處理狀態。 | 王碧婕 |
+| UC008/UC039 審查與核發/發放紀錄 | 缺主要功能。只有用核准金額估算，沒有發放紀錄資料表、發放狀態、備註、不可隨意更改的流程。 | 蔡博宇 |
+| UC015/NSAMS016 學生資格自動推薦 | 不符合。`get_recommended_scholarships.php` 只是抓前三筆啟用獎學金，不是依學生資料/成績/系所比對。見 `api/get_recommended_scholarships.php:6`。 | 吳茹婷 |
+| UC018 學生申請暫存 | 缺真正草稿。學生表單只有送出與補件更新，`applications.status` 也沒有 draft。見 `database4.sql:59`。 | 謝從峰 |
+| UC024 導師名下學生名單 | 部分且不符合報告。現在用老師系所抓全部學生，沒有奇偶數導師規則。見 `api/get_department_students.php:32`。 | 胡詠瀚 |
+| UC025 成績視覺化圖表 | 部分/不符合。資料表有 grades，但導師頁成績 Modal 是硬寫假資料，沒有真正圖表。見 `teacher/teacher-dashboard.html:901`。 | 胡詠瀚 |
+| UC028 推薦信範本 | 缺。沒有推薦信範本表、API、按鈕或自動代入學生資料。 | 胡詠瀚 |
+| UC029 導師退回學生補件 | 缺導師端退回功能。審查端可設「需補件」，但導師不能退回並填退回理由。 | 胡詠瀚 |
+| UC030 截止日前 5 天提醒導師 | 缺。沒有排程、每日檢查、Email/站內通知紀錄。 | 胡詠瀚 |
+| UC031 推薦符合資格學生名單給導師 | 缺。沒有獎學金條件比對學生名單的 API 或頁面。 | 胡詠瀚 |
+| UC036 審查評分 | 不符合。報告寫評分，但現在 `submit_review.php` 把 score 移除，固定 `$score = 0`。見 `api/submit_review.php:27`。 | 蔡博宇 |
+| UC037 多階段審查結果整合 | 缺。只有單次審查紀錄，沒有多階段、總分、排序。 | 蔡博宇 |
+| UC038 最終錄取名單 | 缺。沒有名單產生、名額限制檢查、確認流程。 | 蔡博宇 |
+| DBS 備份還原、封存、一致性控制 | 部分。資料表只有核心資料，沒有 archive、backup_jobs、restore_logs 等表。資料表目前只有 applications、grades、reference_letters、review_records、scholarships、users 等。見 `database4.sql:30`。 | 王碧婕 |
+
 ## 分工規劃
 
 | 組員 | 負責功能 | 主要改的檔案 |
@@ -115,23 +141,3 @@ SE_finalProject/migrations/006_hu_mentor_template.sql
 ### 5. 測試紀錄每人一份，避免互蓋
 
 測試或 review 紀錄放在 `SE_finalProject/test/reviews/`，每人一個檔案。不要大家共同編輯同一份測試紀錄。
-
-## 目前拆分狀態
-
-目前已完成並行開發骨架：
-
-```text
-SE_finalProject/獎助學金申請系統2/admin/js/
-SE_finalProject/獎助學金申請系統2/student/js/
-SE_finalProject/獎助學金申請系統2/teacher/js/
-SE_finalProject/獎助學金申請系統2/reviewer/js/
-SE_finalProject/獎助學金申請系統2/api/admin/
-SE_finalProject/獎助學金申請系統2/api/student/
-SE_finalProject/獎助學金申請系統2/api/teacher/
-SE_finalProject/獎助學金申請系統2/api/reviewer/
-SE_finalProject/獎助學金申請系統2/api/common/
-SE_finalProject/migrations/
-SE_finalProject/test/reviews/
-```
-
-舊頁面已經接上新 JS 模組，但新模組目前尚未實作功能，因此應維持原本頁面行為。
