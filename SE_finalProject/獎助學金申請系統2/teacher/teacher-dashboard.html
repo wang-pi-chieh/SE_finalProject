@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>老師儀表板 - 獎學金助學系統</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                        "text": {
+                            "primary-light": "#111827",
+                            "primary-dark": "#FFFFFF",
+                            "secondary-light": "#6B7280",
+                            "secondary-dark": "#9CA3AF"
+                        },
+                        "border": {
+                            "light": "#E5E7EB",
+                            "dark": "#374151"
+                        }
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                        "display": ["Public Sans", "Noto Sans TC", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar for table if needed */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <!-- Header injected by header.js -->
+    <script src="header.js?v=20251226_v4"></script>
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">老師儀表板
+                </h1>
+                <h2 id="dashboard-greeting" class="text-3xl font-bold text-[#111318] dark:text-white">
+                    歡迎回來，老師 <span class="text-3xl">👋</span>
+                </h2>
+                <p id="teacher-semester-info" class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">
+                    目前學期：113學年度第1學期 | 載入中...</p>
+            </div>
+
+        </div>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">已推薦學生數</p>
+                    <span
+                        class="material-symbols-outlined text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1.5 rounded-md">group</span>
+                </div>
+                <p id="stat-recommended" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
+                </p>
+            </div>
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">審核中申請</p>
+                    <span
+                        class="material-symbols-outlined text-orange-500 bg-orange-50 dark:bg-orange-500/10 p-1.5 rounded-md">pending</span>
+                </div>
+                <p id="stat-reviewing" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
+                </p>
+            </div>
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">已通過申請</p>
+                    <span
+                        class="material-symbols-outlined text-green-500 bg-green-50 dark:bg-green-500/10 p-1.5 rounded-md">check_circle</span>
+                </div>
+                <p id="stat-approved" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0</p>
+            </div>
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">待處理事項</p>
+                    <span
+                        class="material-symbols-outlined text-red-500 bg-red-50 dark:bg-red-500/10 p-1.5 rounded-md">assignment_late</span>
+                </div>
+                <p id="stat-pending" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
+                    <span
+                        class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 hidden"
+                        id="stat-pending-badge">(補開資料)</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Left: Notifications -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-[#111318] dark:text-white text-lg font-bold">待辦事項/通知</h3>
+                        <div class="relative group">
+                            <button id="show-more-notif-trigger"
+                                class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden">
+                                <span class="material-symbols-outlined text-blue-500">more_horiz</span>
+                            </button>
+                            <div
+                                class="absolute right-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                                顯示更多
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4" id="notification-list">
+                        <!-- Dynamic Notifications -->
+                        <div class="p-4 text-center text-gray-500 text-sm">載入中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Student List -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <div>
+                    <h3 class="text-[#111318] dark:text-white text-lg font-bold mb-4">推薦學生列表</h3>
+
+                    <div
+                        class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
+                        <!-- Toolbar -->
+                        <div
+                            class="p-4 border-b border-[#e5e7eb] dark:border-[#2d3748] flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50 dark:bg-[#252f3e]/50">
+                            <div class="flex flex-1 w-full md:w-auto items-center gap-3">
+                                <div class="relative w-full max-w-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span
+                                            class="material-symbols-outlined text-[#616f89] dark:text-gray-500 text-[20px]">search</span>
+                                    </div>
+                                    <input id="student-search"
+                                        class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
+                                        placeholder="搜尋學生姓名或學號" type="text" />
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                                <select id="filter-status"
+                                    class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                                    <option value="">所有狀態</option>
+                                    <option value="pending">審核中</option>
+                                    <option value="approved">已通過</option>
+                                    <option value="needs_action">需補件</option>
+                                </select>
+                                <select id="filter-dept"
+                                    class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                                    <option value="">所有科系</option>
+                                    <!-- Dynamic options -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
+                                    <tr>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">學院/系所</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">學業成績 (GPA)</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金項目</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]"
+                                    id="dashboard-student-list">
+                                    <!-- Dynamic Content -->
+                                    <tr>
+                                        <td colspan="6" class="p-4 text-center text-gray-500">載入中...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div
+                            class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex items-center justify-center">
+                            <span id="show-more-trigger"
+                                class="text-sm text-[#616f89] dark:text-gray-400 font-medium cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
+                                顯示更多
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Global Scripts -->
+    <script src="../global.js?v=1716300000"></script>
+    <script src="js/mentor-students.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const storedUser = localStorage.getItem('user');
+            if (!storedUser) {
+                alert('請先登入');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            const user = JSON.parse(storedUser);
+            if (user.role !== '老師') {
+                alert('權限不足');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // 1. Update Greeting
+            const greetingEl = document.getElementById('dashboard-greeting');
+            if (greetingEl) {
+                greetingEl.innerHTML = `歡迎回來，${user.real_name || user.username} 老師 <span class="text-3xl">👋</span>`;
+            }
+
+            // 2. Load Teacher Profile (Dept & Position)
+            try {
+                const profileRes = await fetch(`../api/get_teacher_profile.php?username=${user.username}`);
+                const profileData = await profileRes.json();
+                if (profileData.success && profileData.data) {
+                    const dept = profileData.data.department || '未知系所';
+                    const title = profileData.data.display_position || '教授';
+                    document.getElementById('teacher-semester-info').textContent = `目前學期：113學年度第1學期 | ${dept} ${title}`;
+                } else {
+                    document.getElementById('teacher-semester-info').textContent = '目前學期：113學年度第1學期 | 資料載入失敗';
+                }
+            } catch (err) {
+                console.error('Teacher profile error:', err);
+                document.getElementById('teacher-semester-info').textContent = '目前學期：113學年度第1學期 | 連線錯誤';
+            }
+
+            // 3. Load Stats & Requests
+            try {
+                // Fetch Stats
+                const apiUrl = `../api/get_recommendation_requests.php?teacher_username=${user.username}`;
+                const res = await fetch(apiUrl);
+                const result = await res.json();
+
+                if (result.success) {
+                    const allRequests = result.data;
+                    updateStats(allRequests);
+                    renderStudentList(allRequests);
+                    setupShowMore(allRequests);
+                    setupFilters(allRequests);
+                    setupNotifications(allRequests);
+                } else {
+                    document.getElementById('dashboard-student-list').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('dashboard-student-list').innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">載入失敗: ${e.message}</td></tr>`;
+            }
+        });
+
+        function createStudentRow(req) {
+            let statusHtml = '';
+            // Use Application Status logic for the table display as per screenshot "Submitted/Passed/Reviewing"
+            // Map app_status to UI
+            // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
+            const s = parseInt(req.app_status);
+            if (s === 1) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>已通過</span>`;
+            } else if (s === 4 || s === 3) { // Reviewing or Pending
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>審核中</span>`;
+            } else if (s === 2) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>需補件</span>`;
+            } else {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>未知</span>`;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors border-b border-gray-100 dark:border-gray-800';
+            tr.innerHTML = `
+                <td class="p-4">
+                    <p class="text-[#111318] dark:text-white font-bold text-sm">${req.student_name}</p>
+                    <p class="text-[#616f89] dark:text-gray-500 text-xs">${req.student_username}</p>
+                </td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '未填寫'}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_gpa || 'N/A'}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.scholarship_name}</td>
+                <td class="p-4">${statusHtml}</td>
+                <td class="p-4 text-right">
+                    <button onclick="openGradeModal('${req.student_username}', '${req.student_name}')"
+                        class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] text-[#111318] dark:text-white text-xs font-medium hover:bg-gray-50 cursor-pointer transition-colors">
+                        查看詳情
+                    </button>
+                </td>
+             `;
+            return tr;
+        }
+
+        function renderStudentList(requests) {
+            const tbody = document.getElementById('dashboard-student-list');
+            tbody.innerHTML = '';
+
+            // Display top 5
+            const displayData = requests.slice(0, 5);
+            displayData.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
+            }
+        }
+
+        function setupShowMore(requests) {
+            const container = document.querySelector('#dashboard-student-list').parentNode.parentNode.nextElementSibling; // The pagination div
+            // Or simpler, create a listener for "Show More" text logic. 
+            // The HTML has: <span class="... flex items-center gap-1">顯示更多...</span>
+            // I need to find that element.
+            // Let's assume I can find it by text or structure.
+
+            const showMoreBtn = Array.from(document.querySelectorAll('span')).find(el => el.textContent.includes('顯示更多'));
+            if (showMoreBtn) {
+                // Check if we need to show it
+                if (requests.length <= 5) {
+                    showMoreBtn.parentElement.classList.add('hidden');
+                } else {
+                    showMoreBtn.parentElement.classList.remove('hidden');
+                    showMoreBtn.parentElement.onclick = () => openAllStudentsModal(requests);
+                }
+            }
+        }
+
+        function openAllStudentsModal(requests) {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+            const tbody = document.getElementById('allStudentsTableBody');
+
+            tbody.innerHTML = '';
+            requests.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeAllStudentsModal() {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function updateStats(allRequests) {
+            // 1. Recommended Students (Count unique students with submitted letters)
+            const recommendedStudents = new Set(
+                allRequests
+                    .filter(r => r.letter_status == 1) // 1 = Submitted
+                    .map(r => r.student_username)
+            );
+            document.getElementById('stat-recommended').textContent = recommendedStudents.size;
+
+            // 2. Applications Under Review (App Status 3=Pending or 4=Reviewing)
+            const reviewingCount = allRequests.filter(r => r.app_status == 3 || r.app_status == 4).length;
+            document.getElementById('stat-reviewing').textContent = reviewingCount;
+
+            // 3. Approved Applications (App Status 1)
+            const approvedCount = allRequests.filter(r => r.app_status == 1).length;
+            document.getElementById('stat-approved').textContent = approvedCount;
+
+            // 4. Pending Items (App Status 2=Needs Action)
+            const pendingCount = allRequests.filter(r => r.app_status == 2).length;
+            const pendingEl = document.getElementById('stat-pending');
+            const pendingBadge = document.getElementById('stat-pending-badge');
+
+            // Wait, I messed up the HTML in the previous step slightly (nested span inside p might be overwritten if I set textContent).
+            // Let's use logic to preserve badge or re-add it.
+            pendingEl.innerHTML = `${pendingCount} <span class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 ${pendingCount > 0 ? '' : 'hidden'}" id="stat-pending-badge">(補開資料)</span>`;
+
+            // Add pulse animation if there are pending items
+            const pendingCard = pendingEl.closest('.flashlight-card');
+            if (pendingCount > 0 && pendingCard) {
+                pendingCard.classList.add('ring-2', 'ring-orange-500', 'ring-offset-2');
+            } else if (pendingCard) {
+                pendingCard.classList.remove('ring-2', 'ring-orange-500', 'ring-offset-2');
+            }
+        }
+
+        function createStudentRow(req) {
+            let statusHtml = '';
+            // Use Application Status logic for the table display as per screenshot "Submitted/Passed/Reviewing"
+            // Map app_status to UI
+            // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
+            const s = parseInt(req.app_status);
+            if (s === 1) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>已通過</span>`;
+            } else if (s === 4 || s === 3) { // Reviewing or Pending
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>審核中</span>`;
+            } else if (s === 2) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>需補件</span>`;
+            } else {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>未知</span>`;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors border-b border-gray-100 dark:border-gray-800';
+            tr.innerHTML = `
+                <td class="p-4">
+                    <p class="text-[#111318] dark:text-white font-bold text-sm">${req.student_name}</p>
+                    <p class="text-[#616f89] dark:text-gray-500 text-xs">${req.student_username}</p>
+                </td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '未填寫'}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_gpa || 'N/A'}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.scholarship_name}</td>
+                <td class="p-4">${statusHtml}</td>
+                <td class="p-4 text-right">
+                    <button onclick="openGradeModal('${req.student_username}', '${req.student_name}')"
+                        class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] text-[#111318] dark:text-white text-xs font-medium hover:bg-gray-50 cursor-pointer transition-colors">
+                        查看詳情
+                    </button>
+                </td>
+             `;
+            return tr;
+        }
+
+        function renderStudentList(requests) {
+            const tbody = document.getElementById('dashboard-student-list');
+            tbody.innerHTML = '';
+
+            // Display top 5
+            const displayData = requests.slice(0, 5);
+            displayData.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
+            }
+        }
+
+        function setupShowMore(requests) {
+            const showMoreBtn = document.getElementById('show-more-trigger');
+            if (showMoreBtn) {
+                // Check if we need to show it
+                if (requests.length <= 5) {
+                    showMoreBtn.parentElement.classList.add('hidden');
+                } else {
+                    showMoreBtn.parentElement.classList.remove('hidden');
+                    showMoreBtn.onclick = (e) => {
+                        e.preventDefault();
+                        openAllStudentsModal(requests);
+                    };
+                }
+            }
+        }
+
+        function openAllStudentsModal(requests) {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+            const tbody = document.getElementById('allStudentsTableBody');
+
+            tbody.innerHTML = '';
+            requests.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeAllStudentsModal() {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        let globalRequests = []; // Store all data globally for filtering
+
+        function setupFilters(requests) {
+            globalRequests = requests;
+            const searchInput = document.getElementById('student-search');
+            const statusFilter = document.getElementById('filter-status');
+            const deptFilter = document.getElementById('filter-dept');
+
+            // Populate Dept Filter
+            const depts = new Set(requests.map(r => r.student_dept).filter(Boolean));
+            deptFilter.innerHTML = '<option value="">所有科系</option>';
+            depts.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept;
+                option.textContent = dept;
+                deptFilter.appendChild(option);
+            });
+
+            function applyFilters() {
+                const query = searchInput.value.toLowerCase();
+                const status = statusFilter.value;
+                const dept = deptFilter.value;
+
+                const filtered = globalRequests.filter(req => {
+                    // Search
+                    const matchSearch = (req.student_name && req.student_name.toLowerCase().includes(query)) ||
+                        (req.student_username && req.student_username.toLowerCase().includes(query));
+                    if (!matchSearch) return false;
+
+                    // Dept
+                    if (dept && req.student_dept !== dept) return false;
+
+                    // Status
+                    // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
+                    const s = parseInt(req.app_status);
+                    if (status) {
+                        if (status === 'approved' && s !== 1) return false;
+                        if (status === 'pending' && (s !== 3 && s !== 4)) return false;
+                        if (status === 'needs_action' && s !== 2) return false;
+                    }
+
+                    return true;
+                });
+
+                renderStudentList(filtered);
+                setupShowMore(filtered); // Update show more logic based on filtered count
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            deptFilter.addEventListener('change', applyFilters);
+        }
+
+        // --- Notification Logic ---
+        let globalNotifications = [];
+
+        function generateNotifications(requests) {
+            const notifications = [];
+
+            requests.forEach(req => {
+                const s = parseInt(req.app_status);
+                // 1. Needs Action (Priority High)
+                if (s === 2) {
+                    notifications.push({
+                        type: 'needs_action',
+                        student: req.student_name,
+                        id: req.student_username,
+                        msg: `${req.student_name}同學的申請需補件`,
+                        detail: `${req.student_name}同學的申請已被退回補件，請關注是否需協助更新推薦內容。`,
+                        link: true
+                    });
+                }
+                // 2. Approved (Priority Medium)
+                else if (s === 1) {
+                    notifications.push({
+                        type: 'approved',
+                        student: req.student_name,
+                        id: req.student_username,
+                        msg: `${req.student_name}同學的申請已通過`,
+                        detail: `您為${req.student_name}同學撰寫的推薦信已審核完畢，已幫同學的申請已通過。`,
+                        link: false
+                    });
+                }
+                // 3. Submitted (Priority Low) - Show if submitted but not yet Approved (Status 1)
+                // If it is Approved (s=1), we already showed the Green one. 
+                // So show Blue only if Letter Submitted (letter_status=1) AND App Status != 1.
+                // Assuming letter_status is available.
+                else if (req.letter_status == 1) {
+                    notifications.push({
+                        type: 'submitted',
+                        student: req.student_name,
+                        id: req.student_username,
+                        msg: `您已送出推薦信`,
+                        detail: `您已送出${req.student_name}同學的推薦信。`,
+                        link: false
+                    });
+                }
+            });
+
+            // Sort: Needs Action > Approved > Submitted
+            const priority = { 'needs_action': 0, 'approved': 1, 'submitted': 2 };
+            notifications.sort((a, b) => priority[a.type] - priority[b.type]);
+
+            return notifications;
+        }
+
+        function createNotificationItem(notif) {
+            let colorClass = '';
+            let icon = '';
+            let iconBg = '';
+            let iconColor = '';
+
+            if (notif.type === 'needs_action') {
+                colorClass = 'border-orange-500';
+                icon = 'notifications_active';
+                iconBg = 'bg-orange-100';
+                iconColor = 'text-orange-600';
+            } else if (notif.type === 'approved') {
+                colorClass = 'border-green-500';
+                icon = 'check_circle';
+                iconBg = 'bg-green-100';
+                iconColor = 'text-green-600';
+            } else { // submitted
+                colorClass = 'border-blue-500';
+                icon = 'campaign'; // or send
+                iconBg = 'bg-blue-100';
+                iconColor = 'text-blue-600';
+            }
+
+            const div = document.createElement('div');
+            div.className = `bg-white dark:bg-[#1e2634] p-4 rounded-xl border-l-4 ${colorClass} shadow-sm hover:shadow-md transition-shadow flex gap-3`;
+            div.innerHTML = `
+                <div class="${iconBg} ${iconColor} rounded-full p-2 h-fit shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">${icon}</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-[#111318] dark:text-white text-sm">${notif.msg}</h4>
+                    <p class="text-xs text-[#616f89] dark:text-gray-400 mt-1">${notif.detail}</p>
+                    ${notif.link ? `<button onclick="window.location.href='recommendations.html'" class="text-orange-600 text-xs font-bold mt-2 inline-block hover:underline">前往處理 -></button>` : ''}
+                </div>
+            `;
+            return div;
+        }
+
+        function renderNotifications(notifications) {
+            globalNotifications = notifications;
+            const container = document.getElementById('notification-list');
+            container.innerHTML = '';
+
+            // Show top 3
+            const displayData = notifications.slice(0, 3);
+            displayData.forEach(n => {
+                container.appendChild(createNotificationItem(n));
+            });
+
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">目前沒有新通知</div>';
+            }
+
+            // Setup Show More
+            const showMoreBtn = document.getElementById('show-more-notif-trigger');
+            if (notifications.length > 3) {
+                showMoreBtn.classList.remove('hidden');
+                showMoreBtn.onclick = openAllNotificationsModal;
+            } else {
+                showMoreBtn.classList.add('hidden');
+            }
+        }
+
+        function setupNotifications(requests) {
+            const notifications = generateNotifications(requests);
+            renderNotifications(notifications);
+        }
+
+        function openAllNotificationsModal() {
+            const modal = document.getElementById('allNotificationsModal');
+            const content = document.getElementById('allNotificationsModalContent');
+            const list = document.getElementById('allNotificationsList');
+
+            list.innerHTML = '';
+            globalNotifications.forEach(n => {
+                list.appendChild(createNotificationItem(n));
+            });
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeAllNotificationsModal() {
+            const modal = document.getElementById('allNotificationsModal');
+            const content = document.getElementById('allNotificationsModalContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.flashlight-card');
+            cards.forEach(card => {
+                card.onmousemove = e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                };
+            });
+        });
+    </script>
+
+    <!-- All Notifications Modal -->
+    <div id="allNotificationsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onclick="closeAllNotificationsModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#1e2634] rounded-2xl shadow-2xl w-full max-w-lg flex flex-col transform scale-95 opacity-0 transition-all duration-300"
+                id="allNotificationsModalContent">
+                <!-- Header -->
+                <div
+                    class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">待辦事項/通知</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">所有系統通知與待辦事項。</p>
+                    </div>
+                    <button onclick="closeAllNotificationsModal()"
+                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content (Scrollable) -->
+                <div class="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar flex flex-col gap-4"
+                    id="allNotificationsList">
+                    <!-- Dynamic Content -->
+                </div>
+                <!-- Footer -->
+                <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
+                    <button onclick="closeAllNotificationsModal()"
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Modal -->
+    <div id="gradeModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeGradeModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#1e2634] rounded-2xl shadow-2xl w-full max-w-2xl transform scale-95 opacity-0 transition-all duration-300"
+                id="gradeModalContent">
+                <!-- Header -->
+                <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modalStudentName">學生姓名</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="modalStudentId">學號</p>
+                    </div>
+                    <button onclick="closeGradeModal()"
+                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content -->
+                <div class="p-6">
+                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">歷年成績紀錄</h4>
+                    <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                <tr>
+                                    <th class="px-4 py-3 font-medium">學年/學期</th>
+                                    <th class="px-4 py-3 font-medium">平均成績</th>
+                                    <th class="px-4 py-3 font-medium">GPA</th>
+                                    <th class="px-4 py-3 font-medium">班排名/人數</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="gradeTableBody">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                    <button onclick="closeGradeModal()"
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Students Modal -->
+    <div id="allStudentsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeAllStudentsModal()">
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#1e2634] rounded-2xl shadow-2xl w-full max-w-5xl h-[80vh] flex flex-col transform scale-95 opacity-0 transition-all duration-300"
+                id="allStudentsModalContent">
+                <!-- Header -->
+                <div
+                    class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">所有推薦學生</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">查看所有向您申請推薦信的學生。</p>
+                    </div>
+                    <button onclick="closeAllStudentsModal()"
+                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content (Scrollable) -->
+                <div class="p-0 flex-1 overflow-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse sticky top-0">
+                        <thead
+                            class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400 sticky top-0 z-10 shadow-sm">
+                            <tr>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">學院/系所</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">學業成績 (GPA)</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金項目</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]" id="allStudentsTableBody">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Footer -->
+                <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
+                    <button onclick="closeAllStudentsModal()"
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal & Grade Data Logic
+        const gradeData = {
+            'S1125901': [
+                { term: '111-1', score: 82.5, gpa: 3.5, rank: '10/50' },
+                { term: '111-2', score: 85.0, gpa: 3.8, rank: '5/50' }
+            ],
+            'S1125902': [
+                { term: '111-1', score: 90.0, gpa: 4.0, rank: '1/45' },
+                { term: '111-2', score: 92.5, gpa: 4.2, rank: '1/45' }
+            ],
+            // Default mock for others
+            'default': [
+                { term: '111-1', score: 88.0, gpa: 3.9, rank: '3/48' },
+                { term: '111-2', score: 89.5, gpa: 4.0, rank: '2/48' }
+            ]
+        };
+
+        function openGradeModal(id, name) {
+            const modal = document.getElementById('gradeModal');
+            const content = document.getElementById('gradeModalContent');
+            const title = document.getElementById('modalStudentName');
+            const subtitle = document.getElementById('modalStudentId');
+            const tbody = document.getElementById('gradeTableBody');
+
+            // Set Header
+            title.textContent = name;
+            subtitle.textContent = id;
+
+            // Populate Table
+            tbody.innerHTML = '';
+            const data = gradeData[id] || gradeData['default'];
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${row.term}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 font-bold ${row.score >= 90 ? 'text-green-600 dark:text-green-400' : ''}">${row.score}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">${row.gpa}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-primary cursor-help" title="全班人數: ${row.rank.split('/')[1]}">${row.rank}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Show Modal
+            modal.classList.remove('hidden');
+            // Animate in
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeGradeModal() {
+            const modal = document.getElementById('gradeModal');
+            const content = document.getElementById('gradeModalContent');
+
+            // Animate out
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.flashlight-card');
+            cards.forEach(card => {
+                card.onmousemove = e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                };
+            });
+        });
+    </script>
+
+</html>

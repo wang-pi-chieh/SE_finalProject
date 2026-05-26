@@ -1,0 +1,3 @@
+-- Owner: Wu Ru-Ting
+-- Scope: student notifications, read status, eligible-scholarship matching rules and results.
+-- Add CREATE TABLE / ALTER TABLE statements here.

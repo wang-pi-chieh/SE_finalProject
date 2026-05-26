@@ -1,0 +1,3 @@
+-- Owner: Chen Yi-Zhong
+-- Scope: sponsor-data import batches, import confirmation, announcement notifications, report export metadata.
+-- Add CREATE TABLE / ALTER TABLE statements here.

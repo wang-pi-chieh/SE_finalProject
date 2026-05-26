@@ -1,0 +1,3 @@
+-- Owner: Tsai Bo-Yu
+-- Scope: review scoring, result integration, final award lists, disbursement records.
+-- Add CREATE TABLE / ALTER TABLE statements here.

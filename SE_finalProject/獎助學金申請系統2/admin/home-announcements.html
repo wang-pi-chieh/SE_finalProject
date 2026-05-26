@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>首頁公告管理 - 獎學金助學系統</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&amp;family=Noto+Sans+TC:wght@400;500;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": { "DEFAULT": "#0D57D9", "light": "#F0F5FF" },
+                        "secondary": "#E5E7EB",
+                        "background": { "light": "#F8F9FA", "dark": "#111827" },
+                        "card": { "light": "#FFFFFF", "dark": "#1F2937" },
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <script src="header.js?v=20251230_v1"></script>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">系統管理
+                </h1>
+                <h2 class="text-2xl font-bold text-[#111318] dark:text-white mt-2 flex items-center gap-2">
+                    首頁公告管理 <span class="text-2xl">📢</span>
+                </h2>
+                <p class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">設定首頁「最新公告」區塊要顯示的內容
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="openAddModal()"
+                    class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">campaign</span>
+                    新增公告
+                </button>
+            </div>
+        </div>
+
+        <!-- Announcements List Card -->
+        <div
+            class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
+            <div class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748] flex justify-between items-center">
+                <h3 class="text-[#111318] dark:text-white text-lg font-bold">首頁公告列表</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
+                        <tr>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">ID</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">標題</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態標籤</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">顯示日期</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">建立時間</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="announcement-table-body"
+                        class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748] text-sm">
+                        <tr>
+                            <td colspan="6" class="p-4 text-center text-gray-500">載入中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination Controls -->
+            <div id="pagination-controls"
+                class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex justify-center items-center gap-2">
+                <!-- JS renders buttons here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Announcement Modal -->
+    <div id="add-modal" class="fixed inset-0 z-[9999] hidden" aria-labelledby="add-modal-title" role="dialog"
+        aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm"
+            onclick="closeAddModal()"></div>
+        <div class="fixed inset-0 z-[10000] w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-xl font-semibold leading-6 text-gray-900 dark:text-white mb-4"
+                                    id="add-modal-title">新增首頁公告</h3>
+                                <form id="add-announcement-form" class="space-y-4">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">標題</label>
+                                        <input type="text" name="title" required
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">內容（可簡要說明申請條件或通知）</label>
+                                        <textarea name="content" rows="3"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">顯示日期</label>
+                                            <input type="date" name="display_date"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">狀態標籤文字</label>
+                                            <input type="text" name="status_label" placeholder="例如：進行中 / 公告"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">狀態樣式</label>
+                                        <select name="status_type"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                            <option value="">預設（綠色）</option>
+                                            <option value="active">進行中（綠色）</option>
+                                            <option value="notice">公告（灰色）</option>
+                                            <option value="warning">提醒（橘色）</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" onclick="submitAddForm()"
+                            class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto">新增</button>
+                        <button type="button" onclick="closeAddModal()"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:w-auto">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/scholarship-admin.js"></script>
+    <script>
+        let currentPage = 1;
+        let announcementsData = [];
+        let editingId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedUser = localStorage.getItem('user');
+            if (!storedUser) { window.location.href = '../login.html'; return; }
+            const user = JSON.parse(storedUser);
+            if (user.role !== 'system_admin' && user.role !== '系統管理員') {
+                // 目前只限制介面，實務上可再加後端驗證
+            }
+
+            fetchAnnouncements(currentPage);
+        });
+
+        function fetchAnnouncements(page = 1) {
+            currentPage = page;
+            const tbody = document.getElementById('announcement-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">載入中...</td></tr>';
+
+            fetch(`../api/get_admin_homepage_announcements.php?page=${page}&limit=10`)
+                .then(res => res.json())
+                .then(result => {
+                    const tbody = document.getElementById('announcement-table-body');
+                    const paginationDiv = document.getElementById('pagination-controls');
+                    tbody.innerHTML = '';
+
+                    if (!result.success || !result.data || result.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有公告</td></tr>';
+                        paginationDiv.innerHTML = '';
+                        return;
+                    }
+
+                    announcementsData = result.data;
+
+                    result.data.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors';
+
+                        const label = item.status_label || '';
+                        let badge = '';
+                        if (label) {
+                            let badgeClass = 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+                            if (item.status_type === 'notice') {
+                                badgeClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700/40 dark:text-gray-200';
+                            } else if (item.status_type === 'warning') {
+                                badgeClass = 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300';
+                            }
+                            badge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">${label}</span>`;
+                        }
+
+                        tr.innerHTML = `
+                            <td class="p-4 text-sm font-medium text-gray-900 dark:text-white">${item.id}</td>
+                            <td class="p-4 text-sm text-gray-900 dark:text-white font-bold">${item.title}</td>
+                            <td class="p-4 text-sm text-gray-500 dark:text-gray-400">${badge || '-'}</td>
+                            <td class="p-4 text-sm text-gray-500 dark:text-gray-400">${item.display_date || '-'}</td>
+                            <td class="p-4 text-sm text-gray-500 dark:text-gray-400">${item.created_at}</td>
+                            <td class="p-4 text-sm text-right space-x-2">
+                                <button onclick="openEditModal(${item.id})"
+                                    class="text-primary hover:text-blue-700 font-medium text-sm">編輯</button>
+                                <button onclick="deleteAnnouncement(${item.id})"
+                                    class="text-red-500 hover:text-red-700 font-medium text-sm">刪除</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    renderPagination(result.pagination, paginationDiv);
+                })
+                .catch(err => {
+                    console.error(err);
+                    tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-red-500">載入失敗</td></tr>';
+                });
+        }
+
+        function renderPagination(pagination, container) {
+            let html = '';
+            const { current_page, total_pages } = pagination;
+
+            if (total_pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            if (current_page > 1) {
+                html += `<button onclick="fetchAnnouncements(${current_page - 1})" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm transition-colors">上一頁</button>`;
+            } else {
+                html += `<button disabled class="px-3 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 text-sm cursor-not-allowed">上一頁</button>`;
+            }
+
+            for (let i = 1; i <= total_pages; i++) {
+                if (i === current_page) {
+                    html += `<button class="px-3 py-1 rounded-md bg-primary text-white text-sm font-bold shadow-sm">${i}</button>`;
+                } else {
+                    html += `<button onclick="fetchAnnouncements(${i})" class="px-3 py-1 rounded-md bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 text-sm transition-colors">${i}</button>`;
+                }
+            }
+
+            if (current_page < total_pages) {
+                html += `<button onclick="fetchAnnouncements(${current_page + 1})" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm transition-colors">下一頁</button>`;
+            } else {
+                html += `<button disabled class="px-3 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 text-sm cursor-not-allowed">下一頁</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function openAddModal() {
+            editingId = null;
+            const titleEl = document.getElementById('add-modal-title');
+            if (titleEl) titleEl.textContent = '新增首頁公告';
+
+            const form = document.getElementById('add-announcement-form');
+            if (form) form.reset();
+
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+            const form = document.getElementById('add-announcement-form');
+            if (form) form.reset();
+        }
+
+        function submitAddForm() {
+            const form = document.getElementById('add-announcement-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const fd = new FormData(form);
+
+            let url = '../api/create_homepage_announcement.php';
+            if (editingId) {
+                fd.append('id', editingId);
+                url = '../api/update_homepage_announcement.php';
+            }
+
+            fetch(url, {
+                method: 'POST',
+                body: fd
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        alert(editingId ? '更新成功！' : '新增成功！');
+                        closeAddModal();
+                        fetchAnnouncements(1);
+                    } else {
+                        alert((editingId ? '更新失敗：' : '新增失敗：') + (result.message || '未知錯誤'));
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('系統錯誤：' + err);
+                });
+        }
+
+        function openEditModal(id) {
+            const item = announcementsData.find(a => String(a.id) === String(id));
+            if (!item) return;
+
+            editingId = id;
+
+            const titleEl = document.getElementById('add-modal-title');
+            if (titleEl) titleEl.textContent = '編輯首頁公告';
+
+            const form = document.getElementById('add-announcement-form');
+            if (!form) return;
+
+            form.title.value = item.title || '';
+            form.content.value = item.content || '';
+            form.display_date.value = item.display_date || '';
+            form.status_label.value = item.status_label || '';
+            form.status_type.value = item.status_type || '';
+
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function deleteAnnouncement(id) {
+            if (!confirm('確定要刪除此公告嗎？此動作無法復原。')) return;
+
+            fetch('../api/delete_homepage_announcement.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        fetchAnnouncements(currentPage);
+                    } else {
+                        alert('刪除失敗：' + (result.message || '未知錯誤'));
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('系統錯誤：' + err);
+                });
+        }
+    </script>
+</body>
+
+</html>
+
+

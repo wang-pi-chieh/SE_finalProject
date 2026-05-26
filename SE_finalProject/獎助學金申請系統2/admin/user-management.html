@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用者管理 - 獎助學金系統</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&amp;family=Noto+Sans+TC:wght@400;500;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <script src="header.js?v=20251230_v1"></script>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">系統管理
+                </h1>
+                <h2 class="text-2xl font-bold text-[#111318] dark:text-white mt-2 flex items-center gap-2">
+                    使用者管理 <span class="text-2xl">👥</span>
+                </h2>
+                <p class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">管理系統所有使用者帳號與權限</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="openAddModal()"
+                    class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">person_add</span>
+                    新增使用者
+                </button>
+            </div>
+        </div>
+
+        <!-- Users List -->
+        <div
+            class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
+            <div
+                class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <h3 class="text-[#111318] dark:text-white text-lg font-bold">使用者列表</h3>
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-[#616f89] dark:text-gray-400">依身分組篩選：</span>
+                    <select id="role-filter"
+                        class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                        <option value="all">所有身分組</option>
+                        <option value="學生">學生</option>
+                        <option value="老師">老師</option>
+                        <option value="獎助單位">獎助單位</option>
+                        <option value="系統管理員">系統管理員</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="p-4 text-xs font-semibold uppercase tracking-wider">使用者名稱 (帳號)</th>
+                            <th scope="col" class="p-4 text-xs font-semibold uppercase tracking-wider">真實姓名</th>
+                            <th scope="col" class="p-4 text-xs font-semibold uppercase tracking-wider">電子郵件</th>
+                            <th scope="col" class="p-4 text-xs font-semibold uppercase tracking-wider">身分組</th>
+                            <th scope="col" class="p-4 text-xs font-semibold uppercase tracking-wider">詳細資料</th>
+                            <th scope="col" class="p-4 text-xs font-semibold uppercase tracking-wider">動作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-list-body" class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]">
+                        <!-- Populated by JS -->
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-gray-500">載入中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div id="pagination-controls"
+                class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex justify-center items-center gap-2">
+                <!-- JS renders buttons here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add User Modal -->
+    <div id="add-modal" class="fixed inset-0 z-[9999] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm"
+            onclick="closeAddModal()"></div>
+        <div class="fixed inset-0 z-[10000] w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div
+                                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <span class="material-symbols-outlined text-blue-600">person_add</span>
+                            </div>
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+                                    id="modal-title">新增使用者</h3>
+                                <div class="mt-4 space-y-4">
+                                    <form id="add-user-form" class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">帳號
+                                                (Username)</label>
+                                            <input type="text" name="username" required minlength="3"
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">密碼
+                                                (Password)</label>
+                                            <input type="password" name="password" required minlength="6"
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">真實姓名</label>
+                                            <input type="text" name="real_name" required
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">電子郵件</label>
+                                            <input type="email" name="email"
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">身分組</label>
+                                            <select name="role" required
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border">
+                                                <option value="學生">學生 (Student)</option>
+                                                <option value="老師">老師 (Teacher)</option>
+
+                                                <option value="獎助單位">獎助單位 (Scholarship Unit)</option>
+                                                <option value="系統管理員">系統管理員 (System Admin)</option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" onclick="submitAddForm()"
+                            class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto">新增</button>
+                        <button type="button" onclick="closeAddModal()"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:w-auto">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-[9998] hidden" aria-labelledby="detail-modal-title"
+        role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-60 backdrop-blur-sm transition-opacity"
+            onclick="closeDetailModal()"></div>
+        <div class="fixed inset-0 z-[10001] w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <span class="material-symbols-outlined">info</span>
+                                </div>
+                                <div>
+                                    <h3 id="detail-modal-title"
+                                        class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+                                        使用者詳細資料
+                                    </h3>
+                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                        帳號：<span id="detail-username" class="font-medium text-gray-900 dark:text-gray-100"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="closeDetailModal()"
+                                class="p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 transition-colors">
+                                <span class="material-symbols-outlined text-xl">close</span>
+                            </button>
+                        </div>
+                        <div id="detail-body" class="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                            載入中...
+                        </div>
+                    </div>
+                    <div
+                        class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-gray-100 dark:border-gray-700">
+                        <button type="button" onclick="closeDetailModal()"
+                            class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 1;
+
+        async function fetchUsers(page = 1) {
+            currentPage = page;
+            const tbody = document.getElementById('user-list-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">載入中...</td></tr>';
+
+            // 取得目前選擇的身分組
+            const roleSelect = document.getElementById('role-filter');
+            const role = roleSelect ? roleSelect.value : 'all';
+
+            try {
+                const response = await fetch(`../api/get_users.php?page=${page}&role=${encodeURIComponent(role)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderTable(data.users);
+                    renderPagination(data.current_page, data.total_pages);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">${data.message || '載入失敗'}</td></tr>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">網路錯誤，請稍後再試</td></tr>';
+            }
+        }
+
+        function renderTable(users) {
+            const tbody = document.getElementById('user-list-body');
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有使用者</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors">
+                    <td class="p-4 text-sm font-medium text-gray-900 dark:text-white">${user.username}</td>
+                    <td class="p-4 text-sm text-gray-600 dark:text-gray-300">${user.real_name}</td>
+                    <td class="p-4 text-sm text-gray-600 dark:text-gray-300">${user.email || '-'}</td>
+                    <td class="p-4 text-sm">
+                        ${getRoleBadge(user.role)}
+                    </td>
+                    <td class="p-4 text-sm">
+                        <button onclick="openDetailModal('${user.username}')"
+                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#d1d5db] dark:border-gray-600 text-xs font-medium text-[#111318] dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <span class="material-symbols-outlined text-[16px]">visibility</span>
+                            檢視
+                        </button>
+                    </td>
+                    <td class="p-4 text-sm">
+                        <button onclick="deleteUser('${user.username}')" 
+                            class="text-red-500 hover:text-red-700 font-medium text-sm">
+                            刪除
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getRoleBadge(role) {
+            const badges = {
+                'system_admin': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">系統管理員</span>',
+                '系統管理員': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">系統管理員</span>',
+                'teacher': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">老師</span>',
+                '老師': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">老師</span>',
+                'student': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">學生</span>',
+                '系管': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">系統管理員</span>'
+            };
+            return badges[role] || `<span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">${role}</span>`;
+        }
+
+        function renderPagination(current_page, total_pages) {
+            const container = document.getElementById('pagination-controls');
+            let html = '';
+
+            // Prev Button
+            if (current_page > 1) {
+                html += `<button onclick="fetchUsers(${current_page - 1})" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm transition-colors">上一頁</button>`;
+            } else {
+                html += `<button disabled class="px-3 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 text-sm cursor-not-allowed">上一頁</button>`;
+            }
+
+            // Page Numbers
+            for (let i = 1; i <= total_pages; i++) {
+                if (i === current_page) {
+                    html += `<button class="px-3 py-1 rounded-md bg-primary text-white text-sm font-bold shadow-sm">${i}</button>`;
+                } else {
+                    html += `<button onclick="fetchUsers(${i})" class="px-3 py-1 rounded-md bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 text-sm transition-colors">${i}</button>`;
+                }
+            }
+
+            // Next Button
+            if (current_page < total_pages) {
+                html += `<button onclick="fetchUsers(${current_page + 1})" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm transition-colors">下一頁</button>`;
+            } else {
+                html += `<button disabled class="px-3 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 text-sm cursor-not-allowed">下一頁</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Add User Modal Logic
+        function openAddModal() {
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        // Detail Modal Logic
+        async function openDetailModal(username) {
+            const modal = document.getElementById('detail-modal');
+            const detailBody = document.getElementById('detail-body');
+            const usernameSpan = document.getElementById('detail-username');
+
+            usernameSpan.textContent = username;
+            detailBody.textContent = '載入中...';
+            modal.classList.remove('hidden');
+
+            try {
+                const res = await fetch(`../api/get_user_details.php?username=${encodeURIComponent(username)}`);
+                const data = await res.json();
+
+                if (!data.success) {
+                    detailBody.textContent = data.message || '載入失敗';
+                    return;
+                }
+
+                const u = data.data || {};
+                const rows = [];
+
+                if (u.phone) {
+                    rows.push({ label: '手機號碼', value: u.phone });
+                }
+                if (u.department) {
+                    rows.push({ label: '系所', value: u.department });
+                }
+                if (u.unit_name) {
+                    rows.push({ label: '獎助單位名稱', value: u.unit_name });
+                }
+                if (u.person_in_charge) {
+                    rows.push({ label: '聯絡人', value: u.person_in_charge });
+                }
+
+                if (rows.length === 0) {
+                    detailBody.textContent = '目前沒有其他註冊資料可顯示。';
+                } else {
+                    detailBody.innerHTML = rows.map(r => `
+                        <div class="flex justify-between items-center py-1">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">${r.label}</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">${r.value}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+                detailBody.textContent = '系統錯誤，請稍後再試。';
+            }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+            document.getElementById('add-user-form').reset();
+        }
+
+        async function submitAddForm() {
+            const form = document.getElementById('add-user-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('../api/create_user.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('新增成功！');
+                    closeAddModal();
+                    fetchUsers(1); // Refresh list
+                } else {
+                    alert('新增失敗：' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('系統錯誤，請檢查網路');
+            }
+        }
+
+        async function deleteUser(targetUsername) {
+            if (!confirm(`確定要刪除使用者 "${targetUsername}" 嗎？此動作無法復原。`)) return;
+
+            const storedUser = localStorage.getItem('user');
+            const operator = storedUser ? JSON.parse(storedUser).name : 'System Admin';
+
+            try {
+                const response = await fetch('../api/delete_user.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: targetUsername,
+                        operator: operator
+                    })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('已刪除');
+                    fetchUsers(currentPage); // Refresh current page
+                } else {
+                    alert('刪除失敗：' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('系統錯誤');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const roleSelect = document.getElementById('role-filter');
+            if (roleSelect) {
+                roleSelect.addEventListener('change', () => fetchUsers(1));
+            }
+            fetchUsers(1);
+        });
+    </script>
+</body>
+
+</html>

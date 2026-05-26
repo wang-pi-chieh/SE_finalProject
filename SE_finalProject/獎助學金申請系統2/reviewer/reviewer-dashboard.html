@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>審查單位儀表板 - 獎學金助學系統</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                        "text": {
+                            "primary-light": "#111827",
+                            "primary-dark": "#FFFFFF",
+                            "secondary-light": "#6B7280",
+                            "secondary-dark": "#9CA3AF"
+                        },
+                        "border": {
+                            "light": "#E5E7EB",
+                            "dark": "#374151"
+                        }
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar for table if needed */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <!-- Header injected by header.js -->
+    <script src="header.js?v=20251230_v1"></script>
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">審查單位儀表板
+                </h1>
+                <p class="text-[#616f89] dark:text-gray-400 text-base font-normal mt-2">歡迎回來，管理員。目前共有 <span
+                        id="header-pending-count" class="font-bold text-primary">-</span> 件待審核申請。</p>
+            </div>
+            <div class="flex gap-3">
+            </div>
+        </div>
+        <!-- Scripts for PDF Export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <div
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">待審核案件</p>
+                    <span
+                        class="material-symbols-outlined text-orange-500 bg-orange-50 dark:bg-orange-500/10 p-1.5 rounded-md">pending_actions</span>
+                </div>
+                <p id="stat-pending" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">-</p>
+                <div class="flex items-center gap-1 text-sm mt-1 relative z-10">
+                    <span class="text-[#616f89] dark:text-gray-500">目前總數</span>
+                </div>
+            </div>
+
+            <div
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">今日已審核</p>
+                    <span
+                        class="material-symbols-outlined text-primary bg-blue-50 dark:bg-blue-500/10 p-1.5 rounded-md">fact_check</span>
+                </div>
+                <p id="stat-reviewed-today"
+                    class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">-</p>
+                <div class="flex items-center gap-1 text-sm mt-1 relative z-10">
+                    <span class="text-[#616f89] dark:text-gray-500">今日數</span>
+                </div>
+            </div>
+            <div
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">總申請金額</p>
+                    <span
+                        class="material-symbols-outlined text-green-600 bg-green-50 dark:bg-green-500/10 p-1.5 rounded-md">attach_money</span>
+                </div>
+                <p id="stat-total-amount" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">-
+                </p>
+                <div class="flex items-center gap-1 text-sm mt-1 relative z-10">
+                    <span class="text-[#616f89] dark:text-gray-500">已核准總額</span>
+                </div>
+            </div>
+        </div>
+        <!-- Middle Section: Progress & Distribution -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Left: Overall Progress -->
+            <div
+                class="animate-on-scroll lg:col-span-2 bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col">
+                <div class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748] flex justify-between items-center">
+                    <h3 class="text-[#111318] dark:text-white text-lg font-bold">審查進度</h3>
+                    <span class="text-sm text-primary font-medium bg-primary/10 px-3 py-1 rounded-full">進行中</span>
+                </div>
+                <div class="p-6 flex flex-col gap-6 justify-center flex-1">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-[#111318] dark:text-gray-200 font-medium">總體審查完成率</span>
+                            <span id="progress-percent"
+                                class="text-[#111318] dark:text-white font-bold text-lg">0%</span>
+                        </div>
+                        <div class="w-full bg-[#f0f2f4] dark:bg-[#2d3748] rounded-full h-3">
+                            <div id="progress-bar" class="bg-primary h-3 rounded-full relative" style="width: 0%">
+                                <div
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 size-4 bg-white border-2 border-primary rounded-full shadow">
+                                </div>
+                            </div>
+                        </div>
+                        <p id="progress-text" class="text-[#616f89] dark:text-gray-400 text-sm mt-1">已完成 0 / 0 份申請</p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mt-2">
+                        <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-[#252f3e]">
+                            <p class="text-xs text-[#616f89] dark:text-gray-400 mb-1">駁回件數</p>
+                            <p id="stat-rejected" class="font-bold text-[#111318] dark:text-white">-</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-[#252f3e]">
+                            <p class="text-xs text-[#616f89] dark:text-gray-400 mb-1">需補件</p>
+                            <p id="stat-needs-action" class="font-bold text-[#111318] dark:text-white">-</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-[#252f3e]">
+                            <p class="text-xs text-[#616f89] dark:text-gray-400 mb-1">通過</p>
+                            <p id="stat-approved" class="font-bold text-[#111318] dark:text-white">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Application Distribution -->
+            <div
+                class="animate-on-scroll bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col">
+                <div class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748]">
+                    <h3 class="text-[#111318] dark:text-white text-lg font-bold">獎學金項目申請分佈</h3>
+                </div>
+                <div id="distribution-list"
+                    class="p-6 flex flex-col gap-4 overflow-y-auto max-h-[280px] custom-scrollbar">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+        <!-- Filter & Table Section -->
+        <div
+            class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
+            <!-- Toolbar -->
+            <div
+                class="p-4 border-b border-[#e5e7eb] dark:border-[#2d3748] flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50 dark:bg-[#252f3e]/50">
+                <div class="flex flex-1 w-full md:w-auto items-center gap-3">
+                    <div class="relative w-full max-w-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span
+                                class="material-symbols-outlined text-[#616f89] dark:text-gray-500 text-[20px]">search</span>
+                        </div>
+                        <input
+                            class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
+                            placeholder="搜尋學生姓名或學號..." type="text" />
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                    <select
+                        class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                        <option>所有狀態</option>
+                        <option>待審核</option>
+                        <option>審核中</option>
+                        <option>已核准</option>
+                        <option>已駁回</option>
+                    </select>
+                    <select
+                        class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                        <option>所有獎學金項目</option>
+                        <option>清寒優秀獎學金</option>
+                        <option>學術菁英獎學金</option>
+                        <option>體育績優獎助</option>
+                    </select>
+
+                </div>
+            </div>
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
+                        <tr>
+
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生資訊</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">獎學金名稱</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請日期</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-table-body" class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div
+                class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p id="pagination-info" class="text-sm text-[#616f89] dark:text-gray-400">顯示第 0 至 0 筆，共 0 筆</p>
+                <div id="pagination-controls" class="flex items-center gap-2">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+        <!-- Global Scripts -->
+        <script src="../global.js?v=4"></script>
+        <script src="js/award-list.js"></script>
+        <script src="js/disbursement.js"></script>
+        <script src="reviewer-dashboard.js?v=6"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const cards = document.querySelectorAll('.flashlight-card');
+                cards.forEach(card => {
+                    card.onmousemove = e => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty('--x', `${x}px`);
+                        card.style.setProperty('--y', `${y}px`);
+                    };
+                });
+            });
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,3 @@
+-- Owner: Hu Yong-Han
+-- Scope: mentor assignment rules, academic chart support, recommendation templates, mentor reminders.
+-- Add CREATE TABLE / ALTER TABLE statements here.

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>申請審核詳情 - 獎學金管理系統</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                        "text": {
+                            "primary-light": "#111827",
+                            "primary-dark": "#FFFFFF",
+                            "secondary-light": "#6B7280",
+                            "secondary-dark": "#9CA3AF"
+                        },
+                        "border": {
+                            "light": "#E5E7EB",
+                            "dark": "#374151"
+                        }
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar for table if needed */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <!-- Header injected by header.js -->
+    <script src="header.js?v=20251230_v1"></script>
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col w-full gap-6">
+            <!-- Breadcrumbs & Meta -->
+            <div class="flex flex-col gap-2">
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <a class="text-slate-500 dark:text-slate-400 hover:underline" href="reviewer-dashboard.html">首頁</a>
+                    <span class="text-slate-400 dark:text-slate-600">/</span>
+                    <a class="text-slate-500 dark:text-slate-400 hover:underline" href="#">申請案件</a>
+                    <span class="text-slate-400 dark:text-slate-600">/</span>
+                    <span class="text-slate-900 dark:text-white font-medium">申請編號 #2024-892</span>
+                </div>
+            </div>
+            <!-- Page Header & Actions -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">申請審核詳情</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">113學年度清寒優秀學生獎學金 • 待審核</p>
+                </div>
+                <a href="reviewer-dashboard.html"
+                    class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-200">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                    返回列表
+                </a>
+            </div>
+            <!-- Confidential Warning -->
+            <div
+                class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 flex items-center gap-3">
+                <span class="material-symbols-outlined text-amber-600 dark:text-amber-500">lock</span>
+                <p class="text-sm text-amber-800 dark:text-amber-200 font-medium">
+                    ⚠️ 機密資訊：此記錄包含個人識別資訊 (PII)。請謹慎處理。
+                </p>
+            </div>
+            <!-- Loading State -->
+            <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+                <p class="text-slate-500 text-sm">正在載入申請資料...</p>
+            </div>
+
+            <!-- Main Layout Grid (Hidden initially) -->
+            <div id="main-content" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Left Column: Application Materials (Scrollable) -->
+                <div class="lg:col-span-8 flex flex-col gap-6">
+                    <!-- Student Profile Card -->
+                    <div id="student-info" data-delay="0"
+                        class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                        <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+                            <div class="shrink-0">
+                                <div class="size-24 rounded-full bg-slate-200 dark:bg-slate-700 bg-cover bg-center border-4 border-slate-50 dark:border-slate-800"
+                                    data-alt="Student Portrait" id="student-avatar"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCG06i0vLoXH0FiAKYqTC7wpnRbeewhm_R0Fwft0wGzWh_ksVSBw6eQ7-BX2hbQ_BsheiZeQGssRD4xSFCcEp6zq0ZkG9n1K_jfeMqrUrg4jI5y_rosZy_ftNx_9kOtp-m8UF6zrNH8MqRDZMkEZkGrNo6wG7HyLuVMY3furuJMO4lQaNFTg3TrhwZAlg6REDhtHIxN_bgmVop4EnbO8Gd0SBC9KUuAMGtGJjxVPo9AEbztGKOpVh4a5MgZZ0rr5WwIkyWdV8GYEw");'>
+                                </div>
+                            </div>
+                            <div class="flex-1 text-center sm:text-left">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                                    <h2 class="text-xl font-bold text-slate-900 dark:text-white" id="student-name">
+                                        載入中...</h2>
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300"
+                                        id="student-id">
+                                        學號: ...
+                                    </span>
+                                </div>
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400">school</span>
+                                        <span id="student-dept">...</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-slate-400">workspace_premium</span>
+                                        <span id="student-grade">年級：...</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-slate-400">analytics</span>
+                                        <span id="student-gpa">平均成績：... / 4.0</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400">mail</span>
+                                        <span id="student-email">...</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400">call</span>
+                                        <span id="student-phone">...</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-center sm:justify-start md:col-span-2">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-slate-400">account_balance_wallet</span>
+                                        <span id="student-bank">匯款帳戶：...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Content Tabs (Visual only for this design) -->
+                    <div class="border-b border-slate-200 dark:border-slate-700">
+                        <nav aria-label="Tabs" class="-mb-px flex space-x-8 overflow-x-auto">
+                            <button
+                                class="border-primary text-primary whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                                申請詳情
+                            </button>
+                            <button
+                                class="border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                                學業成績
+                            </button>
+                            <button
+                                class="border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                                文件檔案
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Section: Application Information -->
+                    <div data-delay="0"
+                        class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">info</span>
+                            申請詳細資訊
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">申請學年/學期</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-semester">...</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">申請項目</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-scholarship">...
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">申請日期</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-date">...</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">上學期獲獎助學金</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-prev-award">...
+                                </p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">與推薦人關係</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-recommender">...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Family & Financial Status -->
+                    <div data-delay="0"
+                        class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">family_home</span>
+                            家庭與經濟狀況
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">家庭居住狀況</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="family-housing">...
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">個人居住狀況</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="personal-housing">...
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">就學貸款</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="student-loan">...</p>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">學雜費減免</p>
+                                <p class="text-sm font-medium text-slate-900 dark:text-white" id="tuition-waiver">...
+                                </p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">家庭狀況說明</p>
+                                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg text-sm text-slate-700 dark:text-slate-300 leading-relaxed"
+                                    id="family-desc">
+                                    ...
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">家庭成員狀況</p>
+                                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg text-sm text-slate-700 dark:text-slate-300 leading-relaxed"
+                                    id="family-members">
+                                    ...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Section: Statement of Purpose -->
+                    <div id="biography-section" data-delay="0"
+                        class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">description</span>
+                            自傳與讀書計畫
+                        </h3>
+                        <div class="prose prose-slate dark:prose-invert max-w-none text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
+                            id="biography-content">
+                            <!-- Biography Text Content -->
+                        </div>
+                        <!-- Biography Files attached -->
+                        <div id="biography-files-list"
+                            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6 border-t border-slate-100 dark:border-slate-700 pt-4 hidden">
+                            <!-- Dynamic Files -->
+                        </div>
+                    </div>
+                    <!-- Recommendation Section -->
+                    <div id="recommendation-section"
+                        class="hidden animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">verified</span>
+                            教授推薦信
+                        </h3>
+                        <div class="prose prose-slate dark:prose-invert max-w-none text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4"
+                            id="recommendation-content">
+                            <!-- Content goes here -->
+                        </div>
+                        <div id="recommendation-file-container">
+                            <!-- File download link goes here -->
+                        </div>
+                    </div>
+                    <!-- Section: Academic Records Preview -->
+                    <div id="grades-section" data-delay="0"
+                        class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">table_chart</span>
+                                近期學業表現
+                            </h3>
+                            <button class="text-sm text-primary font-medium hover:underline">查看完整成績單</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 text-sm text-left">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
+                                    <tr>
+                                        <th class="px-4 py-3 tracking-wider">學年</th>
+                                        <th class="px-4 py-3 tracking-wider">學期</th>
+                                        <th class="px-4 py-3 tracking-wider text-center">平均成績</th>
+                                        <th class="px-4 py-3 tracking-wider text-center">GPA</th>
+                                        <th class="px-4 py-3 tracking-wider text-center">班排/人數</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700" id="grades-table-body">
+                                    <!-- Dynamic Grades Here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Section: Supporting Documents -->
+                    <div id="documents-section" data-delay="0"
+                        class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">folder_open</span>
+                            佐證文件
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="documents-list">
+                            <!-- Dynamic Documents Here -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column: Sticky Action Panel -->
+                <div class="lg:col-span-4 relative">
+                    <div class="sticky top-24 flex flex-col gap-6">
+                        <!-- Decision Card -->
+                        <div data-delay="0"
+                            class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden flex flex-col">
+                            <div
+                                class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary">gavel</span>
+                                    審查決議
+                                </h3>
+                            </div>
+                            <div class="p-5 flex flex-col gap-6">
+
+                                <!-- Status Toggle -->
+                                <div class="flex flex-col gap-2">
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">建議結果</span>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <label class="cursor-pointer relative">
+                                            <input class="peer sr-only" name="status" type="radio" value="1" />
+                                            <div
+                                                class="flex flex-col items-center justify-center p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-900/20 text-slate-500 peer-checked:text-emerald-700 dark:peer-checked:text-emerald-400 transition-all">
+                                                <span class="material-symbols-outlined mb-1">check_circle</span>
+                                                <span class="text-sm font-bold">通過</span>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer relative">
+                                            <input class="peer sr-only" name="status" type="radio" value="2" />
+                                            <div
+                                                class="flex flex-col items-center justify-center p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 dark:peer-checked:bg-yellow-900/20 text-slate-500 peer-checked:text-yellow-700 dark:peer-checked:text-yellow-400 transition-all">
+                                                <span class="material-symbols-outlined mb-1">assignment_return</span>
+                                                <span class="text-sm font-bold">需補件</span>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer relative">
+                                            <input class="peer sr-only" name="status" type="radio" value="0" />
+                                            <div
+                                                class="flex flex-col items-center justify-center p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 text-slate-500 peer-checked:text-red-700 dark:peer-checked:text-red-400 transition-all">
+                                                <span class="material-symbols-outlined mb-1">cancel</span>
+                                                <span class="text-sm font-bold">駁回</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Comments Area -->
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                        內部審查意見
+                                    </label>
+                                    <textarea id="review-comment"
+                                        class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-primary focus:border-primary p-3 text-sm leading-relaxed"
+                                        placeholder="請輸入通過/駁回原因或具體建議..." rows="5"></textarea>
+                                </div>
+                                <!-- Action Buttons -->
+                                <div class="flex flex-col gap-3 pt-2">
+                                    <button id="submit-review-btn"
+                                        class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2">
+                                        <span class="material-symbols-outlined text-[20px]">send</span>
+                                        送出審查
+                                    </button>
+                                    <button id="save-draft-btn"
+                                        class="w-full bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-medium py-2.5 px-4 rounded-lg transition-colors">
+                                        儲存草稿
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Quick Links (Optional Helper) -->
+                        <div class="hidden lg:block">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">
+                                導覽</p>
+                            <ul class="space-y-1">
+                                <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                        href="#student-info"><span
+                                            class="size-1.5 rounded-full bg-slate-400"></span>學生資訊</a></li>
+                                <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                        href="#biography-section"><span
+                                            class="size-1.5 rounded-full bg-slate-400"></span>自傳</a>
+                                </li>
+                                <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                        href="#grades-section"><span
+                                            class="size-1.5 rounded-full bg-slate-400"></span>成績</a></li>
+                                <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                        href="#documents-section"><span
+                                            class="size-1.5 rounded-full bg-slate-400"></span>文件</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="../global.js"></script>
+    <script src="js/award-list.js"></script>
+    <script src="application-review.js?v=18"></script>
+</body>
+
+</html>
