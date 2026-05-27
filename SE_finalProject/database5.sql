@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-12-30 15:37:08
+-- 產生時間： 2026-05-27 14:06:07
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `database3`
+-- 資料庫： `database5`
 --
 
 -- --------------------------------------------------------
@@ -139,6 +139,31 @@ INSERT INTO `grades` (`student_username`, `academic_year`, `semester`, `avg_scor
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `homepage_announcements`
+--
+
+CREATE TABLE `homepage_announcements` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL COMMENT '公告標題',
+  `content` text DEFAULT NULL COMMENT '公告內容',
+  `display_date` date DEFAULT NULL COMMENT '顯示日期',
+  `status_label` varchar(50) DEFAULT NULL COMMENT '狀態標籤文字 (例如：進行中、公告)',
+  `status_type` varchar(20) DEFAULT NULL COMMENT '狀態樣式：active/notice/warning',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `homepage_announcements`
+--
+
+INSERT INTO `homepage_announcements` (`id`, `title`, `content`, `display_date`, `status_label`, `status_type`, `created_at`) VALUES
+(1, '114學年度上學期獎學金申請開跑', '本學期各項獎學金申請作業即日起開放受理，符合資格之同學請於 10/30 前完成線上申請。', '2025-10-01', '進行中', 'active', '2026-05-27 11:14:12'),
+(2, '傑出學術研究獎獲獎名單公告', '恭喜 50 位獲獎同學，完整獲獎名單請至學生事務處生活輔導組查看。', '2025-01-13', '快訊', 'notice', '2026-05-27 11:14:12'),
+(3, '系統維護通知', '本系統將於週日凌晨 00:00 至 04:00 進行例行性維護，請避免於該時段操作。', '2025-02-01', '公告', 'warning', '2026-05-27 11:14:12');
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `reference_letters`
 --
 
@@ -235,6 +260,33 @@ INSERT INTO `scholarships` (`id`, `name`, `provider_username`, `description`, `a
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `scholarship_eligibility_rules`
+--
+
+CREATE TABLE `scholarship_eligibility_rules` (
+  `scholarship_id` int(11) NOT NULL COMMENT '獎學金編號',
+  `min_gpa` decimal(4,2) DEFAULT NULL COMMENT '最低 GPA',
+  `min_avg_score` decimal(5,2) DEFAULT NULL COMMENT '最低平均成績',
+  `max_class_rank_percent` decimal(5,2) DEFAULT NULL COMMENT '班排百分比上限，例如 10 代表前 10%',
+  `allowed_departments` text DEFAULT NULL COMMENT '允許系所 JSON 陣列，NULL 代表不限',
+  `provider_department` varchar(100) DEFAULT NULL COMMENT '獎助單位對應系所',
+  `notes` varchar(255) DEFAULT NULL COMMENT '規則說明'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='獎學金資格比對規則';
+
+--
+-- 傾印資料表的資料 `scholarship_eligibility_rules`
+--
+
+INSERT INTO `scholarship_eligibility_rules` (`scholarship_id`, `min_gpa`, `min_avg_score`, `max_class_rank_percent`, `allowed_departments`, `provider_department`, `notes`) VALUES
+(1, 3.50, 85.00, NULL, NULL, NULL, '提供予家境清寒且學業成績優異之學生'),
+(2, NULL, NULL, 10.00, '[\"資訊工程學系\"]', '資訊工程學系', '限各系學生申請，學業成績需達班排前 10%'),
+(3, 3.80, 90.00, NULL, NULL, NULL, '獎勵發表頂尖期刊論文之學生'),
+(4, 3.00, 80.00, NULL, NULL, NULL, '補助赴海外交換學生之機票與生活費'),
+(5, NULL, 60.00, NULL, NULL, NULL, '弱勢學生生活津貼，前一學期成績須達 60 分以上');
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `scholarship_units`
 --
 
@@ -284,6 +336,38 @@ INSERT INTO `students` (`username`, `department`, `gender`, `grade_level`, `clas
 ('a1125544', '資訊工程學系', '男', '大三', '資工A', '東勢里14鄰健康路183巷8弄32號', NULL),
 ('a11255444', '資訊工程學系', NULL, NULL, NULL, NULL, NULL),
 ('a112554444', '資訊管理學系', NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `student_notifications`
+--
+
+CREATE TABLE `student_notifications` (
+  `id` int(11) NOT NULL,
+  `student_username` varchar(50) NOT NULL COMMENT '學生帳號',
+  `type` varchar(50) NOT NULL COMMENT 'result_approved/result_rejected/result_revision/deadline_reminder/eligibility_recommendation',
+  `title` varchar(255) NOT NULL COMMENT '通知標題',
+  `message` text NOT NULL COMMENT '通知內容',
+  `related_application_id` int(11) DEFAULT NULL COMMENT '關聯申請編號',
+  `related_scholarship_id` int(11) DEFAULT NULL COMMENT '關聯獎學金編號',
+  `dedup_key` varchar(255) NOT NULL COMMENT '去重用鍵值',
+  `is_read` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已讀',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='學生站內通知';
+
+--
+-- 傾印資料表的資料 `student_notifications`
+--
+
+INSERT INTO `student_notifications` (`id`, `student_username`, `type`, `title`, `message`, `related_application_id`, `related_scholarship_id`, `dedup_key`, `is_read`, `created_at`) VALUES
+(6, 'a1125532', 'result_revision', '審查結果：需補件', '您的「各系專屬獎學金」申請需補件：pdf', 28, 2, 'result-revision-28', 1, '2026-05-27 11:34:31'),
+(9, 'a1125532', 'result_revision', '審查結果：需補件', '您的「優秀清寒校友獎學金」申請需補件：請檢查缺漏資料', 27, 1, 'result-revision-27', 0, '2026-05-27 11:35:22'),
+(11, 'a1125544', 'result_approved', '審查結果：已通過', '恭喜您！您申請的「優秀清寒校友獎學金」已通過審核，預計於下個月撥款。', 24, 1, 'result-approved-24', 0, '2026-05-27 11:38:10'),
+(12, 'a1125544', 'result_approved', '審查結果：已通過', '恭喜您！您申請的「優秀清寒校友獎學金」已通過審核，預計於下個月撥款。', 25, 1, 'result-approved-25', 0, '2026-05-27 11:38:10'),
+(13, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「各系專屬獎學金」。系所符合：資訊工程學系；班排 3/45，符合前 10%；限各系學生申請，學業成績需達班排前 10%', NULL, 2, 'recommendation-2', 0, '2026-05-27 11:38:10'),
+(14, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「海外交換學生獎學金」。GPA 3.92 達標；平均成績 88.5 達標；補助赴海外交換學生之機票與生活費', NULL, 4, 'recommendation-4', 0, '2026-05-27 11:38:10'),
+(15, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「弱勢學生生活助學金」。平均成績 88.5 達標；弱勢學生生活津貼，前一學期成績須達 60 分以上', NULL, 5, 'recommendation-5', 0, '2026-05-27 11:38:10');
 
 -- --------------------------------------------------------
 
@@ -405,45 +489,6 @@ INSERT INTO `users` (`username`, `role`, `real_name`, `password`, `phone`, `emai
 ('test', '獎助單位', 'test', '1234', '0900000000', 'test@gmail.com', NULL);
 
 --
--- 資料表結構 `homepage_announcements`
---
-
-CREATE TABLE `homepage_announcements` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL COMMENT '公告標題',
-  `content` text DEFAULT NULL COMMENT '公告內容',
-  `display_date` date DEFAULT NULL COMMENT '顯示日期',
-  `status_label` varchar(50) DEFAULT NULL COMMENT '狀態標籤文字 (例如：進行中、公告)',
-  `status_type` varchar(20) DEFAULT NULL COMMENT '狀態樣式：active/notice/warning',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `homepage_announcements`
---
-
-INSERT INTO `homepage_announcements` (`title`, `content`, `display_date`, `status_label`, `status_type`, `created_at`) VALUES
-('114學年度上學期獎學金申請開跑',
- '本學期各項獎學金申請作業即日起開放受理，符合資格之同學請於 10/30 前完成線上申請。',
- '2025-10-01',
- '進行中',
- 'active',
- NOW()),
-('傑出學術研究獎獲獎名單公告',
- '恭喜 50 位獲獎同學，完整獲獎名單請至學生事務處生活輔導組查看。',
- '2025-01-13',
- '快訊',
- 'notice',
- NOW()),
-('系統維護通知',
- '本系統將於週日凌晨 00:00 至 04:00 進行例行性維護，請避免於該時段操作。',
- '2025-02-01',
- '公告',
- 'warning',
- NOW());
-
---
 -- 已傾印資料表的索引
 --
 
@@ -470,6 +515,12 @@ ALTER TABLE `grades`
   ADD PRIMARY KEY (`student_username`,`academic_year`,`semester`);
 
 --
+-- 資料表索引 `homepage_announcements`
+--
+ALTER TABLE `homepage_announcements`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- 資料表索引 `reference_letters`
 --
 ALTER TABLE `reference_letters`
@@ -493,6 +544,12 @@ ALTER TABLE `scholarships`
   ADD KEY `provider_username` (`provider_username`);
 
 --
+-- 資料表索引 `scholarship_eligibility_rules`
+--
+ALTER TABLE `scholarship_eligibility_rules`
+  ADD PRIMARY KEY (`scholarship_id`);
+
+--
 -- 資料表索引 `scholarship_units`
 --
 ALTER TABLE `scholarship_units`
@@ -503,6 +560,16 @@ ALTER TABLE `scholarship_units`
 --
 ALTER TABLE `students`
   ADD PRIMARY KEY (`username`);
+
+--
+-- 資料表索引 `student_notifications`
+--
+ALTER TABLE `student_notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_student_notification_dedup` (`dedup_key`),
+  ADD KEY `idx_student_notifications_user_read` (`student_username`,`is_read`,`created_at`),
+  ADD KEY `idx_student_notifications_application` (`related_application_id`),
+  ADD KEY `idx_student_notifications_scholarship` (`related_scholarship_id`);
 
 --
 -- 資料表索引 `system_admins`
@@ -546,6 +613,12 @@ ALTER TABLE `departments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `homepage_announcements`
+--
+ALTER TABLE `homepage_announcements`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `reference_letters`
 --
 ALTER TABLE `reference_letters`
@@ -562,6 +635,12 @@ ALTER TABLE `review_records`
 --
 ALTER TABLE `scholarships`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `student_notifications`
+--
+ALTER TABLE `student_notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `system_logs`
@@ -614,6 +693,12 @@ ALTER TABLE `scholarships`
   ADD CONSTRAINT `scholarships_ibfk_1` FOREIGN KEY (`provider_username`) REFERENCES `scholarship_units` (`username`) ON DELETE CASCADE;
 
 --
+-- 資料表的限制式 `scholarship_eligibility_rules`
+--
+ALTER TABLE `scholarship_eligibility_rules`
+  ADD CONSTRAINT `scholarship_eligibility_rules_fk` FOREIGN KEY (`scholarship_id`) REFERENCES `scholarships` (`id`) ON DELETE CASCADE;
+
+--
 -- 資料表的限制式 `scholarship_units`
 --
 ALTER TABLE `scholarship_units`
@@ -624,6 +709,14 @@ ALTER TABLE `scholarship_units`
 --
 ALTER TABLE `students`
   ADD CONSTRAINT `students_fk` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE;
+
+--
+-- 資料表的限制式 `student_notifications`
+--
+ALTER TABLE `student_notifications`
+  ADD CONSTRAINT `student_notifications_application_fk` FOREIGN KEY (`related_application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `student_notifications_scholarship_fk` FOREIGN KEY (`related_scholarship_id`) REFERENCES `scholarships` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `student_notifications_student_fk` FOREIGN KEY (`student_username`) REFERENCES `students` (`username`) ON DELETE CASCADE;
 
 --
 -- 資料表的限制式 `system_admins`
