@@ -3,6 +3,7 @@
 
 (function () {
     const API_BASE = '../api/student';
+    let cachedNotifications = [];
 
     const TYPE_STYLE = {
         result_approved: {
@@ -97,7 +98,7 @@
                     <div class="flex items-center gap-2 mb-1">
                         <span class="font-bold text-slate-900 dark:text-white text-sm">${style.sender}</span>
                         <span class="text-xs text-slate-500">${formatDate(notification.created_at)}</span>
-                        ${notification.is_read ? '' : '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">未讀</span>'}
+                        ${notification.is_read ? '' : '<span data-role="unread-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">未讀</span>'}
                     </div>
                     <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">${notification.title}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-1">${notification.message}</p>
@@ -121,11 +122,6 @@
 
             if (!notification.is_read) {
                 await markAsRead(notification.id);
-                notification.is_read = 1;
-                card.classList.add('opacity-80');
-                const unreadBadge = card.querySelector('.bg-primary\\/10');
-                if (unreadBadge) unreadBadge.remove();
-                updateUnreadBadge();
             }
         });
 
@@ -165,6 +161,11 @@
         });
     }
 
+    function syncUnreadCountFromNotifications(notifications = cachedNotifications) {
+        window.__studentNotificationUnreadCount = notifications.filter((item) => !item.is_read).length;
+        updateUnreadBadge();
+    }
+
     function updateUnreadBadge() {
         const badge = document.getElementById('student-notification-unread-badge');
         const count = window.__studentNotificationUnreadCount || 0;
@@ -176,6 +177,26 @@
         } else {
             badge.classList.add('hidden');
         }
+    }
+
+    function refreshNotificationViews(notifications) {
+        const listContainer = document.getElementById('notifications-list');
+        renderNotificationList(listContainer, notifications, 3);
+        syncUnreadCountFromNotifications(notifications);
+
+        const modal = document.getElementById('notifications-modal');
+        const modalList = document.getElementById('modal-notifications-list');
+        if (!modal || modal.classList.contains('hidden') || !modalList) return;
+
+        modalList.innerHTML = '';
+        if (!notifications.length) {
+            renderEmptyState(modalList, '無通知');
+            return;
+        }
+
+        notifications.forEach((notification) => {
+            modalList.appendChild(createNotificationCard(notification));
+        });
     }
 
     async function markAsRead(notificationId, username = getStoredUsername()) {
@@ -190,14 +211,18 @@
             }),
         });
 
+        const target = cachedNotifications.find((item) => String(item.id) === String(notificationId));
+        if (target) target.is_read = 1;
+
         window.__studentNotificationUnreadCount = result.unread_count ?? 0;
         updateUnreadBadge();
+        refreshNotificationViews(cachedNotifications);
     }
 
     async function markAllAsRead(username = getStoredUsername()) {
         if (!username) return;
 
-        const result = await fetchJson(`${API_BASE}/mark_notification_read.php`, {
+        await fetchJson(`${API_BASE}/mark_notification_read.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -206,8 +231,11 @@
             }),
         });
 
-        window.__studentNotificationUnreadCount = result.unread_count ?? 0;
-        updateUnreadBadge();
+        cachedNotifications.forEach((item) => {
+            item.is_read = 1;
+        });
+        window.__studentNotificationUnreadCount = 0;
+        refreshNotificationViews(cachedNotifications);
     }
 
     function ensureUnreadBadge() {
@@ -221,6 +249,7 @@
     }
 
     function bindNotificationModal(notifications) {
+        cachedNotifications = notifications;
         const btn = document.getElementById('view-all-notifications-btn');
         const modal = document.getElementById('notifications-modal');
         const closeBtn = document.getElementById('close-notif-modal-btn');
@@ -237,16 +266,7 @@
             backdrop?.classList.remove('opacity-0');
             modalContent?.classList.remove('scale-95', 'opacity-0');
             modalContent?.classList.add('scale-100', 'opacity-100');
-
-            modalList.innerHTML = '';
-            if (!notifications.length) {
-                renderEmptyState(modalList, '無通知');
-                return;
-            }
-
-            notifications.forEach((notification) => {
-                modalList.appendChild(createNotificationCard(notification));
-            });
+            refreshNotificationViews(cachedNotifications);
         }
 
         function closeModal() {
@@ -269,8 +289,6 @@
             markAllBtn.onclick = async (event) => {
                 event.preventDefault();
                 await markAllAsRead();
-                notifications.forEach((item) => { item.is_read = 1; });
-                openModal();
             };
         }
     }
@@ -357,6 +375,7 @@
                 `${API_BASE}/get_student_notifications.php?student_username=${encodeURIComponent(username)}&sync=1`
             );
             const notifications = result.data || [];
+            cachedNotifications = notifications;
             window.__studentNotificationUnreadCount = result.unread_count || 0;
             ensureUnreadBadge();
             updateUnreadBadge();
