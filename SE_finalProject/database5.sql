@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2026-05-27 14:06:07
+-- 產生時間： 2026-05-27 18:14:11
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -251,7 +251,7 @@ CREATE TABLE `scholarships` (
 
 INSERT INTO `scholarships` (`id`, `name`, `provider_username`, `description`, `amount`, `quota`, `application_start_date`, `application_end_date`, `is_active`, `created_at`) VALUES
 (1, '優秀清寒校友獎學金', 'alumni_association', '提供予家境清寒且學業成績優異之學生。', '20000', 10, '2024-02-01', '2026-06-30', 1, '2025-12-20 09:03:31'),
-(2, '各系專屬獎學金', 'cs_dept', '限各系學生申請，學業成績需達班排前 10%。', '10000', 5, '2024-02-01', '2026-06-30', 1, '2025-12-20 09:03:31'),
+(2, '各系專屬獎學金', 'cs_dept', '限各系學生申請，學業成績需達班排前 10%。', '10000', 5, '2024-02-01', '2026-05-28', 1, '2025-12-20 09:03:31'),
 (3, '學術研究績優獎勵', 'rd_office', '獎勵發表頂尖期刊論文之學生。', '30000', 3, '2024-02-01', '2026-06-30', 1, '2025-12-20 09:03:31'),
 (4, '海外交換學生獎學金', 'intl_office', '補助赴海外交換學生之機票與生活費。', '50000', 8, '2024-02-01', '2026-06-30', 1, '2025-12-20 09:03:31'),
 (5, '弱勢學生生活助學金', 'sa_office', '提供弱勢學生生活津貼，需參與校內服務學習時數 (每週 6 小時)。前一學期成績須達 60 分以上。', '6000', 20, '2024-02-01', '2026-06-30', 1, '2025-12-20 09:03:31'),
@@ -353,6 +353,8 @@ CREATE TABLE `student_notifications` (
   `related_scholarship_id` int(11) DEFAULT NULL COMMENT '關聯獎學金編號',
   `dedup_key` varchar(255) NOT NULL COMMENT '去重用鍵值',
   `is_read` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已讀',
+  `email_sent_at` datetime DEFAULT NULL COMMENT 'Email 寄送成功時間',
+  `email_last_error` varchar(255) DEFAULT NULL COMMENT '最近一次 Email 錯誤',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='學生站內通知';
 
@@ -360,14 +362,15 @@ CREATE TABLE `student_notifications` (
 -- 傾印資料表的資料 `student_notifications`
 --
 
-INSERT INTO `student_notifications` (`id`, `student_username`, `type`, `title`, `message`, `related_application_id`, `related_scholarship_id`, `dedup_key`, `is_read`, `created_at`) VALUES
-(6, 'a1125532', 'result_revision', '審查結果：需補件', '您的「各系專屬獎學金」申請需補件：pdf', 28, 2, 'result-revision-28', 1, '2026-05-27 11:34:31'),
-(9, 'a1125532', 'result_revision', '審查結果：需補件', '您的「優秀清寒校友獎學金」申請需補件：請檢查缺漏資料', 27, 1, 'result-revision-27', 0, '2026-05-27 11:35:22'),
-(11, 'a1125544', 'result_approved', '審查結果：已通過', '恭喜您！您申請的「優秀清寒校友獎學金」已通過審核，預計於下個月撥款。', 24, 1, 'result-approved-24', 0, '2026-05-27 11:38:10'),
-(12, 'a1125544', 'result_approved', '審查結果：已通過', '恭喜您！您申請的「優秀清寒校友獎學金」已通過審核，預計於下個月撥款。', 25, 1, 'result-approved-25', 0, '2026-05-27 11:38:10'),
-(13, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「各系專屬獎學金」。系所符合：資訊工程學系；班排 3/45，符合前 10%；限各系學生申請，學業成績需達班排前 10%', NULL, 2, 'recommendation-2', 0, '2026-05-27 11:38:10'),
-(14, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「海外交換學生獎學金」。GPA 3.92 達標；平均成績 88.5 達標；補助赴海外交換學生之機票與生活費', NULL, 4, 'recommendation-4', 0, '2026-05-27 11:38:10'),
-(15, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「弱勢學生生活助學金」。平均成績 88.5 達標；弱勢學生生活津貼，前一學期成績須達 60 分以上', NULL, 5, 'recommendation-5', 0, '2026-05-27 11:38:10');
+INSERT INTO `student_notifications` (`id`, `student_username`, `type`, `title`, `message`, `related_application_id`, `related_scholarship_id`, `dedup_key`, `is_read`, `email_sent_at`, `email_last_error`, `created_at`) VALUES
+(9, 'a1125532', 'result_revision', '審查結果：需補件', '您的「優秀清寒校友獎學金」申請需補件：請檢查缺漏資料', 27, 1, 'result-revision-27', 0, '2026-05-28 00:03:12', NULL, '2026-05-27 11:35:22'),
+(11, 'a1125544', 'result_approved', '審查結果：已通過', '恭喜您！您申請的「優秀清寒校友獎學金」已通過審核，預計於下個月撥款。', 24, 1, 'result-approved-24', 1, '2026-05-28 00:06:38', NULL, '2026-05-27 11:38:10'),
+(12, 'a1125544', 'result_approved', '審查結果：已通過', '恭喜您！您申請的「優秀清寒校友獎學金」已通過審核，預計於下個月撥款。', 25, 1, 'result-approved-25', 1, '2026-05-28 00:06:42', NULL, '2026-05-27 11:38:10'),
+(13, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「各系專屬獎學金」。系所符合：資訊工程學系；班排 3/45，符合前 10%；限各系學生申請，學業成績需達班排前 10%', NULL, 2, 'recommendation-2', 1, '2026-05-28 00:06:49', NULL, '2026-05-27 11:38:10'),
+(14, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「海外交換學生獎學金」。GPA 3.92 達標；平均成績 88.5 達標；補助赴海外交換學生之機票與生活費', NULL, 4, 'recommendation-4', 1, '2026-05-28 00:06:53', NULL, '2026-05-27 11:38:10'),
+(15, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「弱勢學生生活助學金」。平均成績 88.5 達標；弱勢學生生活津貼，前一學期成績須達 60 分以上', NULL, 5, 'recommendation-5', 1, '2026-05-28 00:06:57', NULL, '2026-05-27 11:38:10'),
+(33, 'a1125544', 'deadline_reminder', '截止提醒', '「各系專屬獎學金」將於 2026-05-28 截止，請把握時間完成申請。', NULL, 2, 'deadline-2-2026-05-28', 0, '2026-05-28 00:06:45', NULL, '2026-05-27 12:51:18'),
+(78, 'a1125532', 'result_revision', '審查結果：需補件', '您的「各系專屬獎學金」申請需補件：pdf', 28, 2, 'result-revision-28', 0, '2026-05-28 00:05:08', NULL, '2026-05-27 16:05:04');
 
 -- --------------------------------------------------------
 
@@ -640,7 +643,7 @@ ALTER TABLE `scholarships`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `student_notifications`
 --
 ALTER TABLE `student_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `system_logs`
