@@ -163,8 +163,14 @@
                 <div class="lg:col-span-1 flex flex-col gap-4">
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white">最新通知</h3>
-                        <a id="view-all-notifications-btn"
-                            class="text-sm font-medium text-primary hover:text-primary-dark cursor-pointer">查看全部</a>
+                        <div class="flex items-center gap-3">
+                            <button id="mark-all-notifications-read-btn" type="button"
+                                class="text-xs font-bold text-slate-500 hover:text-primary transition-colors hidden sm:inline-flex">
+                                全部已讀
+                            </button>
+                            <a id="view-all-notifications-btn"
+                                class="text-sm font-medium text-primary hover:text-primary-dark cursor-pointer">查看全部</a>
+                        </div>
                     </div>
                     <div class="flex flex-col gap-3" id="notifications-list">
                         <!-- Notifications loaded dynamically via JS -->

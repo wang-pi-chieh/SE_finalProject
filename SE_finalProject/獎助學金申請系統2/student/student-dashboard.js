@@ -55,9 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (result.success && result.data && result.data.length > 0) {
                         console.log('Received applications:', result.data);
-                        // Render Notifications based on these applications
-                        renderNotifications(result.data);
-                        setupNotificationsModal(result.data);
+                        if (window.StudentNotifications) {
+                            window.StudentNotifications.loadNotifications(user.username);
+                        } else {
+                            renderNotifications(result.data);
+                            setupNotificationsModal(result.data);
+                        }
 
                         // Show/Hide "Show More" button and Setup Modal
                         setupApplicationsModal(result.data);
@@ -73,8 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     } else {
                         console.warn('No applications found or empty data.');
-                        renderNotifications([]); // Render empty notifications
-                        setupApplicationsModal([]); // Hide button
+                        if (window.StudentNotifications) {
+                            window.StudentNotifications.loadNotifications(user.username);
+                        } else {
+                            renderNotifications([]);
+                            setupNotificationsModal([]);
+                        }
+
+                        setupApplicationsModal([]);
 
 
                         tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">目前尚無申請紀錄</td></tr>';
@@ -84,7 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error fetching applications:', err);
                     const tbody = document.getElementById('applications-table-body');
                     if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">載入失敗: ${err.message}</td></tr>`;
-                    renderNotifications([], err); // Also show error in notifications
+                    if (window.StudentNotifications) {
+                        window.StudentNotifications.loadNotifications(user.username);
+                    } else {
+                        renderNotifications([], err);
+                    }
                 });
 
             // 4. Fetch Dashboard Stats
@@ -108,15 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => console.error('Error fetching stats:', err));
 
-            // 5. Fetch Recommended Scholarships
-            fetch('../api/get_recommended_scholarships.php')
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success && result.data) {
-                        renderRecommendedScholarships(result.data);
-                    }
-                })
-                .catch(err => console.error('Error fetching recommendations:', err));
+            // 5. Fetch Recommended Scholarships (Wu Ru-Ting: eligibility matching)
+            if (window.StudentNotifications) {
+                window.StudentNotifications.loadRecommendations(user.username);
+            } else {
+                fetch('../api/get_recommended_scholarships.php')
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success && result.data) {
+                            renderRecommendedScholarships(result.data);
+                        }
+                    })
+                    .catch(err => console.error('Error fetching recommendations:', err));
+            }
 
         } catch (e) {
             console.error(e);
