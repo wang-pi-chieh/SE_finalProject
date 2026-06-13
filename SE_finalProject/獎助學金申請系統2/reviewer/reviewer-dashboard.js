@@ -2,9 +2,20 @@
 let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    const previewParams = new URLSearchParams(window.location.search);
+    const isPreviewMode = previewParams.get('preview') === 'reviewer';
+    const previewUser = {
+        username: previewParams.get('preview_user') || 'reviewer-preview',
+        role: '獎助單位',
+        real_name: '審查單位端預覽',
+        email: 'reviewer-preview@example.edu'
+    };
+
     // Get user from localStorage
     const userStr = localStorage.getItem('user');
-    if (userStr) {
+    if (isPreviewMode) {
+        currentUser = previewUser;
+    } else if (userStr) {
         currentUser = JSON.parse(userStr);
     } else {
         // Redirect if not logged in (optional, but good practice)
@@ -13,6 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const username = currentUser ? currentUser.username : 'admin';
+    updateReviewerWelcome(currentUser ? (currentUser.real_name || currentUser.username) : '管理員');
+    fetch(`../api/get_user_contact.php?username=${encodeURIComponent(username)}`)
+        .then(res => res.json())
+        .then(result => {
+            if (!result.success || !result.data) return;
+            const dbName = result.data.real_name || currentUser.real_name || username;
+            currentUser.real_name = dbName;
+            currentUser.email = result.data.email || currentUser.email;
+            updateReviewerWelcome(dbName);
+            const headerName = document.getElementById('header-user-name');
+            const headerEmail = document.getElementById('header-user-email');
+            if (headerName) headerName.textContent = dbName;
+            if (headerEmail) headerEmail.textContent = currentUser.email || '';
+        })
+        .catch(err => console.warn('Reviewer preview user lookup failed:', err));
 
     fetchStats(username);
     fetchApplications(username);
@@ -179,6 +205,21 @@ function fetchScholarshipList() {
             }
         })
         .catch(err => console.error('Error fetching scholarship list:', err));
+}
+
+function updateReviewerWelcome(displayName) {
+    const welcomeText = document.getElementById('reviewer-welcome-text');
+    if (!welcomeText) return;
+    welcomeText.innerHTML = `歡迎回來，${escapeHTML(displayName)}。目前共有 <span id="header-pending-count" class="font-bold text-primary">-</span> 件待審核申請。`;
+}
+
+function escapeHTML(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
 const state = {

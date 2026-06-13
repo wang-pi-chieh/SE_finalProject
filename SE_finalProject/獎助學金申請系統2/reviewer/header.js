@@ -1,17 +1,17 @@
-const reviewerHeaderHTML = `
+﻿const reviewerHeaderHTML = `
 <header class="h-16 border-b border-border-light dark:border-border-dark flex items-center justify-between px-6 bg-card-light dark:bg-card-dark sticky top-0 z-50">
     <div class="flex items-center gap-4">
         <div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg text-primary">
             <span class="material-symbols-outlined text-[24px]">school</span>
         </div>
-        <a href="../index.html" class="text-lg font-bold hover:text-primary-dark transition-colors">獎學金管理系統</a>
+        <a href="../index.html" class="text-lg font-bold hover:text-primary-dark transition-colors">?飛?恣?頂蝯?/a>
     </div>
 
     <nav class="hidden md:flex items-center gap-6">
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="reviewer-dashboard.html">儀表板</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html">申請案件</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html?tab=history">歷史紀錄</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="application-review.html">申請審核</a>
+        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="reviewer-dashboard.html">?銵冽</a>
+        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html">?唾?獢辣</a>
+        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html?tab=history">甇瑕蝝??/a>
+        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="application-review.html">?唾?撖拇</a>
     </nav>
 
     <div class="flex items-center gap-4">
@@ -28,12 +28,12 @@ const reviewerHeaderHTML = `
             <!-- Dropdown Menu -->
             <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-50 transform origin-top-right transition-all duration-200">
                 <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                    <p id="header-user-name" class="text-sm font-bold text-gray-900 dark:text-white">管理員</p>
+                    <p id="header-user-name" class="text-sm font-bold text-gray-900 dark:text-white">蝞∠???/p>
                     <p id="header-user-email" class="text-xs text-gray-500 dark:text-gray-400 truncate">admin@university.edu</p>
                 </div>
                 <a href="#" id="logout-btn" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
                     <span class="material-symbols-outlined text-lg">logout</span>
-                    登出系統
+                    ?餃蝟餌絞
                 </a>
             </div>
         </div>
@@ -43,10 +43,42 @@ const reviewerHeaderHTML = `
 
 // Insert header
 document.body.insertAdjacentHTML('afterbegin', reviewerHeaderHTML);
+const reviewerPreviewMode = new URLSearchParams(window.location.search).get('preview') === 'reviewer';
+if (reviewerPreviewMode) {
+  document.body.insertAdjacentHTML('afterbegin', `
+    <div id="role-preview-banner" class="bg-amber-50 border-b border-amber-200 text-amber-900 px-6 py-3 text-sm font-bold flex items-center justify-between gap-3">
+      <span class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">visibility</span>
+        ?桀??箄??脤?閬踝?撖拇?桐?蝡?      </span>
+      <button type="button" id="close-role-preview-btn" class="text-primary hover:underline font-bold">餈?蝟餌絞蝞∠???/button>
+    </div>
+  `);
+  document.getElementById('close-role-preview-btn')?.addEventListener('click', () => {
+    window.close();
+    setTimeout(() => {
+      window.location.href = '../admin/admin-dashboard.html';
+    }, 150);
+  });
+}
+loadIssueReportWidget();
+
+function loadIssueReportWidget() {
+  if (document.querySelector('script[data-issue-report-widget]')) return;
+
+  const script = document.createElement('script');
+  script.src = '../issue-report.js?v=20260604_autosave';
+  script.dataset.issueReportWidget = 'true';
+  document.body.appendChild(script);
+}
 
 // Load user data
 const storedUser = localStorage.getItem('user');
-if (storedUser) {
+if (reviewerPreviewMode) {
+  const nameEl = document.getElementById('header-user-name');
+  const emailEl = document.getElementById('header-user-email');
+  if (nameEl) nameEl.textContent = '撖拇?桐?蝡舫?閬?;
+  if (emailEl) emailEl.textContent = 'reviewer-preview@example.edu';
+} else if (storedUser) {
   try {
     const user = JSON.parse(storedUser);
     const nameEl = document.getElementById('header-user-name');
@@ -137,9 +169,10 @@ if (userMenuBtn && userDropdown) {
 if (logoutBtn) {
   logoutBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    if (confirm('確定要登出系統嗎？')) {
+    if (confirm('蝣箏?閬?箇頂蝯勗?嚗?)) {
       window.location.href = '../index.html';
     }
   });
 }
+
 

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="zh-Hant">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>推薦信管理 - 獎學金助學系統</title>
+    <title>?刻靽∠恣??- ?飛?摮貊頂蝯?/title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -45,16 +45,17 @@
 <body
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden font-sans">
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20251226_v4"></script>
+    <script src="header.js?v=20260601_issue_report"></script>
+    <script src="../issue-report.js?v=20260604_autosave"></script>
 
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Heading -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">推薦信管理
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">?刻靽∠恣??
                 </h1>
                 <p class="text-[#616f89] dark:text-gray-400 text-base font-normal mt-2">
-                    管理學生提交的推薦信邀請，撰寫並提交推薦信。
+                    蝞∠?摮貊??漱??虫縑?隢??啣神銝行?鈭斗?虫縑??
                 </p>
             </div>
         </div>
@@ -64,7 +65,7 @@
             <div
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">未審查</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">?芸祟??/p>
                     <span
                         class="material-symbols-outlined text-orange-500 bg-orange-50 dark:bg-orange-500/10 p-1.5 rounded-md">edit_document</span>
                 </div>
@@ -74,7 +75,7 @@
             <div
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">草稿中</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">?阮銝?/p>
                     <span
                         class="material-symbols-outlined text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1.5 rounded-md">draft</span>
                 </div>
@@ -83,7 +84,7 @@
             <div
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">已提交</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撌脫?鈭?/p>
                     <span
                         class="material-symbols-outlined text-green-500 bg-green-50 dark:bg-green-500/10 p-1.5 rounded-md">check_circle</span>
                 </div>
@@ -105,16 +106,16 @@
                             class="material-symbols-outlined absolute left-3 top-2.5 text-[#616f89] dark:text-gray-500 text-[20px]">search</span>
                         <input id="searchInput"
                             class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
-                            placeholder="搜尋學生姓名..." type="text" />
+                            placeholder="??摮貊?憪?..." type="text" />
                     </div>
                 </div>
                 <div class="flex gap-3">
                     <select id="statusFilter"
                         class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
-                        <option value="all">所有狀態</option>
-                        <option value="0">未審查</option>
-                        <option value="2">草稿</option>
-                        <option value="1">已提交</option>
+                        <option value="all">?????/option>
+                        <option value="0">?芸祟??/option>
+                        <option value="2">?阮</option>
+                        <option value="1">撌脫?鈭?/option>
                     </select>
                 </div>
             </div>
@@ -124,17 +125,17 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
                         <tr>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生資訊</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">邀請日期</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?鞈?</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">?唾??飛??/th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">?隢??/th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">???/th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">??</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]" id="recommendation-list">
                         <!-- Dynamic Content -->
                         <tr>
-                            <td colspan="5" class="p-4 text-center text-gray-500">載入中...</td>
+                            <td colspan="5" class="p-4 text-center text-gray-500">頛銝?..</td>
                         </tr>
                     </tbody>
                 </table>
@@ -144,9 +145,9 @@
             <div id="pagination-footer"
                 class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/30 dark:bg-[#252f3e]/30 hidden">
                 <p class="text-sm text-gray-600 dark:text-gray-400" id="pagination-info">
-                    顯示第 <span class="font-medium text-gray-900 dark:text-gray-200">1</span> 至 <span
-                        class="font-medium text-gray-900 dark:text-gray-200">6</span> 筆，共 <span
-                        class="font-medium text-gray-900 dark:text-gray-200">8</span> 筆
+                    憿舐內蝚?<span class="font-medium text-gray-900 dark:text-gray-200">1</span> ??<span
+                        class="font-medium text-gray-900 dark:text-gray-200">6</span> 蝑???<span
+                        class="font-medium text-gray-900 dark:text-gray-200">8</span> 蝑?
                 </p>
                 <div class="flex items-center gap-2" id="pagination-controls">
                     <!-- Dynamic Buttons -->
@@ -171,10 +172,10 @@
                     <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4 border-b border-[#e5e7eb] dark:border-[#2d3748] flex items-start justify-between gap-4">
                         <div>
                         <h3 class="text-xl font-bold leading-6 text-[#111318] dark:text-white" id="modal-title">
-                            撰寫推薦信</h3>
+                            ?啣神?刻靽?/h3>
                         <p class="mt-2 text-sm text-[#616f89] dark:text-gray-400">
-                            正在為 <span id="modal-student-name" class="font-bold text-primary"></span> 申請 <span
-                                id="modal-scholarship-name" class="font-bold"></span> 撰寫推薦信。
+                            甇???<span id="modal-student-name" class="font-bold text-primary"></span> ?唾? <span
+                                id="modal-scholarship-name" class="font-bold"></span> ?啣神?刻靽～?
                         </p>
                         </div>
                         <button type="button" onclick="closeModal()"
@@ -184,19 +185,19 @@
                     </div>
 
                     <div class="px-4 py-5 sm:p-6">
-                        <form class="space-y-4" onsubmit="event.preventDefault(); submitLetter();">
+                        <form id="recommendation-letter-form" class="space-y-4" onsubmit="event.preventDefault(); submitLetter();">
                             <div>
                                 <label for="letter-content"
-                                    class="block text-sm font-medium leading-6 text-[#111318] dark:text-white mb-2">推薦內容</label>
+                                    class="block text-sm font-medium leading-6 text-[#111318] dark:text-white mb-2">?刻?批捆</label>
                                 <textarea id="letter-content" rows="10"
                                     class="block w-full rounded-md border-0 py-1.5 text-[#111318] dark:text-white bg-gray-50 dark:bg-[#252f3e] shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 p-3"
-                                    placeholder="請在此輸入推薦信內容，包含該生在學術表現、個人特質等方面的優點..."></textarea>
+                                    placeholder="隢甇方撓?交?虫縑?批捆嚗??怨府?摮貉?銵函?犖?寡釭蝑?Ｙ??芷?..."></textarea>
                             </div>
 
                             <div>
                                 <label
-                                    class="block text-sm font-medium leading-6 text-[#111318] dark:text-white mb-2">上傳附件
-                                    (選填)</label>
+                                    class="block text-sm font-medium leading-6 text-[#111318] dark:text-white mb-2">銝?辣
+                                    (?詨‵)</label>
                                 <label for="file-upload"
                                     class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-600 px-6 py-10 bg-gray-50/50 dark:bg-[#252f3e]/50 hover:bg-gray-50 dark:hover:bg-[#252f3e] transition-colors cursor-pointer w-full block">
                                     <div class="text-center">
@@ -205,10 +206,10 @@
                                         <div
                                             class="mt-4 flex text-sm leading-6 text-gray-600 dark:text-gray-400 justify-center items-center">
                                             <span
-                                                class="font-semibold text-primary hover:text-primary-dark mr-1">上傳檔案</span>
+                                                class="font-semibold text-primary hover:text-primary-dark mr-1">銝瑼?</span>
                                             <input id="file-upload" name="file-upload" type="file" class="sr-only"
                                                 onchange="updateFileName(this)">
-                                            <p id="file-name-display">或拖放檔案至此</p>
+                                            <p id="file-name-display">???暹?獢甇?/p>
                                         </div>
                                         <p class="text-xs leading-5 text-gray-600 dark:text-gray-400 mt-1">PDF, DOCX up
                                             to
@@ -222,11 +223,11 @@
                     <div class="bg-gray-50 dark:bg-[#252f3e]/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
                         <button type="button" onclick="submitLetter()"
                             class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:ml-3 sm:w-auto transition-colors">
-                            提交推薦信
+                            ?漱?刻靽?
                         </button>
                         <button type="button" onclick="saveDraft()"
                             class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-[#1e2634] px-3 py-2 text-sm font-semibold text-[#111318] dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-[#252f3e] sm:mt-0 sm:w-auto transition-colors">
-                            儲存草稿
+                            ?脣??阮
                         </button>
                     </div>
                 </div>
@@ -236,6 +237,7 @@
 
     <!-- Global Scripts -->
     <script src="../global.js"></script>
+    <script src="../autosave.js?v=20260604_v1"></script>
     <script src="js/recommendation-template.js"></script>
     <script>
         // Flashlight logic (manual init to be safe)
@@ -257,6 +259,7 @@
         const modalPanel = document.getElementById('modal-panel');
         const modalBackdrop = document.getElementById('modal-backdrop');
         let currentApplicationId = null;
+        let recommendationAutosave = null;
 
         function openModal(studentName, scholarshipName, applicationId, existingContent, existingFile) {
             console.log('Opening modal for App ID:', applicationId); // Debug
@@ -276,10 +279,10 @@
                 // Should we show the filename? We only store path.
                 // Let's just show "Existing file" or try to parse name.
                 const fileName = existingFile.split('/').pop(); // Extract filename from path
-                display.textContent = '已上傳: ' + fileName;
+                display.textContent = '撌脖??? ' + fileName;
                 display.className = 'pl-1 text-primary font-medium';
             } else {
-                display.textContent = '或拖放檔案至此';
+                display.textContent = '???暹?獢甇?;
                 display.className = 'pl-1';
             }
 
@@ -290,6 +293,18 @@
                 modalPanel.classList.remove('scale-95', 'opacity-0');
                 modalPanel.classList.add('scale-100', 'opacity-100');
             }, 10);
+
+            if (recommendationAutosave) {
+                recommendationAutosave.stop();
+            }
+
+            const form = document.getElementById('recommendation-letter-form');
+            if (window.FormAutosave && form && currentApplicationId) {
+                recommendationAutosave = window.FormAutosave.register(form, {
+                    key: `teacher-recommendation:${currentApplicationId}`,
+                    interval: 30000
+                });
+            }
         }
 
         function closeModal() {
@@ -306,10 +321,10 @@
         function updateFileName(input) {
             const display = document.getElementById('file-name-display');
             if (input.files && input.files.length > 0) {
-                display.textContent = '已選擇: ' + input.files[0].name;
+                display.textContent = '撌脤?? ' + input.files[0].name;
                 display.className = 'pl-1 text-primary font-medium'; // Highlight color
             } else {
-                display.textContent = '或拖放檔案至此';
+                display.textContent = '???暹?獢甇?;
                 display.className = 'pl-1';
             }
         }
@@ -328,17 +343,17 @@
             const user = JSON.parse(localStorage.getItem('user'));
 
             if (!user) {
-                alert('請先登入');
+                alert('隢??餃');
                 return;
             }
             if (!currentApplicationId) {
-                alert('系統錯誤：找不到申請編號 (ID null)');
+                alert('蝟餌絞?航炊嚗銝?唾?蝺刻? (ID null)');
                 return;
             }
 
             // For draft, content can be empty? Let's say yes. But for submit no.
             if (type === 'submit' && !content.trim()) {
-                alert('請輸入推薦內容');
+                alert('隢撓?交?血摰?);
                 return;
             }
 
@@ -360,16 +375,17 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    const msg = type === 'submit' ? '推薦信已成功提交！' : '草稿已儲存！';
+                    recommendationAutosave?.clear();
+                    const msg = type === 'submit' ? '?刻靽∪歇???漱嚗? : '?阮撌脣摮?';
                     alert(msg);
                     closeModal();
                     location.reload();
                 } else {
-                    alert('失敗：' + data.message);
+                    alert('憭望?嚗? + data.message);
                 }
             } catch (err) {
                 console.error(err);
-                alert('發生錯誤：' + err.message);
+                alert('?潛??航炊嚗? + err.message);
             }
         }
 
@@ -407,11 +423,11 @@
                     updateStats();
                     filterAndRender();
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
                 }
             } catch (err) {
                 console.error(err);
-                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-500">載入失敗，請稍後再試。</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-500">頛憭望?嚗?蝔??岫??/td></tr>';
             }
         });
 
@@ -465,7 +481,7 @@
             tbody.innerHTML = '';
 
             if (filteredRequests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">沒有符合條件的資料</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">瘝?蝚血?璇辣????/td></tr>';
                 document.getElementById('pagination-footer').classList.add('hidden');
                 return;
             }
@@ -483,17 +499,17 @@
                 if (currentStatus === 'submitted') currentStatus = '1';
                 if (currentStatus === 'draft') currentStatus = '2';
 
-                let displayStatus = '未審查';
+                let displayStatus = '?芸祟??;
                 let statusColor = 'bg-orange-100 text-orange-800';
 
                 if (currentStatus == '1') {
-                    displayStatus = '已提交';
+                    displayStatus = '撌脫?鈭?;
                     statusColor = 'bg-green-100 text-green-800';
                 } else if (currentStatus == '2') {
-                    displayStatus = '待撰寫 (草稿)';
+                    displayStatus = '敺撖?(?阮)';
                     statusColor = 'bg-blue-100 text-blue-800';
                 } else {
-                    displayStatus = '未審查';
+                    displayStatus = '?芸祟??;
                     statusColor = 'bg-gray-100 text-gray-800';
                 }
 
@@ -504,31 +520,31 @@
                 const safeFile = req.letter_file_path || '';
                 let actionBtn = '';
 
-                // 申請案件是否已通過（app_status = 1）
+                // ?唾?獢辣?臬撌脤?嚗pp_status = 1嚗?
                 const appStatus = parseInt(req.app_status, 10);
                 const isApplicationApproved = appStatus === 1;
 
                 if (currentStatus == '1') {
                     if (isApplicationApproved) {
-                        // 已提交且學生申請已通過：按鈕變灰且不可再修改
+                        // 撌脫?鈭支?摮貊??唾?撌脤?嚗????唬?銝?耨??
                         actionBtn = `
                             <button disabled
                                 class="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-400 text-xs font-medium cursor-not-allowed shadow-sm">
-                                已通過，無法修改
+                                撌脤?嚗瘜耨??
                             </button>`;
                     } else {
-                        // 已提交但尚未通過：仍可修改
+                        // 撌脫?鈭支?撠??嚗??臭耨??
                     actionBtn = `
                          <button onclick="openModal('${req.student_name}', '${req.scholarship_name}', ${req.id}, '${safeContent}', '${safeFile}')"
                              class="px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors shadow-sm">
-                             修改
+                             靽格
                          </button>`;
                     }
                 } else {
                     actionBtn = `
                          <button onclick="openModal('${req.student_name}', '${req.scholarship_name}', ${req.id}, '${safeContent}', '${safeFile}')"
                              class="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                             ${currentStatus == '2' ? '編輯草稿' : '撰寫'}
+                             ${currentStatus == '2' ? '蝺刻摩?阮' : '?啣神'}
                          </button>`;
                 }
 
@@ -544,7 +560,7 @@
                              <div>
                                  <p class="text-xs text-primary font-bold mb-0.5">${req.scholarship_name}</p>
                                  <p class="text-[#111318] dark:text-white font-medium text-sm">${req.student_name}</p>
-                                 <p class="text-[#616f89] dark:text-gray-500 text-xs text-left">${req.student_username} •
+                                 <p class="text-[#616f89] dark:text-gray-500 text-xs text-left">${req.student_username} ??
                                      ${req.student_dept || ''}
                                  </p>
                              </div>
@@ -566,7 +582,7 @@
             const endIndex = Math.min(currentPage * pageSize, totalItems);
 
             // Update info text
-            const infoHtml = `顯示第 <span class="font-medium text-gray-900 dark:text-gray-200">${totalItems > 0 ? startIndex : 0}</span> 至 <span class="font-medium text-gray-900 dark:text-gray-200">${endIndex}</span> 筆，共 <span class="font-medium text-gray-900 dark:text-gray-200">${totalItems}</span> 筆`;
+            const infoHtml = `憿舐內蝚?<span class="font-medium text-gray-900 dark:text-gray-200">${totalItems > 0 ? startIndex : 0}</span> ??<span class="font-medium text-gray-900 dark:text-gray-200">${endIndex}</span> 蝑???<span class="font-medium text-gray-900 dark:text-gray-200">${totalItems}</span> 蝑;
             document.getElementById('pagination-info').innerHTML = infoHtml;
 
             // Generate buttons
@@ -613,11 +629,11 @@
                 <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="gradeModalName">學生姓名</h3>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="gradeModalName">摮貊?憪?</h3>
                             <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-bold"
-                                id="gradeModalScholarship">獎學金名稱</span>
+                                id="gradeModalScholarship">?飛??蝔?/span>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400" id="gradeModalId">學號</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400" id="gradeModalId">摮貉?</p>
                     </div>
                     <button onclick="closeGradeModal()"
                         class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -626,15 +642,15 @@
                 </div>
                 <!-- Content -->
                 <div class="p-6">
-                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">歷年成績紀錄</h4>
+                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">甇瑕僑?蜀蝝??/h4>
                     <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
                         <table class="w-full text-sm text-left">
                             <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                                 <tr>
-                                    <th class="px-4 py-3 font-medium">學年/學期</th>
-                                    <th class="px-4 py-3 font-medium">平均成績</th>
+                                    <th class="px-4 py-3 font-medium">摮詨僑/摮豢?</th>
+                                    <th class="px-4 py-3 font-medium">撟喳??蜀</th>
                                     <th class="px-4 py-3 font-medium">GPA</th>
-                                    <th class="px-4 py-3 font-medium">班排名/人數</th>
+                                    <th class="px-4 py-3 font-medium">?剜???鈭箸</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="gradeTableBody">
@@ -646,7 +662,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end">
                     <button onclick="closeGradeModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
                 </div>
             </div>
         </div>
@@ -684,7 +700,7 @@
                     <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${row.term}</td>
                     <td class="px-4 py-3 text-gray-600 dark:text-gray-300 font-bold ${row.score >= 90 ? 'text-green-600 dark:text-green-400' : ''}">${row.score}</td>
                     <td class="px-4 py-3 text-gray-600 dark:text-gray-300">${row.gpa}</td>
-                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-primary cursor-help" title="全班人數: ${row.rank.split('/')[1]}">${row.rank}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-primary cursor-help" title="?函鈭箸: ${row.rank.split('/')[1]}">${row.rank}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -710,3 +726,4 @@
                 modal.classList.add('hidden');
             }, 300);
         }
+

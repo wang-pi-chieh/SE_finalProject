@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="light" lang="zh-Hant">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>申請案件管理 - 獎學金助學系統</title>
+    <title>?唾?獢辣蝞∠? - ?飛?摮貊頂蝯?/title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -75,15 +75,16 @@
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
     <!-- Top Navigation -->
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20251230_v1"></script>
+    <script src="header.js?v=20260601_issue_report"></script>
+    <script src="../issue-report.js?v=20260604_autosave"></script>
     <!-- Main Content -->
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Heading -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">申請案件管理
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">?唾?獢辣蝞∠?
                 </h1>
-                <p class="text-[#616f89] dark:text-gray-400 text-base font-normal mt-2">管理所有申請案件。</p>
+                <p class="text-[#616f89] dark:text-gray-400 text-base font-normal mt-2">蝞∠???隢?隞嗚?/p>
             </div>
 
         </div>
@@ -93,12 +94,12 @@
             <button id="tab-pending"
                 class="tab-btn active px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary focus:outline-none transition-colors"
                 onclick="switchTab('pending')">
-                待審核案件
+                敺祟?豢?隞?
             </button>
             <button id="tab-history"
                 class="tab-btn px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 border-b-2 border-transparent hover:border-gray-300 focus:outline-none transition-colors"
                 onclick="switchTab('history')">
-                歷史審核紀錄
+                甇瑕撖拇蝝??
             </button>
         </div>
 
@@ -116,21 +117,21 @@
                         </div>
                         <input id="search-input"
                             class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
-                            placeholder="搜尋學生姓名或學號..." type="text" />
+                            placeholder="??摮貊?憪??飛??.." type="text" />
                     </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
                     <select id="status-filter"
                         class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
-                        <option value="all">所有狀態</option>
-                        <option value="pending">待審核</option>
-                        <option value="approved">已核准</option>
-                        <option value="rejected">已駁回</option>
-                        <option value="needs_action">需補件</option>
+                        <option value="all">?????/option>
+                        <option value="pending">敺祟??/option>
+                        <option value="approved">撌脫??/option>
+                        <option value="rejected">撌脤???/option>
+                        <option value="needs_action">?鋆辣</option>
                     </select>
                     <select id="scholarship-filter"
                         class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
-                        <option value="all">所有獎學金項目</option>
+                        <option value="all">???摮賊??</option>
                     </select>
 
                 </div>
@@ -141,17 +142,17 @@
                     <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
                         <tr>
 
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生資訊</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">獎學金名稱</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請日期</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?鞈?</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">?飛??蝔?/th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">?唾??交?</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">???/th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">??</th>
                         </tr>
                     </thead>
                     <tbody id="applications-table-body" class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]">
                         <!-- Content will be loaded by JS -->
                         <tr>
-                            <td colspan="5" class="p-4 text-center text-gray-500">載入中...</td>
+                            <td colspan="5" class="p-4 text-center text-gray-500">頛銝?..</td>
                         </tr>
                     </tbody>
                 </table>
@@ -170,3 +171,4 @@
 </body>
 
 </html>
+

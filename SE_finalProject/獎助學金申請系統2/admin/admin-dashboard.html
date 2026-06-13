@@ -157,10 +157,20 @@
                             <span class="material-symbols-outlined text-primary text-2xl">settings_applications</span>
                             <span class="text-xs font-bold text-[#111318] dark:text-white">參數設定</span>
                         </button>
-                        <button id="system-backup-btn"
+                        <button id="quick-archive-btn"
+                            class="animate-on-scroll flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors gap-2 cursor-pointer relative z-50">
+                            <span class="material-symbols-outlined text-primary text-2xl">inventory_2</span>
+                            <span class="text-xs font-bold text-[#111318] dark:text-white">資料封存</span>
+                        </button>
+                        <button id="quick-backup-btn"
                             class="animate-on-scroll flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors gap-2 cursor-pointer relative z-50">
                             <span class="material-symbols-outlined text-primary text-2xl">backup</span>
-                            <span class="text-xs font-bold text-[#111318] dark:text-white">系統備份</span>
+                            <span class="text-xs font-bold text-[#111318] dark:text-white">資料備份</span>
+                        </button>
+                        <button id="quick-restore-btn"
+                            class="animate-on-scroll flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors gap-2 cursor-pointer relative z-50">
+                            <span class="material-symbols-outlined text-primary text-2xl">restore_page</span>
+                            <span class="text-xs font-bold text-[#111318] dark:text-white">資料還原</span>
                         </button>
                         <button
                             class="animate-on-scroll flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors gap-2">
@@ -438,7 +448,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="../global.js?v=1716300000"></script>
-    <script src="js/admin-ops.js"></script>
+    <script src="js/admin-ops.js?v=20260601_restore_limit_one"></script>
     <script>
         // Use Global Init function if we need to
         // document.addEventListener('DOMContentLoaded', () => {
@@ -457,38 +467,39 @@
                 });
             }
 
-            // Backup Logic
-            const backupBtn = document.getElementById('system-backup-btn');
-            if (backupBtn) {
-                backupBtn.addEventListener('click', async (e) => {
+            const archiveBtn = document.getElementById('quick-archive-btn');
+            if (archiveBtn) {
+                archiveBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if (!confirm('確定要下載完整的系統備份 (包含資料庫與程式碼) 嗎？')) return;
+                    scrollToAdminOpsTarget('archive-type-select', 'data-archive-list');
+                });
+            }
 
-                    // Show Loading State
-                    const originalContent = backupBtn.innerHTML;
-                    backupBtn.innerHTML = '<span class="material-symbols-outlined text-primary text-2xl animate-spin">sync</span><span class="text-xs font-bold text-[#111318] dark:text-white">打包中...</span>';
-                    backupBtn.disabled = true;
+            const backupBtn = document.getElementById('quick-backup-btn');
+            if (backupBtn) {
+                backupBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    scrollToAdminOpsTarget('create-backup-job-btn', 'backup-job-list');
+                });
+            }
 
-                    try {
-                        // Trigger download by navigation, but wait a bit to detect if it started
-                        // Since it's a file download, we can just point window.location there
-                        window.location.href = '../api/create_backup.php';
-
-                        // Reset button after a delay (approximate guess for when download starts)
-                        setTimeout(() => {
-                            backupBtn.innerHTML = originalContent;
-                            backupBtn.disabled = false;
-                        }, 3000);
-
-                    } catch (err) {
-                        console.error(err);
-                        alert('備份失敗');
-                        backupBtn.innerHTML = originalContent;
-                        backupBtn.disabled = false;
-                    }
+            const restoreBtn = document.getElementById('quick-restore-btn');
+            if (restoreBtn) {
+                restoreBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    scrollToAdminOpsTarget('restore-sql-form', 'restore-upload-list');
                 });
             }
         });
+
+        function scrollToAdminOpsTarget(primaryId, fallbackId) {
+            const target = document.getElementById(primaryId) || document.getElementById(fallbackId);
+            if (!target) return;
+            const card = target.closest('.bg-white.dark\\:bg-\\[\\#1e2634\\]') || target.closest('.bg-white') || target;
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('ring-2', 'ring-primary', 'ring-offset-4', 'dark:ring-offset-[#111827]');
+            setTimeout(() => card.classList.remove('ring-2', 'ring-primary', 'ring-offset-4', 'dark:ring-offset-[#111827]'), 1800);
+        }
 
         // Modal Logic
         window.openAddModal = function () {
@@ -751,13 +762,6 @@
             // but looking at the file content step 25, it's inside the "Quick Actions" grid.
             // It has text "參數設定".
             // Let's add an ID to be safe or find it by text. 
-            // Ideally we should have added an ID. The existing ID `system-backup-btn` is there.
-            // "參數設定" button is the sibling.
-
-            // Let's rely on finding by text content for robustness if ID is missing, or add ID in previous step?
-            // Actually, I can allow the user to add the ID.
-            // Wait, I can just select by the icon or text.
-
             const infoBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('參數設定'));
             if (infoBtn) {
                 infoBtn.onclick = openSettingsModal;

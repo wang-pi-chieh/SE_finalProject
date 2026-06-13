@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2026-05-27 18:14:11
+-- 產生時間： 2026-06-13 17:54:15
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `database5`
+-- 資料庫： `se_finalproject`
 --
 
 -- --------------------------------------------------------
@@ -71,6 +71,66 @@ INSERT INTO `applications` (`id`, `student_username`, `scholarship_id`, `applica
 (28, 'a1125532', 2, '2025-12-30', '113', '1', '0908399535', 'a1125532@mail.nuk.edu.tw', 'sce', 0, '[\"..\\/uploads\\/bio_a1125532_1767081196_0.pdf\"]', '自有', '校內宿舍', '0', '無', '', NULL, '', 'zcds', 'zv', '', NULL, '', 'pdf', '2025-12-30 07:54:32', 'cs_dept', '2025-12-30 07:50:45', '2025-12-30 07:54:32', 2),
 (30, 'a1125531', 1, '2025-12-30', '113', '1', '0908399535', 'a1125532@mail.nuk.edu.tw', 'zc', 0, '[\"..\\/uploads\\/bio_a1125531_1767082780_0.pdf\"]', '租賃', '住家', '0', '無', '', NULL, '', 'ZS', 'szcz', '', NULL, '', NULL, NULL, 'alumni_association', '2025-12-30 08:19:40', '2025-12-30 08:19:40', 3),
 (31, 'a1125532', 3, '2025-12-30', '113', '1', '0908399535', 'a1125532@mail.nuk.edu.tw', 'sd', 1, '[\"..\\/uploads\\/bio_a1125532_1767087147_0.pdf\"]', '自有', '住家', '0', '身心障礙', '', NULL, '', 'sc', 'szc', '蟹從峰', 'a1125525', '專題指導教授', NULL, NULL, 'rd_office', '2025-12-30 09:32:27', '2025-12-30 09:32:27', 3);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `backup_jobs`
+--
+
+CREATE TABLE `backup_jobs` (
+  `id` int(11) NOT NULL,
+  `job_name` varchar(120) NOT NULL,
+  `status` enum('queued','running','completed','failed') NOT NULL DEFAULT 'queued',
+  `requested_by` varchar(50) DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `backup_jobs`
+--
+
+INSERT INTO `backup_jobs` (`id`, `job_name`, `status`, `requested_by`, `file_path`, `message`, `created_at`, `updated_at`) VALUES
+(3, 'backup_job_20260531_181005', 'failed', '333', NULL, '伺服器未啟用 ZipArchive，無法產生 ZIP 備份檔。', '2026-06-01 00:10:05', '2026-06-01 00:10:05'),
+(4, 'backup_job_20260531_181125', 'completed', '333', 'backups/backup_job_20260531_181125.zip', '備份已完成，可下載 ZIP 檔。', '2026-06-01 00:11:25', '2026-06-01 00:11:27'),
+(10, 'backup_job_20260601_152904', 'completed', '222', 'backups/backup_job_20260601_152904.zip', '備份已完成，可下載 ZIP 檔。', '2026-06-01 21:29:04', '2026-06-01 21:29:06');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `data_archives`
+--
+
+CREATE TABLE `data_archives` (
+  `id` int(11) NOT NULL,
+  `archive_name` varchar(120) NOT NULL,
+  `source_table` varchar(80) NOT NULL,
+  `record_count` int(11) NOT NULL DEFAULT 0,
+  `archive_path` varchar(255) DEFAULT NULL,
+  `file_size` int(11) NOT NULL DEFAULT 0,
+  `downloaded_at` datetime DEFAULT NULL,
+  `downloaded_by` varchar(50) DEFAULT NULL,
+  `original_deleted_at` datetime DEFAULT NULL,
+  `original_deleted_by` varchar(50) DEFAULT NULL,
+  `original_deleted_count` int(11) NOT NULL DEFAULT 0,
+  `created_by` varchar(50) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `data_archives`
+--
+
+INSERT INTO `data_archives` (`id`, `archive_name`, `source_table`, `record_count`, `archive_path`, `file_size`, `downloaded_at`, `downloaded_by`, `original_deleted_at`, `original_deleted_by`, `original_deleted_count`, `created_by`, `created_at`) VALUES
+(1, 'issue_reports_resolved_20260601_033937', 'issue_reports', 6, 'archives/issue_reports_resolved_20260601_033937.json', 3013, NULL, NULL, NULL, NULL, 0, '222', '2026-06-01 09:39:37'),
+(2, 'issue_reports_resolved_20260601_035715', 'issue_reports', 6, 'archives/issue_reports_resolved_20260601_035715.json', 3059, '2026-06-01 20:03:19', 'student-preview', NULL, NULL, 0, '222', '2026-06-01 09:57:15'),
+(6, 'issue_reports_resolved_20260601_140425', 'issue_reports', 6, 'archives/issue_reports_resolved_20260601_140425.json', 3071, '2026-06-01 20:04:28', 'student-preview', NULL, NULL, 0, 'student-preview', '2026-06-01 20:04:25'),
+(7, 'students_admission_before_111_20260601_140838', 'users,students', 1, 'archives/students_admission_before_111_20260601_140838.json', 892, '2026-06-01 20:21:26', '222', NULL, NULL, 0, '222', '2026-06-01 20:08:38'),
+(8, 'students_admission_before_111', 'users,students', 1, 'archives/students_admission_before_111_20260601_142040.csv', 315, '2026-06-01 20:20:44', '222', NULL, NULL, 0, '222', '2026-06-01 20:20:40'),
+(9, 'issue_reports_resolved', 'issue_reports', 7, 'archives/issue_reports_resolved_20260601_152923.csv', 1140, '2026-06-01 21:29:27', '222', NULL, NULL, 0, '222', '2026-06-01 21:29:23');
 
 -- --------------------------------------------------------
 
@@ -164,6 +224,108 @@ INSERT INTO `homepage_announcements` (`id`, `title`, `content`, `display_date`, 
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `issue_reports`
+--
+
+CREATE TABLE `issue_reports` (
+  `id` int(11) NOT NULL,
+  `reporter_username` varchar(50) DEFAULT NULL,
+  `reporter_role` varchar(50) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `contact_email` varchar(100) DEFAULT NULL,
+  `contact_phone` varchar(30) DEFAULT NULL,
+  `status` enum('open','processing','resolved') NOT NULL DEFAULT 'open',
+  `handled_by` varchar(50) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `issue_reports`
+--
+
+INSERT INTO `issue_reports` (`id`, `reporter_username`, `reporter_role`, `title`, `description`, `contact_email`, `contact_phone`, `status`, `handled_by`, `created_at`, `updated_at`) VALUES
+(1, 'System Tester', NULL, '申請流程測試問題', '測試用問題回報，可用於驗證 open/processing/resolved 狀態切換。', NULL, NULL, 'resolved', '111', '2026-05-31 23:37:59', '2026-06-01 00:37:29'),
+(2, '111', NULL, '嗨', '[角色: 學生]\n你好', NULL, NULL, 'processing', '111', '2026-06-01 00:27:08', '2026-06-01 00:43:05'),
+(3, '111', '學生', '111', '123', 'a1125532@mail.nuk.edu.tw', '0900000000', 'resolved', '111', '2026-06-01 00:36:47', '2026-06-01 00:43:04'),
+(4, '111', '學生', '1', '1', 'a1125532@mail.nuk.edu.tw', '0900000000', 'processing', '111', '2026-06-01 00:41:40', '2026-06-01 00:43:00'),
+(5, '111', '學生', '2', '2', 'a1125532@mail.nuk.edu.tw', '0900000000', 'resolved', '111', '2026-06-01 00:41:45', '2026-06-01 00:42:51'),
+(6, '111', '學生', '3', '3', 'a1125532@mail.nuk.edu.tw', '0900000000', 'resolved', '111', '2026-06-01 00:41:58', '2026-06-01 00:43:07'),
+(7, '222', '老師', 'q', 'q', 'a1125532@mail.nuk.edu.tw', '0900000000', 'open', '222', '2026-06-01 00:44:52', '2026-06-01 01:05:43'),
+(8, '222', '老師', 'qq', 'qq', 'a1125532@mail.nuk.edu.tw', '0900000000', 'resolved', '222', '2026-06-01 00:44:58', '2026-06-01 01:05:47'),
+(9, '222', '老師', 'qqq', 'qqq', 'a1125532@mail.nuk.edu.tw', '0900000000', 'resolved', '222', '2026-06-01 00:45:01', '2026-06-01 01:07:10'),
+(10, 'a1125544', '學生', '1', '1', 'a1125544@gmail.com.tw', '0900000000', 'resolved', 'a1125544', '2026-06-01 12:54:30', '2026-06-01 20:29:46'),
+(11, '111', '學生', '1', '1', 'a1125532@mail.nuk.edu.tw', '0900000000', 'processing', '111', '2026-06-01 12:57:26', '2026-06-01 12:57:48'),
+(12, 'a1125544', '學生', '1', '1', 'a1125544@gmail.com.tw', '0900000000', 'processing', 'a1125544', '2026-06-01 20:29:31', '2026-06-01 20:29:42'),
+(13, '222', '老師', '.', '.', 'a1125532@mail.nuk.edu.tw', '0900000000', 'open', '222', '2026-06-01 20:38:08', '2026-06-01 20:38:17'),
+(14, '222', '老師', 'asd', 'asd', 'a1125532@mail.nuk.edu.tw', '0900000000', 'open', '222', '2026-06-01 20:47:23', '2026-06-01 20:47:31');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `issue_report_notifications`
+--
+
+CREATE TABLE `issue_report_notifications` (
+  `id` int(11) NOT NULL,
+  `issue_report_id` int(11) NOT NULL,
+  `recipient_username` varchar(50) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `issue_report_notifications`
+--
+
+INSERT INTO `issue_report_notifications` (`id`, `issue_report_id`, `recipient_username`, `title`, `message`, `is_read`, `created_at`) VALUES
+(1, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：處理中', 1, '2026-06-01 00:37:02'),
+(2, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：待處理', 1, '2026-06-01 00:37:07'),
+(3, 2, '111', '問題回報狀態更新', '你提出的問題「嗨」狀態已更新為：已解決', 1, '2026-06-01 00:37:09'),
+(4, 2, '111', '問題回報狀態更新', '你提出的問題「嗨」狀態已更新為：待處理', 1, '2026-06-01 00:37:13'),
+(5, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：已解決', 1, '2026-06-01 00:37:16'),
+(6, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：待處理', 1, '2026-06-01 00:37:20'),
+(7, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：已解決', 1, '2026-06-01 00:37:24'),
+(8, 1, 'System Tester', '問題回報狀態更新', '你提出的問題「申請流程測試問題」狀態已更新為：待處理', 0, '2026-06-01 00:37:25'),
+(9, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：處理中', 1, '2026-06-01 00:37:27'),
+(10, 1, 'System Tester', '問題回報狀態更新', '你提出的問題「申請流程測試問題」狀態已更新為：已解決', 0, '2026-06-01 00:37:29'),
+(11, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：待處理', 1, '2026-06-01 00:40:35'),
+(12, 6, '111', '問題回報狀態更新', '你提出的問題「3」狀態已更新為：處理中', 1, '2026-06-01 00:42:39'),
+(13, 5, '111', '問題回報狀態更新', '你提出的問題「2」狀態已更新為：已解決', 1, '2026-06-01 00:42:51'),
+(14, 4, '111', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：處理中', 1, '2026-06-01 00:43:00'),
+(15, 3, '111', '問題回報狀態更新', '你提出的問題「111」狀態已更新為：已解決', 1, '2026-06-01 00:43:04'),
+(16, 2, '111', '問題回報狀態更新', '你提出的問題「嗨」狀態已更新為：處理中', 1, '2026-06-01 00:43:05'),
+(17, 6, '111', '問題回報狀態更新', '你提出的問題「3」狀態已更新為：已解決', 1, '2026-06-01 00:43:07'),
+(18, 9, '222', '問題回報狀態更新', '你提出的問題「qqq」狀態已更新為：處理中', 1, '2026-06-01 00:45:07'),
+(19, 8, '222', '問題回報狀態更新', '你提出的問題「qq」狀態已更新為：已解決', 1, '2026-06-01 00:45:08'),
+(20, 7, '222', '問題回報狀態更新', '你提出的問題「q」狀態已更新為：處理中', 1, '2026-06-01 00:45:09'),
+(21, 9, '222', '問題回報狀態更新', '你提出的問題「qqq」狀態已更新為：待處理', 1, '2026-06-01 00:45:10'),
+(22, 9, '222', '問題回報狀態更新', '你提出的問題「qqq」狀態已更新為：處理中', 1, '2026-06-01 00:45:12'),
+(23, 7, '222', '問題回報狀態更新', '你提出的問題「q」狀態已更新為：待處理', 1, '2026-06-01 00:50:56'),
+(24, 7, '222', '問題回報狀態更新', '你提出的問題「q」狀態已更新為：處理中', 1, '2026-06-01 01:00:15'),
+(25, 8, '222', '問題回報狀態更新', '你提出的問題「qq」狀態已更新為：待處理', 1, '2026-06-01 01:00:24'),
+(26, 8, '222', '問題回報狀態更新', '你提出的問題「qq」狀態已更新為：處理中', 1, '2026-06-01 01:00:27'),
+(27, 9, '222', '問題回報狀態更新', '你提出的問題「qqq」狀態已更新為：待處理', 1, '2026-06-01 01:00:32'),
+(28, 9, '222', '問題回報狀態更新', '你提出的問題「qqq」狀態已更新為：處理中', 1, '2026-06-01 01:05:30'),
+(29, 8, '222', '問題回報狀態更新', '你提出的問題「qq」狀態已更新為：待處理', 1, '2026-06-01 01:05:34'),
+(30, 7, '222', '問題回報狀態更新', '你提出的問題「q」狀態已更新為：待處理', 1, '2026-06-01 01:05:43'),
+(31, 8, '222', '問題回報狀態更新', '你提出的問題「qq」狀態已更新為：已解決', 1, '2026-06-01 01:05:47'),
+(32, 9, '222', '問題回報狀態更新', '你提出的問題「qqq」狀態已更新為：已解決', 1, '2026-06-01 01:07:10'),
+(33, 10, 'a1125544', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：處理中', 1, '2026-06-01 12:54:43'),
+(34, 11, '111', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：處理中', 1, '2026-06-01 12:57:48'),
+(35, 10, 'a1125544', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：待處理', 0, '2026-06-01 12:57:59'),
+(36, 10, 'a1125544', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：處理中', 0, '2026-06-01 12:58:02'),
+(37, 12, 'a1125544', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：處理中', 0, '2026-06-01 20:29:42'),
+(38, 10, 'a1125544', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：已解決', 0, '2026-06-01 20:29:46'),
+(39, 13, '222', '問題回報狀態更新', '你提出的問題「.」狀態已更新為：處理中', 0, '2026-06-01 20:38:14'),
+(40, 13, '222', '問題回報狀態更新', '你提出的問題「.」狀態已更新為：待處理', 0, '2026-06-01 20:38:17');
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `reference_letters`
 --
 
@@ -184,6 +346,56 @@ CREATE TABLE `reference_letters` (
 INSERT INTO `reference_letters` (`id`, `teacher_username`, `application_id`, `content`, `file_path`, `status`, `filled_at`) VALUES
 (7, 'a1125525', 25, '加油', NULL, '1', '2025-12-29'),
 (8, 'a1125525', 27, 'vsvwea', NULL, '1', '2025-12-30');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `restore_logs`
+--
+
+CREATE TABLE `restore_logs` (
+  `id` int(11) NOT NULL,
+  `backup_job_id` int(11) DEFAULT NULL,
+  `restored_by` varchar(50) DEFAULT NULL,
+  `status` enum('started','completed','failed') NOT NULL DEFAULT 'started',
+  `message` text DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `restore_logs`
+--
+
+INSERT INTO `restore_logs` (`id`, `backup_job_id`, `restored_by`, `status`, `message`, `created_at`) VALUES
+(1, NULL, '222', 'started', 'SQL 檔案已上傳，待管理員至 phpMyAdmin 匯入。', '2026-06-01 09:09:11'),
+(2, NULL, '222', 'started', 'SQL 檔案已上傳，待管理員至 phpMyAdmin 匯入。', '2026-06-01 21:29:40'),
+(3, NULL, '222', 'started', 'SQL 檔案已上傳，待管理員至 phpMyAdmin 匯入。', '2026-06-01 21:29:57');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `restore_uploads`
+--
+
+CREATE TABLE `restore_uploads` (
+  `id` int(11) NOT NULL,
+  `restore_log_id` int(11) DEFAULT NULL,
+  `original_name` varchar(255) NOT NULL,
+  `stored_name` varchar(255) NOT NULL,
+  `stored_path` varchar(255) NOT NULL,
+  `file_size` int(11) NOT NULL DEFAULT 0,
+  `uploaded_by` varchar(50) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `restore_uploads`
+--
+
+INSERT INTO `restore_uploads` (`id`, `restore_log_id`, `original_name`, `stored_name`, `stored_path`, `file_size`, `uploaded_by`, `created_at`) VALUES
+(1, 1, 'database_dump.sql', 'restore_sql_20260601_030911_123d283a_database_dump.sql', 'restore_uploads/restore_sql_20260601_030911_123d283a_database_dump.sql', 35642, '222', '2026-06-01 09:09:11'),
+(2, 2, '001_wang_issue_backup.sql', 'restore_sql_20260601_152940_6953487d_001_wang_issue_backup.sql', 'restore_uploads/restore_sql_20260601_152940_6953487d_001_wang_issue_backup.sql', 5297, '222', '2026-06-01 21:29:40'),
+(3, 3, '001_wang_issue_backup.sql', 'restore_sql_20260601_152957_a865672e_001_wang_issue_backup.sql', 'restore_uploads/restore_sql_20260601_152957_a865672e_001_wang_issue_backup.sql', 5297, '222', '2026-06-01 21:29:57');
 
 -- --------------------------------------------------------
 
@@ -306,6 +518,7 @@ INSERT INTO `scholarship_units` (`username`, `unit_name`, `person_in_charge`) VA
 ('cs_dept', '資訊工程系', NULL),
 ('intl_office', '國際事務處', NULL),
 ('rd_office', '研發處', NULL),
+('reviewer-preview', 'reviewer-preview', 'reviewer-preview'),
 ('sa_office', '生活輔導組', NULL),
 ('test', NULL, NULL);
 
@@ -330,12 +543,13 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`username`, `department`, `gender`, `grade_level`, `class_name`, `address`, `application_history`) VALUES
-('111', '西洋語文學系', NULL, NULL, NULL, NULL, NULL),
+('111', '工藝與創意設計學系', '男', '', '', '', NULL),
 ('a1125531', '資訊工程學系', NULL, NULL, NULL, NULL, NULL),
 ('a1125532', '財經法律學系', '男', '116', '55', '', NULL),
 ('a1125544', '資訊工程學系', '男', '大三', '資工A', '東勢里14鄰健康路183巷8弄32號', NULL),
 ('a11255444', '資訊工程學系', NULL, NULL, NULL, NULL, NULL),
-('a112554444', '資訊管理學系', NULL, NULL, NULL, NULL, NULL);
+('a112554444', '資訊管理學系', NULL, NULL, NULL, NULL, NULL),
+('student-preview', '工藝與創意設計學系', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -370,7 +584,9 @@ INSERT INTO `student_notifications` (`id`, `student_username`, `type`, `title`, 
 (14, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「海外交換學生獎學金」。GPA 3.92 達標；平均成績 88.5 達標；補助赴海外交換學生之機票與生活費', NULL, 4, 'recommendation-4', 1, '2026-05-28 00:06:53', NULL, '2026-05-27 11:38:10'),
 (15, 'a1125544', 'eligibility_recommendation', '為您推薦獎學金', '依您的系所與成績，建議申請「弱勢學生生活助學金」。平均成績 88.5 達標；弱勢學生生活津貼，前一學期成績須達 60 分以上', NULL, 5, 'recommendation-5', 1, '2026-05-28 00:06:57', NULL, '2026-05-27 11:38:10'),
 (33, 'a1125544', 'deadline_reminder', '截止提醒', '「各系專屬獎學金」將於 2026-05-28 截止，請把握時間完成申請。', NULL, 2, 'deadline-2-2026-05-28', 0, '2026-05-28 00:06:45', NULL, '2026-05-27 12:51:18'),
-(78, 'a1125532', 'result_revision', '審查結果：需補件', '您的「各系專屬獎學金」申請需補件：pdf', 28, 2, 'result-revision-28', 0, '2026-05-28 00:05:08', NULL, '2026-05-27 16:05:04');
+(78, 'a1125532', 'result_revision', '審查結果：需補件', '您的「各系專屬獎學金」申請需補件：pdf', 28, 2, 'result-revision-28', 0, '2026-05-28 00:05:08', NULL, '2026-05-27 16:05:04'),
+(113, 'a1125544', 'issue_report_update', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：處理中', NULL, NULL, 'issue-report-12-processing', 1, NULL, NULL, '2026-06-01 12:29:42'),
+(114, 'a1125544', 'issue_report_update', '問題回報狀態更新', '你提出的問題「1」狀態已更新為：已解決', NULL, NULL, 'issue-report-10-resolved', 1, NULL, NULL, '2026-06-01 12:29:46');
 
 -- --------------------------------------------------------
 
@@ -425,7 +641,68 @@ INSERT INTO `system_logs` (`id`, `user_role`, `action_type`, `details`, `created
 (11, '123', '刪除使用者', '刪除帳號: 12345123', '2025-12-26 23:59:21'),
 (12, 'System Admin', '匯出報表', '匯出學系獎學金預算與分配概況報表', '2025-12-27 00:24:08'),
 (13, 'admin', '新增獎學金', '新增項目: i am rich (金額: $100000000)', '2025-12-30 16:26:15'),
-(14, 'a1125532', '新增獎學金', '新增項目: 10/27course (金額: $500000)', '2025-12-30 22:09:35');
+(14, 'a1125532', '新增獎學金', '新增項目: 10/27course (金額: $500000)', '2025-12-30 22:09:35'),
+(15, 'admin', '更新問題回報', '問題 #1 狀態更新為 processing', '2026-05-31 23:51:06'),
+(16, 'admin', '更新問題回報', '問題 #1 狀態更新為 resolved', '2026-05-31 23:51:08'),
+(17, 'admin', '更新問題回報', '問題 #1 狀態更新為 open', '2026-05-31 23:51:10'),
+(18, 'admin', '更新問題回報', '問題 #1 狀態更新為 processing', '2026-05-31 23:54:12'),
+(19, 'admin', '建立備份工作', '建立備份工作 #1: backup_job_20260531_175542', '2026-05-31 23:55:42'),
+(20, 'admin', '建立備份工作', '建立備份工作 #2: backup_job_20260531_180405', '2026-06-01 00:04:05'),
+(21, '333', '建立備份工作', '建立備份工作 #4: backup_job_20260531_181125，已產生 ZIP 備份', '2026-06-01 00:11:27'),
+(22, '333', '建立備份工作', '建立備份工作 #5: backup_job_20260531_181441，已產生 ZIP 備份', '2026-06-01 00:14:42'),
+(23, '333', '建立備份工作', '建立備份工作 #6: backup_job_20260531_181444，已產生 ZIP 備份', '2026-06-01 00:14:45'),
+(24, '333', '建立備份工作', '建立備份工作 #7: backup_job_20260531_181649，已產生 ZIP 備份', '2026-06-01 00:16:51'),
+(25, '333', '建立備份工作', '建立備份工作 #8: backup_job_20260531_181651，已產生 ZIP 備份', '2026-06-01 00:16:52'),
+(26, '111', '更新問題回報', '問題 #3 狀態更新為 processing', '2026-06-01 00:37:02'),
+(27, '111', '更新問題回報', '問題 #3 狀態更新為 open', '2026-06-01 00:37:07'),
+(28, '111', '更新問題回報', '問題 #2 狀態更新為 resolved', '2026-06-01 00:37:09'),
+(29, '111', '更新問題回報', '問題 #2 狀態更新為 open', '2026-06-01 00:37:13'),
+(30, '111', '更新問題回報', '問題 #3 狀態更新為 resolved', '2026-06-01 00:37:16'),
+(31, '111', '更新問題回報', '問題 #3 狀態更新為 open', '2026-06-01 00:37:20'),
+(32, '111', '更新問題回報', '問題 #3 狀態更新為 resolved', '2026-06-01 00:37:24'),
+(33, '111', '更新問題回報', '問題 #1 狀態更新為 open', '2026-06-01 00:37:25'),
+(34, '111', '更新問題回報', '問題 #3 狀態更新為 processing', '2026-06-01 00:37:27'),
+(35, '111', '更新問題回報', '問題 #1 狀態更新為 resolved', '2026-06-01 00:37:29'),
+(36, '111', '更新問題回報', '問題 #3 狀態更新為 open', '2026-06-01 00:40:35'),
+(37, '111', '更新問題回報', '問題 #6 狀態更新為 processing', '2026-06-01 00:42:39'),
+(38, '111', '更新問題回報', '問題 #5 狀態更新為 resolved', '2026-06-01 00:42:51'),
+(39, '111', '更新問題回報', '問題 #4 狀態更新為 processing', '2026-06-01 00:43:00'),
+(40, '111', '更新問題回報', '問題 #3 狀態更新為 resolved', '2026-06-01 00:43:04'),
+(41, '111', '更新問題回報', '問題 #2 狀態更新為 processing', '2026-06-01 00:43:05'),
+(42, '111', '更新問題回報', '問題 #6 狀態更新為 resolved', '2026-06-01 00:43:07'),
+(43, '222', '更新問題回報', '問題 #9 狀態更新為 processing', '2026-06-01 00:45:07'),
+(44, '222', '更新問題回報', '問題 #8 狀態更新為 resolved', '2026-06-01 00:45:08'),
+(45, '222', '更新問題回報', '問題 #7 狀態更新為 processing', '2026-06-01 00:45:09'),
+(46, '222', '更新問題回報', '問題 #9 狀態更新為 open', '2026-06-01 00:45:10'),
+(47, '222', '更新問題回報', '問題 #9 狀態更新為 processing', '2026-06-01 00:45:12'),
+(48, '222', '更新問題回報', '問題 #7 狀態更新為 open', '2026-06-01 00:50:56'),
+(49, '222', '更新問題回報', '問題 #7 狀態更新為 processing', '2026-06-01 01:00:15'),
+(50, '222', '更新問題回報', '問題 #8 狀態更新為 open', '2026-06-01 01:00:24'),
+(51, '222', '更新問題回報', '問題 #8 狀態更新為 processing', '2026-06-01 01:00:27'),
+(52, '222', '更新問題回報', '問題 #9 狀態更新為 open', '2026-06-01 01:00:32'),
+(53, '222', '更新問題回報', '問題 #9 狀態更新為 processing', '2026-06-01 01:05:30'),
+(54, '222', '更新問題回報', '問題 #8 狀態更新為 open', '2026-06-01 01:05:34'),
+(55, '222', '更新問題回報', '問題 #7 狀態更新為 open', '2026-06-01 01:05:43'),
+(56, '222', '更新問題回報', '問題 #8 狀態更新為 resolved', '2026-06-01 01:05:47'),
+(57, '222', '更新問題回報', '問題 #9 狀態更新為 resolved', '2026-06-01 01:07:10'),
+(58, '222', '建立備份工作', '建立備份工作 #9: backup_job_20260601_040411，已產生 ZIP 備份', '2026-06-01 10:04:13'),
+(59, 'System Admin', '修改預算', '將 資訊工程學系 預算更新為 $500,000,000', '2026-06-01 10:13:20'),
+(60, 'System Admin', '修改預算', '將 資訊工程學系 預算更新為 $50,000', '2026-06-01 10:13:26'),
+(61, 'a1125544', '更新問題回報', '問題 #10 狀態更新為 processing', '2026-06-01 12:54:43'),
+(62, '111', '更新問題回報', '問題 #11 狀態更新為 processing', '2026-06-01 12:57:48'),
+(63, '111', '更新問題回報', '問題 #10 狀態更新為 open', '2026-06-01 12:57:59'),
+(64, '111', '更新問題回報', '問題 #10 狀態更新為 processing', '2026-06-01 12:58:02'),
+(65, 'a1125544', '更新問題回報', '問題 #12 狀態更新為 processing', '2026-06-01 20:29:42'),
+(66, 'a1125544', '更新問題回報', '問題 #10 狀態更新為 resolved', '2026-06-01 20:29:46'),
+(67, '222', '更新問題回報', '問題 #13 狀態更新為 processing', '2026-06-01 20:38:14'),
+(68, '222', '更新問題回報', '問題 #13 狀態更新為 open', '2026-06-01 20:38:17'),
+(69, '222', '更新問題回報', '問題 #14 狀態更新為 processing', '2026-06-01 20:47:29'),
+(70, '222', '更新問題回報', '問題 #14 狀態更新為 open', '2026-06-01 20:47:31'),
+(71, '222', '建立備份工作', '建立備份工作 #10: backup_job_20260601_152904，已產生 ZIP 備份', '2026-06-01 21:29:06'),
+(72, '222', '建立資料封存', '建立封存 #9: issue_reports_resolved，來源 issue_reports，共 7 筆，檔案 archives/issue_reports_resolved_20260601_152923.csv', '2026-06-01 21:29:23'),
+(73, '222', '下載資料封存檔', '下載封存 #9: issue_reports_resolved，檔名 issue_reports_resolved.csv', '2026-06-01 21:29:27'),
+(74, '222', '上傳還原 SQL', '上傳還原 SQL #2: 001_wang_issue_backup.sql，檔案 restore_uploads/restore_sql_20260601_152940_6953487d_001_wang_issue_backup.sql', '2026-06-01 21:29:40'),
+(75, '222', '上傳還原 SQL', '上傳還原 SQL #3: 001_wang_issue_backup.sql，檔案 restore_uploads/restore_sql_20260601_152957_a865672e_001_wang_issue_backup.sql', '2026-06-01 21:29:57');
 
 -- --------------------------------------------------------
 
@@ -447,7 +724,35 @@ CREATE TABLE `teachers` (
 INSERT INTO `teachers` (`id`, `username`, `department`, `position`) VALUES
 (21, '222', '西洋語文學系', NULL),
 (1, 'a1125525', '資訊工程學系', NULL),
-(20, 'A11255255', '資訊管理學系', NULL);
+(20, 'A11255255', '資訊管理學系', NULL),
+(22, 'teacher-preview', '工藝與創意設計學系', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `teacher_notifications`
+--
+
+CREATE TABLE `teacher_notifications` (
+  `id` int(11) NOT NULL,
+  `teacher_username` varchar(50) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `related_application_id` int(11) DEFAULT NULL,
+  `related_issue_report_id` int(11) DEFAULT NULL,
+  `dedup_key` varchar(255) NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `teacher_notifications`
+--
+
+INSERT INTO `teacher_notifications` (`id`, `teacher_username`, `type`, `title`, `message`, `related_application_id`, `related_issue_report_id`, `dedup_key`, `is_read`, `created_at`) VALUES
+(1, '222', 'issue_report_update', '問題回報狀態更新', '你提出的問題「asd」狀態已更新為：處理中', NULL, 14, 'issue-report-14-processing', 0, '2026-06-01 20:47:29'),
+(2, '222', 'issue_report_update', '問題回報狀態更新', '你提出的問題「asd」狀態已更新為：待處理', NULL, 14, 'issue-report-14-open', 0, '2026-06-01 20:47:31');
 
 -- --------------------------------------------------------
 
@@ -488,7 +793,10 @@ INSERT INTO `users` (`username`, `role`, `real_name`, `password`, `phone`, `emai
 ('cs_dept', '獎助單位', '資工系', '1234', NULL, NULL, NULL),
 ('intl_office', '獎助單位', '國際處', '1234', NULL, NULL, NULL),
 ('rd_office', '獎助單位', '研發處', '1234', NULL, NULL, NULL),
+('reviewer-preview', '獎助單位', '審查單位端預覽', 'rrr', '', '', NULL),
 ('sa_office', '獎助單位', '生活輔導組', '1234', NULL, NULL, NULL),
+('student-preview', '學生', '學生端預覽', 'sss', '', '', NULL),
+('teacher-preview', '老師', '老師端預覽', 'ttt', '', '', NULL),
 ('test', '獎助單位', 'test', '1234', '0900000000', 'test@gmail.com', NULL);
 
 --
@@ -503,6 +811,20 @@ ALTER TABLE `applications`
   ADD KEY `student_username` (`student_username`),
   ADD KEY `scholarship_id` (`scholarship_id`),
   ADD KEY `fk_app_referrer_username` (`referrer_username`);
+
+--
+-- 資料表索引 `backup_jobs`
+--
+ALTER TABLE `backup_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_backup_jobs_status_created` (`status`,`created_at`);
+
+--
+-- 資料表索引 `data_archives`
+--
+ALTER TABLE `data_archives`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_data_archives_source_created` (`source_table`,`created_at`);
 
 --
 -- 資料表索引 `departments`
@@ -524,12 +846,43 @@ ALTER TABLE `homepage_announcements`
   ADD PRIMARY KEY (`id`);
 
 --
+-- 資料表索引 `issue_reports`
+--
+ALTER TABLE `issue_reports`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_issue_reports_status_created` (`status`,`created_at`),
+  ADD KEY `idx_issue_reports_reporter` (`reporter_username`);
+
+--
+-- 資料表索引 `issue_report_notifications`
+--
+ALTER TABLE `issue_report_notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_issue_notifications_user_read` (`recipient_username`,`is_read`,`created_at`),
+  ADD KEY `idx_issue_notifications_report` (`issue_report_id`);
+
+--
 -- 資料表索引 `reference_letters`
 --
 ALTER TABLE `reference_letters`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_recommendation` (`teacher_username`,`application_id`),
   ADD KEY `application_id` (`application_id`);
+
+--
+-- 資料表索引 `restore_logs`
+--
+ALTER TABLE `restore_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_restore_logs_job` (`backup_job_id`);
+
+--
+-- 資料表索引 `restore_uploads`
+--
+ALTER TABLE `restore_uploads`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_restore_uploads_created` (`created_at`),
+  ADD KEY `idx_restore_uploads_log` (`restore_log_id`);
 
 --
 -- 資料表索引 `review_records`
@@ -594,6 +947,16 @@ ALTER TABLE `teachers`
   ADD UNIQUE KEY `id` (`id`);
 
 --
+-- 資料表索引 `teacher_notifications`
+--
+ALTER TABLE `teacher_notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_teacher_notification_dedup` (`dedup_key`),
+  ADD KEY `idx_teacher_notifications_user_read` (`teacher_username`,`is_read`,`created_at`),
+  ADD KEY `idx_teacher_notifications_application` (`related_application_id`),
+  ADD KEY `idx_teacher_notifications_issue_report` (`related_issue_report_id`);
+
+--
 -- 資料表索引 `users`
 --
 ALTER TABLE `users`
@@ -610,6 +973,18 @@ ALTER TABLE `applications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '申請編號', AUTO_INCREMENT=32;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `backup_jobs`
+--
+ALTER TABLE `backup_jobs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `data_archives`
+--
+ALTER TABLE `data_archives`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `departments`
 --
 ALTER TABLE `departments`
@@ -622,10 +997,34 @@ ALTER TABLE `homepage_announcements`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `issue_reports`
+--
+ALTER TABLE `issue_reports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `issue_report_notifications`
+--
+ALTER TABLE `issue_report_notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `reference_letters`
 --
 ALTER TABLE `reference_letters`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `restore_logs`
+--
+ALTER TABLE `restore_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `restore_uploads`
+--
+ALTER TABLE `restore_uploads`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `review_records`
@@ -643,19 +1042,25 @@ ALTER TABLE `scholarships`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `student_notifications`
 --
 ALTER TABLE `student_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `system_logs`
 --
 ALTER TABLE `system_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `teacher_notifications`
+--
+ALTER TABLE `teacher_notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 已傾印資料表的限制式
@@ -681,6 +1086,12 @@ ALTER TABLE `grades`
 ALTER TABLE `reference_letters`
   ADD CONSTRAINT `reference_letters_ibfk_1` FOREIGN KEY (`teacher_username`) REFERENCES `teachers` (`username`) ON DELETE CASCADE,
   ADD CONSTRAINT `reference_letters_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE;
+
+--
+-- 資料表的限制式 `restore_logs`
+--
+ALTER TABLE `restore_logs`
+  ADD CONSTRAINT `restore_logs_backup_job_fk` FOREIGN KEY (`backup_job_id`) REFERENCES `backup_jobs` (`id`) ON DELETE SET NULL;
 
 --
 -- 資料表的限制式 `review_records`

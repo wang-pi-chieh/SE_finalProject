@@ -78,7 +78,7 @@
 <body
     class="bg-background-light dark:bg-background-dark font-sans text-text-primary-light dark:text-text-primary-dark min-h-screen flex flex-col">
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20251226_v4"></script>
+    <script src="header.js?v=20260601_preview_close"></script>
     <!-- Main Content Layout -->
     <main class="flex-1 flex justify-center py-6 px-4 md:px-10 overflow-hidden">
         <div class="w-full max-w-7xl flex flex-col gap-6">
@@ -443,39 +443,6 @@
         </div>
     </div>
 
-    <!-- All Notifications Modal -->
-    <div id="notifications-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
-        aria-modal="true">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity opacity-0"
-            id="notif-modal-backdrop"></div>
-
-        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <!-- Modal Panel -->
-                <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg scale-95 opacity-0"
-                    id="notif-modal-content">
-                    <div class="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
-                                <h3 class="text-xl font-semibold leading-6 text-slate-900 dark:text-white mb-4"
-                                    id="modal-title">所有通知</h3>
-                                <div class="mt-2 flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2"
-                                    id="modal-notifications-list">
-                                    <!-- Dynamic Content -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 dark:bg-slate-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" id="close-notif-modal-btn"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 sm:mt-0 sm:w-auto">關閉</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- All Applications Modal -->
     <div id="applications-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
         aria-modal="true">
@@ -563,8 +530,8 @@
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../global.js?v=1716300000"></script>
-    <script src="js/student-notifications.js"></script>
-    <script src="student-dashboard.js?v=26"></script>
+    <script src="js/student-notifications.js?v=20260601_unread_first"></script>
+    <script src="student-dashboard.js?v=20260601_preview_db_name"></script>
 </body>
 
 </html>

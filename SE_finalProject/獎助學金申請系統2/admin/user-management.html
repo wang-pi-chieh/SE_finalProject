@@ -88,16 +88,23 @@
             <div
                 class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <h3 class="text-[#111318] dark:text-white text-lg font-bold">使用者列表</h3>
-                <div class="flex items-center gap-2 text-sm">
-                    <span class="text-[#616f89] dark:text-gray-400">依身分組篩選：</span>
-                    <select id="role-filter"
-                        class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
-                        <option value="all">所有身分組</option>
-                        <option value="學生">學生</option>
-                        <option value="老師">老師</option>
-                        <option value="獎助單位">獎助單位</option>
-                        <option value="系統管理員">系統管理員</option>
-                    </select>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[#616f89] dark:text-gray-400 whitespace-nowrap">依身分組篩選：</span>
+                        <select id="role-filter"
+                            class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                            <option value="all">所有身分組</option>
+                            <option value="學生">學生</option>
+                            <option value="老師">老師</option>
+                            <option value="獎助單位">獎助單位</option>
+                            <option value="系統管理員">系統管理員</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[#616f89] dark:text-gray-400 whitespace-nowrap">搜尋名稱：</span>
+                        <input id="user-search-input" type="search" placeholder="輸入姓名或帳號"
+                            class="w-48 px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm">
+                    </div>
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -251,6 +258,7 @@
     <script>
         let currentPage = 1;
         const totalPages = 1;
+        let userSearchTimer = null;
 
         async function fetchUsers(page = 1) {
             currentPage = page;
@@ -260,20 +268,22 @@
             // 取得目前選擇的身分組
             const roleSelect = document.getElementById('role-filter');
             const role = roleSelect ? roleSelect.value : 'all';
+            const searchInput = document.getElementById('user-search-input');
+            const search = searchInput ? searchInput.value.trim() : '';
 
             try {
-                const response = await fetch(`../api/get_users.php?page=${page}&role=${encodeURIComponent(role)}`);
+                const response = await fetch(`../api/get_users.php?page=${page}&role=${encodeURIComponent(role)}&search=${encodeURIComponent(search)}`);
                 const data = await response.json();
 
                 if (data.success) {
                     renderTable(data.users);
                     renderPagination(data.current_page, data.total_pages);
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">${data.message || '載入失敗'}</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-red-500">${data.message || '載入失敗'}</td></tr>`;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">網路錯誤，請稍後再試</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-red-500">網路錯誤，請稍後再試</td></tr>';
             }
         }
 
@@ -482,6 +492,22 @@
             if (roleSelect) {
                 roleSelect.addEventListener('change', () => fetchUsers(1));
             }
+
+            const searchInput = document.getElementById('user-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(userSearchTimer);
+                    userSearchTimer = setTimeout(() => fetchUsers(1), 250);
+                });
+                searchInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        clearTimeout(userSearchTimer);
+                        fetchUsers(1);
+                    }
+                });
+            }
+
             fetchUsers(1);
         });
     </script>
