@@ -1,4 +1,12 @@
 /* Glassmorphism */
+.mobile-menu-summary::-webkit-details-marker {
+    display: none;
+}
+
+.mobile-menu-summary::marker {
+    content: "";
+}
+
 .glass-card {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);

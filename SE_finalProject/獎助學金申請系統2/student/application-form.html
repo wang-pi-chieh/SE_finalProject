@@ -76,7 +76,7 @@
 <body
     class="bg-background-light dark:bg-background-dark font-sans text-text-primary-light dark:text-text-primary-dark min-h-screen flex flex-col">
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20251226_v4"></script>
+    <script src="header.js?v=20260601_issue_report"></script>
     <main class="flex-1 flex flex-col min-w-0 h-full relative">
         <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 sm:p-6 md:p-8">
             <div class="max-w-4xl mx-auto space-y-8 pb-24">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-                <form class="space-y-8" onsubmit="event.preventDefault();">
+                <form id="student-application-form" class="space-y-8" onsubmit="event.preventDefault();">
                     <div data-delay="0"
                         class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg hover:shadow-xl">
                         <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
@@ -484,8 +484,9 @@
         </div>
     </main>
     <script src="../global.js"></script>
+    <script src="../autosave.js?v=20260604_v1"></script>
     <script src="js/application-draft.js"></script>
-    <script src="application-form.js?v=22"></script>
+    <script src="application-form.js?v=23"></script>
 </body>
 
 </html>

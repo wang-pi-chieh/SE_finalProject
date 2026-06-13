@@ -93,6 +93,37 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', updateHeader);
     updateHeader(); // Initial check
 
+    // --- Mobile Navigation ---
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu-panel');
+
+    function closeMobileMenu() {
+        if (!mobileMenu) return;
+
+        mobileMenu.classList.add('hidden');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    if (mobileMenu) {
+        mobileMenu.querySelectorAll('a, button').forEach(item => {
+            item.addEventListener('click', closeMobileMenu);
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.contains(event.target) && (!mobileMenuBtn || !mobileMenuBtn.contains(event.target))) {
+                closeMobileMenu();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                closeMobileMenu();
+            }
+        });
+    }
+
     // --- Vertical Clip Text Animation ---
     function initTextAnimation(container) {
         if (!container) return;

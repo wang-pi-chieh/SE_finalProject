@@ -3,7 +3,9 @@
 
 (function () {
     const API_BASE = '../api/student';
+    const INLINE_NOTIFICATION_LIMIT = 3;
     let cachedNotifications = [];
+    let inlineNotificationsExpanded = false;
 
     const TYPE_STYLE = {
         result_approved: {
@@ -77,7 +79,7 @@
     function createNotificationCard(notification) {
         const style = TYPE_STYLE[notification.type] || TYPE_STYLE.deadline_reminder;
         const card = document.createElement('div');
-        card.className = `student-notification-card bg-white dark:bg-slate-800 p-4 rounded-xl border border-l-4 border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow ${style.border}${notification.is_read ? ' opacity-80' : ''}`;
+        card.className = `student-notification-card bg-white dark:bg-slate-800 p-4 rounded-xl border border-l-4 border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow ${style.border}${notification.is_read ? ' opacity-70' : ''}`;
         card.dataset.notificationId = notification.id;
 
         let actionHtml = '';
@@ -98,11 +100,12 @@
                     <div class="flex items-center gap-2 mb-1">
                         <span class="font-bold text-slate-900 dark:text-white text-sm">${style.sender}</span>
                         <span class="text-xs text-slate-500">${formatDate(notification.created_at)}</span>
-                        ${notification.is_read ? '' : '<span data-role="unread-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">未讀</span>'}
+                        <span data-role="read-state" class="text-[10px] font-bold px-2 py-0.5 rounded-full ${notification.is_read ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300' : 'bg-primary/10 text-primary'}">${notification.is_read ? '已讀' : '未讀'}</span>
                     </div>
                     <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">${notification.title}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-1">${notification.message}</p>
                     ${actionHtml}
+                    ${notification.is_read ? '' : '<button type="button" data-action="mark-read" class="inline-block mt-2 text-xs font-bold text-primary hover:underline">標記已讀</button>'}
                 </div>
             </div>
         `;
@@ -117,6 +120,11 @@
                 } else if (action === 'open-scholarship') {
                     window.location.href = `application-form.html?scholarship_id=${actionBtn.dataset.scholarshipId}`;
                 }
+                return;
+            }
+            if (actionBtn && actionBtn.dataset.action === 'mark-read') {
+                event.stopPropagation();
+                await markAsRead(notification.id);
                 return;
             }
 
@@ -147,18 +155,36 @@
         `;
     }
 
-    function renderNotificationList(container, notifications, limit = 3) {
+    function renderNotificationList(container, notifications, limit = INLINE_NOTIFICATION_LIMIT) {
         if (!container) return;
 
         container.innerHTML = '';
-        if (!notifications.length) {
+        const sortedNotifications = sortNotifications(notifications);
+        if (!sortedNotifications.length) {
             renderEmptyState(container, '目前無新通知');
             return;
         }
 
-        notifications.slice(0, limit).forEach((notification) => {
+        const displayNotifications = inlineNotificationsExpanded ? sortedNotifications : sortedNotifications.slice(0, limit);
+        displayNotifications.forEach((notification) => {
             container.appendChild(createNotificationCard(notification));
         });
+
+        if (sortedNotifications.length > limit) {
+            container.appendChild(createToggleNotificationsButton(sortedNotifications.length));
+        }
+    }
+
+    function createToggleNotificationsButton(totalCount) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold text-primary hover:bg-primary/5 dark:hover:bg-primary/10';
+        button.textContent = inlineNotificationsExpanded ? `收合為 ${INLINE_NOTIFICATION_LIMIT} 筆` : `顯示更多 (${totalCount})`;
+        button.addEventListener('click', () => {
+            inlineNotificationsExpanded = !inlineNotificationsExpanded;
+            refreshNotificationViews(cachedNotifications);
+        });
+        return button;
     }
 
     function syncUnreadCountFromNotifications(notifications = cachedNotifications) {
@@ -180,22 +206,34 @@
     }
 
     function refreshNotificationViews(notifications) {
+        cachedNotifications = sortNotifications(notifications || []);
         const listContainer = document.getElementById('notifications-list');
-        renderNotificationList(listContainer, notifications, 3);
-        syncUnreadCountFromNotifications(notifications);
+        renderNotificationList(listContainer, cachedNotifications, INLINE_NOTIFICATION_LIMIT);
+        syncUnreadCountFromNotifications(cachedNotifications);
 
         const modal = document.getElementById('notifications-modal');
         const modalList = document.getElementById('modal-notifications-list');
         if (!modal || modal.classList.contains('hidden') || !modalList) return;
 
         modalList.innerHTML = '';
-        if (!notifications.length) {
+        if (!cachedNotifications.length) {
             renderEmptyState(modalList, '無通知');
             return;
         }
 
-        notifications.forEach((notification) => {
+        cachedNotifications.forEach((notification) => {
             modalList.appendChild(createNotificationCard(notification));
+        });
+    }
+
+    function sortNotifications(notifications) {
+        return [...(notifications || [])].sort((a, b) => {
+            const unreadDiff = Number(a.is_read ? 1 : 0) - Number(b.is_read ? 1 : 0);
+            if (unreadDiff !== 0) return unreadDiff;
+
+            const aTime = new Date(a.created_at || 0).getTime();
+            const bTime = new Date(b.created_at || 0).getTime();
+            return bTime - aTime;
         });
     }
 
@@ -374,12 +412,12 @@
             const result = await fetchJson(
                 `${API_BASE}/get_student_notifications.php?student_username=${encodeURIComponent(username)}&sync=1`
             );
-            const notifications = result.data || [];
+            const notifications = sortNotifications(result.data || []);
             cachedNotifications = notifications;
             window.__studentNotificationUnreadCount = result.unread_count || 0;
             ensureUnreadBadge();
             updateUnreadBadge();
-            renderNotificationList(container, notifications, options.limit || 3);
+            renderNotificationList(container, notifications, options.limit || INLINE_NOTIFICATION_LIMIT);
             bindNotificationModal(notifications);
             return notifications;
         } catch (error) {

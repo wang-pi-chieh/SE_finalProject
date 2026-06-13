@@ -2,9 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update Greeting
     // Update Greeting & Semester Info
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const previewParams = new URLSearchParams(window.location.search);
+    const isPreviewMode = previewParams.get('preview') === 'student';
+    const previewUser = {
+        username: previewParams.get('preview_user') || 'student-preview',
+        real_name: '學生端預覽',
+        role: '學生',
+        email: 'student-preview@example.edu'
+    };
+
+    if (storedUser || isPreviewMode) {
         try {
-            const user = JSON.parse(storedUser);
+            const user = isPreviewMode ? previewUser : JSON.parse(storedUser);
 
             // 1. Update Greeting Name immediately from localStorage (fast)
             const greetingEl = document.getElementById('dashboard-greeting');
@@ -26,8 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (result.success && result.data && infoEl) {
                         const data = result.data;
                         const department = data.department || '系所未知';
+                        const dbName = data.real_name || user.real_name || user.username;
                         // Logic: If grade_level exists, show it; otherwise "年級未知"
                         const grade = data.grade_level ? data.grade_level : '年級未知';
+
+                        if (greetingEl) {
+                            greetingEl.textContent = `歡迎回來，${dbName} 👋`;
+                        }
+                        const headerName = document.getElementById('header-user-name');
+                        const headerEmail = document.getElementById('header-user-email');
+                        if (headerName) headerName.textContent = dbName;
+                        if (headerEmail && data.email) headerEmail.textContent = data.email;
 
                         // 統一顯示學期（與老師端一致）
                         infoEl.textContent = `目前學期：113學年度第1學期 | ${department} ${grade}`;
@@ -68,8 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Store globally for stat card access
                         window.allApplications = result.data;
 
-                        // Render first 5 items to main table
-                        const displayData = result.data.slice(0, 5);
+                        // Render first 2 items to main table
+                        const displayData = result.data.slice(0, 2);
                         displayData.forEach(app => {
                             const tr = createApplicationRow(app);
                             tbody.appendChild(tr);
@@ -472,9 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!btn || !modal) return;
 
-        // Show/Hide button logic
-        // Changed to > 0 to essentially replace "View History" functionality
-        if (applications.length > 0) {
+        if (applications.length > 2) {
             btn.classList.remove('hidden');
         } else {
             btn.classList.add('hidden');

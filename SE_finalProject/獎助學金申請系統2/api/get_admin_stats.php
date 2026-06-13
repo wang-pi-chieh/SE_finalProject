@@ -45,10 +45,16 @@ if ($resBudget) {
 $response['allocated_budget'] = $total_budget;
 
 // 4. Pending Issues
-// Count applications that are Pending (3) or Reviewing (4) or Needs Action (2)?
-// Assuming 'Pending Issues' means things waiting for admin.
-// Screenshot says: 3=Pending.
-$sqlPending = "SELECT COUNT(*) as count FROM applications WHERE status = 'pending' OR status = '0' OR status = '3' OR status = '4'";
+// Prefer the admin issue report table when the Wang admin-ops migration has been applied.
+$issueTableExists = false;
+$tableCheck = $conn->query("SHOW TABLES LIKE 'issue_reports'");
+if ($tableCheck && $tableCheck->num_rows > 0) {
+    $issueTableExists = true;
+}
+
+$sqlPending = $issueTableExists
+    ? "SELECT COUNT(*) as count FROM issue_reports WHERE status IN ('open', 'processing')"
+    : "SELECT COUNT(*) as count FROM applications WHERE status = 'pending' OR status = '0' OR status = '3' OR status = '4'";
 $resPending = $conn->query($sqlPending);
 if ($resPending && $row = $resPending->fetch_assoc()) {
     $response['pending_issues'] = $row['count'];
