@@ -8,8 +8,8 @@ if (function_exists('mysqli_report')) {
 
 $host = 'localhost';
 $user = 'root';
-$password = '';
-$dbname = 'se_finalproject';
+$password = '12355';
+$dbname = 'database4';
 
 $conn = new mysqli($host, $user, $password, $dbname);
 

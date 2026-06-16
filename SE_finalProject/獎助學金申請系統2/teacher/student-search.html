@@ -168,11 +168,22 @@
                 return;
             }
 
-            // 呼叫模組來讀取導師學生名單
-            if (window.MentorStudentsModule && window.MentorStudentsModule.loadMentorStudents) {
-                window.MentorStudentsModule.loadMentorStudents(user);
-            } else {
-                console.error("MentorStudentsModule is not loaded");
+            // Fetch Students
+            try {
+                const res = await fetch(`../api/get_department_students.php?teacher_username=${user.username}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('dept-info').innerHTML = `系所：<span class="font-bold text-primary">${data.department}</span> | 學生列表`;
+                    renderTable(data.data);
+                    setupSearch(data.data);
+                } else {
+                    document.getElementById('dept-info').textContent = '載入失敗';
+                    document.getElementById('student-table-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">${data.message || '無法取得資料'}</td></tr>`;
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('student-table-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">連線錯誤</td></tr>`;
             }
         });
 
