@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>FAQ 與使用說明 - 獎助學金申請系統</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;family=Noto+Sans+TC:wght@400;500;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            DEFAULT: '#f59e0b',
+                            hover: '#d97706',
+                        },
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "Noto Sans TC", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white font-display">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-[9999] bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-800/50">
+            <div class="max-w-[1200px] mx-auto px-4 md:px-10">
+                <div class="flex h-16 items-center justify-between">
+                    <a href="index.html" class="flex items-center gap-3 font-black text-slate-900 dark:text-white">
+                        <span class="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary-600">
+                            <span class="material-symbols-outlined">school</span>
+                        </span>
+                        <span>獎助學金申請系統</span>
+                    </a>
+                    <nav class="hidden md:flex items-center gap-8 text-sm font-bold">
+                        <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="index.html">首頁</a>
+                        <a class="text-primary-600" href="#faq">FAQ</a>
+                        <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="#apply">申請須知</a>
+                        <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="#privacy">隱私權政策</a>
+                    </nav>
+                    <details class="relative md:hidden">
+                        <summary class="mobile-menu-summary flex cursor-pointer list-none items-center justify-center p-2 text-slate-800 dark:text-white">
+                            <span class="material-symbols-outlined">menu</span>
+                        </summary>
+                        <div
+                            class="absolute right-0 top-full mt-3 min-w-40 overflow-hidden rounded-md bg-slate-900/95 text-white shadow-xl ring-1 ring-white/10">
+                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="index.html">首頁</a>
+                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="#faq">FAQ</a>
+                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="#apply">申請須知</a>
+                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="#privacy">隱私權政策</a>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="relative overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="s.jpg" alt="" class="h-full w-full object-cover" />
+                    <div class="absolute inset-0 bg-slate-900/45"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-900 opacity-70 mix-blend-multiply"></div>
+                </div>
+                <div class="relative max-w-[960px] mx-auto px-4 md:px-10 py-20 md:py-24 text-white">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-accent"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Help Center</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-black leading-tight mb-5">FAQ 與使用說明</h1>
+                    <p class="max-w-2xl text-lg text-white/90 leading-8">
+                        如果你在登入、申請、補件、查詢進度或上傳檔案時遇到問題，可以先查看這裡的說明。
+                    </p>
+                </div>
+            </section>
+
+            <section class="bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800">
+                <div class="max-w-[960px] mx-auto px-4 md:px-10">
+                    <div class="flex items-center justify-center gap-8 sm:gap-14 overflow-x-auto text-sm sm:text-base font-bold">
+                        <a class="shrink-0 py-5 text-accent border-b-2 border-accent" href="#faq">FAQ</a>
+                        <a class="shrink-0 py-5 text-slate-500 hover:text-primary-600 dark:text-white/60 dark:hover:text-white transition-colors" href="#apply">申請須知</a>
+                        <a class="shrink-0 py-5 text-slate-500 hover:text-primary-600 dark:text-white/60 dark:hover:text-white transition-colors" href="#privacy">隱私權政策</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="faq" class="bg-white dark:bg-gray-950">
+                <div class="max-w-[960px] mx-auto px-4 md:px-10 py-16">
+                    <div class="mb-10">
+                        <h2 class="text-3xl md:text-4xl font-black leading-tight">常見問題</h2>
+                        <div class="mt-5 h-2 w-16 rounded-full bg-accent"></div>
+                    </div>
+
+                    <div class="divide-y divide-gray-200 dark:divide-gray-800">
+                        <details class="group py-6" open>
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-xl md:text-2xl font-black">
+                                申請獎學金需要準備什麼資料？
+                                <span class="material-symbols-outlined text-gray-500 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <p class="mt-4 max-w-3xl text-gray-600 dark:text-gray-300 leading-7">
+                                通常需要學生證明、成績單、申請表、身分證明文件、銀行帳戶資料，以及各獎學金指定的附件，例如低收入戶證明、活動證明、競賽成果或推薦文件。實際項目請以每筆獎學金公告內容為準。
+                            </p>
+                        </details>
+
+                        <details class="group py-6">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-xl md:text-2xl font-black">
+                                我無法登入系統時該怎麼辦？
+                                <span class="material-symbols-outlined text-gray-500 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <p class="mt-4 max-w-3xl text-gray-600 dark:text-gray-300 leading-7">
+                                請先確認帳號密碼是否輸入正確，並檢查是否使用學校指定帳號登入。若仍無法登入，可截圖錯誤訊息並聯絡系統管理單位，提供學號、姓名與發生時間，方便協助查詢。
+                            </p>
+                        </details>
+
+                        <details class="group py-6">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-xl md:text-2xl font-black">
+                                送出申請後還可以修改資料嗎？
+                                <span class="material-symbols-outlined text-gray-500 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <p class="mt-4 max-w-3xl text-gray-600 dark:text-gray-300 leading-7">
+                                若申請狀態仍為草稿或待補件，通常可以回到申請頁面修改。若已送出審核，請先聯絡承辦單位退回或開放補件，避免自行重複送出造成審核資料不一致。
+                            </p>
+                        </details>
+
+                        <details class="group py-6">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-xl md:text-2xl font-black">
+                                如何查詢目前的審核進度？
+                                <span class="material-symbols-outlined text-gray-500 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <p class="mt-4 max-w-3xl text-gray-600 dark:text-gray-300 leading-7">
+                                登入後可至個人申請紀錄或學生儀表板查看狀態。常見狀態包含草稿、已送出、審核中、待補件、通過與未通過；若狀態長時間沒有更新，建議向承辦單位確認。
+                            </p>
+                        </details>
+
+                        <details class="group py-6">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-xl md:text-2xl font-black">
+                                檔案上傳失敗或格式不符怎麼處理？
+                                <span class="material-symbols-outlined text-gray-500 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <p class="mt-4 max-w-3xl text-gray-600 dark:text-gray-300 leading-7">
+                                請確認檔案格式、大小與內容清晰度是否符合公告要求。建議使用 PDF 或圖片檔，檔名避免特殊符號，並在網路穩定時重新上傳。若仍失敗，請保留原始檔案並聯絡系統管理單位。
+                            </p>
+                        </details>
+
+                        <details class="group py-6">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-xl md:text-2xl font-black">
+                                超過申請期限還能補交資料嗎？
+                                <span class="material-symbols-outlined text-gray-500 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <p class="mt-4 max-w-3xl text-gray-600 dark:text-gray-300 leading-7">
+                                原則上截止後系統會關閉申請與補件功能。若有特殊情況，請儘快聯絡承辦單位說明原因，由承辦單位依各獎學金規定判斷是否能受理。
+                            </p>
+                        </details>
+
+                    </div>
+                </div>
+            </section>
+
+            <section id="apply" class="bg-background-light dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
+                <div class="max-w-[960px] mx-auto px-4 md:px-10 py-16">
+                    <div class="mb-10">
+                        <h2 class="text-3xl md:text-4xl font-black leading-tight">申請須知</h2>
+                        <div class="mt-5 h-2 w-16 rounded-full bg-accent"></div>
+                    </div>
+
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <div class="glass-panel rounded-lg p-6 shadow-sm">
+                            <span class="material-symbols-outlined text-primary-600 text-3xl mb-3">edit_document</span>
+                            <h3 class="font-black mb-2">送出前確認資料</h3>
+                            <p class="text-sm leading-6 text-gray-600 dark:text-gray-300">請確認姓名、學號、聯絡方式、銀行帳戶、申請項目與附件皆正確，送出後若要修改可能需要承辦單位退回。</p>
+                        </div>
+                        <div class="glass-panel rounded-lg p-6 shadow-sm">
+                            <span class="material-symbols-outlined text-primary-600 text-3xl mb-3">upload_file</span>
+                            <h3 class="font-black mb-2">附件格式</h3>
+                            <p class="text-sm leading-6 text-gray-600 dark:text-gray-300">建議使用 PDF 或清楚的圖片檔，檔名避免特殊符號。若公告有指定格式、期限或大小限制，請以公告內容為準。</p>
+                        </div>
+                        <div class="glass-panel rounded-lg p-6 shadow-sm">
+                            <span class="material-symbols-outlined text-primary-600 text-3xl mb-3">event_available</span>
+                            <h3 class="font-black mb-2">注意截止時間</h3>
+                            <p class="text-sm leading-6 text-gray-600 dark:text-gray-300">請提早完成申請，避免截止日前網路、檔案或系統忙碌造成送出失敗。逾期是否受理需由承辦單位依規定判斷。</p>
+                        </div>
+                        <div class="glass-panel rounded-lg p-6 shadow-sm">
+                            <span class="material-symbols-outlined text-primary-600 text-3xl mb-3">support_agent</span>
+                            <h3 class="font-black mb-2">聯絡窗口</h3>
+                            <p class="text-sm leading-6 text-gray-600 dark:text-gray-300">若遇到系統錯誤，請提供學號、問題畫面、操作時間與使用裝置，方便管理人員協助排查。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="privacy" class="bg-white dark:bg-gray-950">
+                <div class="max-w-[960px] mx-auto px-4 md:px-10 py-16">
+                    <div class="mb-10">
+                        <h2 class="text-3xl md:text-4xl font-black leading-tight">隱私權政策</h2>
+                        <div class="mt-5 h-2 w-16 rounded-full bg-accent"></div>
+                    </div>
+
+                    <div class="glass-panel rounded-lg p-6 md:p-8 shadow-sm space-y-5 text-gray-600 dark:text-gray-300 leading-7">
+                        <p>本系統蒐集的資料僅供獎助學金申請、資格審核、補件通知、結果通知、行政統計與撥款作業使用。</p>
+                        <p>請勿上傳與申請無關的敏感資料。若附件包含第三人資料，請確認該資料確實為申請所需，並避免提供過度資訊。</p>
+                        <p>系統管理與承辦人員會依職務需求查閱申請資料，並依學校相關規範保管、使用與刪除資料。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-white dark:bg-background-dark border-t border-[#f0f2f4] dark:border-gray-800 pt-14 pb-8">
+            <div class="max-w-[1200px] mx-auto px-4 md:px-10">
+                <div class="mb-14">
+                    <h4 class="font-bold text-[#111318] dark:text-white mb-6">聯絡資訊</h4>
+                    <ul class="flex flex-col gap-4 text-sm md:text-base text-gray-500 dark:text-gray-400">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-base">mail</span>
+                            <span>support@scholarship.edu.tw</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-base">call</span>
+                            <span>(07) 5919-000</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-base">location_on</span>
+                            <span>高雄市楠梓區高雄大學路700號</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-400 text-sm">© 2025 Scholarship Aid System. All rights reserved.</p>
+                    <a class="text-gray-400 hover:text-primary-600 transition-colors" href="https://www.facebook.com/nuk.edu.tw/"
+                        target="_blank">
+                        <span class="sr-only">Facebook</span>
+                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path clip-rule="evenodd"
+                                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                                fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

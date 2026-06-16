@@ -1,0 +1,3 @@
+-- Owner: Hsieh Tsung-Feng
+-- Scope: student application drafts, draft attachments, application validation metadata.
+-- Add CREATE TABLE / ALTER TABLE statements here.

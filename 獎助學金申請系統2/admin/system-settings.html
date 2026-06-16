@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>系統設定 - 獎學金助學系統</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&amp;family=Noto+Sans+TC:wght@400;500;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": { "DEFAULT": "#0D57D9", "light": "#F0F5FF" },
+                        "secondary": "#E5E7EB",
+                        "background": { "light": "#F8F9FA", "dark": "#111827" },
+                        "card": { "light": "#FFFFFF", "dark": "#1F2937" },
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <script src="header.js?v=20251230_v1"></script>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">系統管理
+                </h1>
+                <h2 class="text-2xl font-bold text-[#111318] dark:text-white mt-2 flex items-center gap-2">
+                    系統設定 <span class="text-2xl">⚙️</span>
+                </h2>
+                <p class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">管理獎學金項目、期限與公告</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="openAddModal()"
+                    class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                    新增獎學金
+                </button>
+            </div>
+        </div>
+
+        <!-- Scholarship List Card -->
+        <div
+            class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
+            <div class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748] flex justify-between items-center">
+                <h3 class="text-[#111318] dark:text-white text-lg font-bold">獎學金項目列表</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
+                        <tr>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">ID</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">獎學金名稱</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">金額</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">名額</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">獎助單位</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請條件 / 說明</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">截止日期</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scholarship-table-body" class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]">
+                        <!-- JS renders rows here -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination Controls -->
+            <div id="pagination-controls"
+                class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex justify-center items-center gap-2">
+                <!-- JS renders buttons here -->
+            </div>
+        </div>
+    </main>
+    <!-- Add Scholarship Modal -->
+    <div id="add-modal" class="fixed inset-0 z-[9999] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm"
+            onclick="closeAddModal()"></div>
+        <div class="fixed inset-0 z-[10000] w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-xl font-semibold leading-6 text-gray-900 dark:text-white mb-4"
+                                    id="modal-title">新增獎學金</h3>
+                                <form id="add-scholarship-form" class="space-y-4">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">獎學金名稱</label>
+                                        <input type="text" name="name" required
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">金額
+                                            (請輸入數字或文字)</label>
+                                        <input type="text" name="amount" required placeholder="例如：20000 或 全額"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">名額</label>
+                                            <input type="number" name="quota" required
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">截止日期</label>
+                                            <input type="date" name="deadline" required
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">負責單位
+                                            (審查員)</label>
+                                        <select name="provider_username" id="provider-select"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
+                                            <option value="">(預設：系統管理員)</option>
+                                            <!-- JS will populate options -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">詳細說明
+                                            (選填)</label>
+                                        <textarea name="description" rows="3"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border"></textarea>
+                                    </div>
+                                </form>
+                                <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-5">
+                                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-3">匯入 CSV</h4>
+                                    <form id="import-scholarship-csv-form" class="space-y-3">
+                                        <input type="file" name="csv_file" accept=".csv,text/csv" required
+                                            class="block w-full text-sm text-gray-700 dark:text-gray-300 file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-600">
+                                        <p class="text-xs leading-5 text-gray-500 dark:text-gray-400">
+                                            第一列需為欄位名稱，支援：name/獎學金名稱、amount/金額、quota/名額、deadline/截止日期、provider_username/負責單位、description/詳細說明。
+                                        </p>
+                                        <button type="button" onclick="submitScholarshipCsvImport()"
+                                            class="inline-flex w-full justify-center rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white">匯入 CSV</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" onclick="submitAddForm()"
+                            class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 sm:ml-3 sm:w-auto">新增</button>
+                        <button type="button" onclick="closeAddModal()"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:w-auto">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Global Scripts -->
+    <script src="../global.js?v=1716300000"></script>
+    <script src="js/scholarship-admin.js"></script>
+</body>
+
+</html>

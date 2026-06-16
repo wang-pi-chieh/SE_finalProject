@@ -1,0 +1,3 @@
+-- Owner: Wang Bih-Jie
+-- Scope: issue reports, backup status, audit-log support, role preview metadata.
+-- Add CREATE TABLE / ALTER TABLE statements here.

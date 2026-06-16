@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>獎學金申請表</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                        "text": {
+                            "primary-light": "#111827",
+                            "primary-dark": "#FFFFFF",
+                            "secondary-light": "#6B7280",
+                            "secondary-dark": "#9CA3AF"
+                        },
+                        "border": {
+                            "light": "#E5E7EB",
+                            "dark": "#374151"
+                        }
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-sans text-text-primary-light dark:text-text-primary-dark min-h-screen flex flex-col">
+    <!-- Header injected by header.js -->
+    <script src="header.js?v=20260601_issue_report"></script>
+    <main class="flex-1 flex flex-col min-w-0 h-full relative">
+        <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 sm:p-6 md:p-8">
+            <div class="max-w-4xl mx-auto space-y-8 pb-24">
+                <div class="flex flex-col gap-1">
+                    <h2 id="form-title" class="text-2xl font-bold tracking-tight">獎學金申請表</h2>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">請填寫所有必填欄位。學業成績將由系統自動匯入。
+                    </p>
+                </div>
+
+                <!-- Reviewer Comment for Revisions -->
+                <div id="return-comment-container"
+                    class="hidden animate-on-scroll bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 rounded-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="size-10 rounded-full bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">error</span>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-orange-800 dark:text-orange-300">退件原因與補件說明</h4>
+                            <p id="return-comment-text"
+                                class="text-sm text-orange-700 dark:text-orange-400 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+                <form id="student-application-form" class="space-y-8" onsubmit="event.preventDefault();">
+                    <div data-delay="0"
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg hover:shadow-xl">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold">1. 選擇申請項目</h3>
+                        </div>
+                        <div class="p-6">
+                            <label class="block w-full max-w-md">
+                                <span class="text-sm font-medium mb-1.5 block">選擇獎學金 <span
+                                        class="text-red-500">*</span></span>
+                                <div class="relative">
+                                    <select id="scholarship_id"
+                                        class="w-full appearance-none bg-none rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark px-3 py-2 pr-10 focus:border-primary focus:ring-2 focus:ring-primary/20">
+                                        <option disabled="" selected="" value="">請選擇一個項目...</option>
+                                        <!-- Will be populated by JS if dynamic, or keep static -->
+                                        <option value="1">113學年度傑出學術成就獎學金</option>
+                                        <option value="2">113學年度大學生研究補助金</option>
+                                        <option value="3">清寒助學金</option>
+                                    </select>
+                                    <div
+                                        class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
+                                        <span class="material-symbols-outlined">expand_more</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-2">
+                                    注意：請確保您符合所選獎學金的申請資格。</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
+                        <div
+                            class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center">
+                            <h3 class="text-base font-bold">2. 基本資料</h3>
+                            <span
+                                class="text-xs font-medium px-2 py-1 rounded bg-primary-light text-primary dark:bg-primary/10">系統帶入</span>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">姓名</label>
+                                <input id="real_name"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-secondary/50 dark:bg-border-dark/30 text-text-secondary-light dark:text-text-secondary-dark px-3 py-2 cursor-not-allowed"
+                                    disabled="" type="text" value="載入中..." />
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">學號</label>
+                                <input id="username"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-secondary/50 dark:bg-border-dark/30 text-text-secondary-light dark:text-text-secondary-dark px-3 py-2 cursor-not-allowed"
+                                    disabled="" type="text" value="載入中..." />
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">科系</label>
+                                <input id="department"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-secondary/50 dark:bg-border-dark/30 text-text-secondary-light dark:text-text-secondary-dark px-3 py-2 cursor-not-allowed"
+                                    disabled="" type="text" value="載入中..." />
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">電子郵件 <span
+                                        class="text-red-500">*</span></label>
+                                <input id="email"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                    type="email" value="" />
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">手機號碼 <span
+                                        class="text-red-500">*</span></label>
+                                <input id="phone"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                    placeholder="+886 912 345 678" type="tel" />
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">匯款帳戶（獎學金發放用） <span
+                                        class="text-red-500">*</span></label>
+                                <input id="bank_account"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                    placeholder="銀行代碼 - 帳號" type="text" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW SECTION 3: 家庭與經濟狀況 -->
+                    <div
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold">3. 家庭與經濟狀況</h3>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">家庭居住狀況 <span
+                                        class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <select id="family_housing_status"
+                                        class="w-full appearance-none bg-none rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 pr-10 focus:border-primary focus:ring-2 focus:ring-primary/20">
+                                        <option value="" disabled selected>請選擇...</option>
+                                        <option value="自有">自有</option>
+                                        <option value="租賃">租賃</option>
+                                        <option value="宿舍">宿舍</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                    <div
+                                        class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
+                                        <span class="material-symbols-outlined">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">個人居住狀況 <span
+                                        class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <select id="personal_housing_status"
+                                        class="w-full appearance-none bg-none rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 pr-10 focus:border-primary focus:ring-2 focus:ring-primary/20">
+                                        <option value="" disabled selected>請選擇...</option>
+                                        <option value="住家">住家</option>
+                                        <option value="校內宿舍">校內宿舍</option>
+                                        <option value="校外租屋">校外租屋</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                    <div
+                                        class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
+                                        <span class="material-symbols-outlined">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">學雜費減免身分 <span
+                                        class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <select id="tuition_waiver"
+                                        class="w-full appearance-none bg-none rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 pr-10 focus:border-primary focus:ring-2 focus:ring-primary/20">
+                                        <option value="無" selected>無</option>
+                                        <option value="低收入戶">低收入戶</option>
+                                        <option value="中低收入戶">中低收入戶</option>
+                                        <option value="身心障礙">身心障礙人士子女/學生</option>
+                                        <option value="特殊境遇">特殊境遇家庭</option>
+                                    </select>
+                                    <div
+                                        class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
+                                        <span class="material-symbols-outlined">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">是否申請就學貸款 <span
+                                        class="text-red-500">*</span></label>
+                                <div id="loan_radio_group" class="flex gap-4 mt-2 p-1 rounded transition-all">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="has_student_loan" value="1"
+                                            class="text-primary focus:ring-primary">
+                                        <span class="text-sm">是</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="has_student_loan" value="0" checked
+                                            class="text-primary focus:ring-primary">
+                                        <span class="text-sm">否</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="text-sm font-medium mb-1.5 block">上學期獲獎助學金名稱</label>
+                                <input
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                    id="previous_scholarship_name" placeholder="若無則免填" type="text" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW SECTION 4: 家庭狀況說明 -->
+                    <div
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold">4. 家庭狀況說明</h3>
+                        </div>
+                        <div class="p-6 space-y-5">
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">家庭狀況說明 <span
+                                        class="text-red-500">*</span></label>
+                                <textarea id="family_situation_desc"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20 h-24 resize-none"
+                                    placeholder="請簡述家庭經濟狀況、收入來源及特殊困難..."></textarea>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium mb-1.5 block">家庭成員狀況 <span
+                                        class="text-red-500">*</span></label>
+                                <textarea id="family_members_desc"
+                                    class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20 h-24 resize-none"
+                                    placeholder="請列出家庭成員（稱謂/年齡/職業/年收入）..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
+                        <div
+                            class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center">
+                            <h3 class="text-base font-bold">5. 學業成績</h3>
+                            <div
+                                class="flex items-center gap-2 text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 px-3 py-1.5 rounded-full text-xs font-medium">
+                                <span class="material-symbols-outlined text-[16px]">lock</span>
+                                教務處資料自動填入
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-background-light dark:bg-background-dark text-text-secondary-light dark:text-text-secondary-dark">
+                                    <tr>
+                                        <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider">學年</th>
+                                        <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider">學期</th>
+                                        <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-right">
+                                            平均成績</th>
+                                        <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-right">
+                                            GPA</th>
+                                        <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-right">
+                                            班級人數</th>
+                                        <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-right">
+                                            班排</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="grades-tbody" class="divide-y divide-border-light dark:divide-border-dark">
+                                    <!-- Grades will be populated by JS -->
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center">載入成績中...</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="bg-primary-light/50 dark:bg-primary/10">
+                                    <tr>
+                                        <td class="px-6 py-3 text-sm font-bold text-right text-text-primary-light dark:text-text-primary-dark"
+                                            colspan="3">總平均 GPA:</td>
+                                        <td class="px-6 py-3 text-sm font-bold text-right text-primary">3.92</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark shadow-lg transition-transform duration-300 hover:shadow-xl">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold">6. 推薦人資料</h3>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- New Recommendation Requirement Toggle -->
+                            <div class="mb-4">
+                                <label class="text-sm font-medium mb-1.5 block">是否需要推薦信？ <span
+                                        class="text-red-500">*</span></label>
+                                <div id="rec_radio_group" class="flex gap-4 mt-2 p-1 rounded transition-all">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="recommendation_required" value="1"
+                                            class="text-primary focus:ring-primary">
+                                        <span class="text-sm">是</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="recommendation_required" value="0"
+                                            class="text-primary focus:ring-primary">
+                                        <span class="text-sm">否</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Container for conditional fields -->
+                            <div id="recommendation_fields_container"
+                                class="hidden space-y-4 border-t border-border-light dark:border-border-dark pt-4">
+                                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                                    請從您的科系中搜尋一位教授作為推薦人，系統將會寄送邀請信給該位教授。</p>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-5">
+                                    <div class="md:col-span-1">
+                                        <label class="text-sm font-medium mb-1.5 block">搜尋教授 <span
+                                                class="text-red-500">*</span></label>
+                                        <div class="relative group">
+                                            <input id="recommend_professor"
+                                                class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 pl-10 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                placeholder="輸入教授姓名..." type="text" autocomplete="off" />
+                                            <div
+                                                class="absolute inset-y-0 left-0 flex items-center px-3 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
+                                                <span class="material-symbols-outlined text-[20px]">search</span>
+                                            </div>
+                                            <!-- Dropdown List -->
+                                            <ul id="professor_results"
+                                                class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-border-light dark:border-border-dark rounded-md shadow-lg max-h-60 overflow-y-auto hidden">
+                                                <!-- Dynamic Results -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-1">
+                                        <label class="text-sm font-medium mb-1.5 block">科系</label>
+                                        <input id="professor_department"
+                                            class="w-full rounded-md border border-border-light dark:border-border-dark bg-secondary/50 dark:bg-border-dark/30 text-text-secondary-light dark:text-text-secondary-dark px-3 py-2"
+                                            disabled="" placeholder="自動帶入" type="text" />
+                                    </div>
+
+                                    <div class="md:col-span-3">
+                                        <label class="text-sm font-medium mb-1.5 block">與推薦人關係 <span
+                                                class="text-red-500">*</span></label>
+                                        <input id="referrer_relationship"
+                                            class="w-full rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                            placeholder="例如：專題指導教授、導師、授課教授..." type="text" />
+                                        <!-- Hidden Input for Referrer ID -->
+                                        <input type="hidden" id="referrer_username" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="animate-on-scroll bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold">7. 上傳申請文件</h3>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">自傳/讀書計畫 <span
+                                        class="text-red-500">*</span></label>
+                                <label id="biography_upload_area"
+                                    class="border-2 border-dashed border-border-light dark:border-border-dark rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-background-light dark:hover:bg-background-dark transition-colors cursor-pointer group h-[200px] relative">
+                                    <div class="flex flex-col items-center justify-center pointer-events-none">
+                                        <div
+                                            class="size-10 rounded-full bg-primary-light flex items-center justify-center mb-3 group-hover:bg-blue-200/60 transition-colors">
+                                            <span class="material-symbols-outlined text-primary">cloud_upload</span>
+                                        </div>
+                                        <p
+                                            class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                                            點擊上傳或拖曳檔案至此</p>
+                                        <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">
+                                            僅限
+                                            PDF, 5MB 以內</p>
+                                    </div>
+                                    <input type="file" id="biography_file" accept=".pdf" class="hidden" />
+                                </label>
+                                <!-- Preview Area for Bio -->
+                                <div id="biography_preview" class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2 hidden">
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">其他有利審查資料</label>
+                                <label id="other_docs_upload_area"
+                                    class="border-2 border-dashed border-border-light dark:border-border-dark rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-background-light dark:hover:bg-background-dark transition-colors cursor-pointer group h-[200px] relative">
+                                    <div class="flex flex-col items-center justify-center pointer-events-none">
+                                        <div
+                                            class="size-10 rounded-full bg-primary-light flex items-center justify-center mb-3 group-hover:bg-blue-200/60 transition-colors">
+                                            <span class="material-symbols-outlined text-primary">cloud_upload</span>
+                                        </div>
+                                        <p
+                                            class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                                            點擊上傳或拖曳檔案至此</p>
+                                        <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">
+                                            PDF,
+                                            JPG, PNG (可上傳多份，單檔 10MB 以內)</p>
+                                    </div>
+                                    <input type="file" id="other_docs_file" accept=".pdf,.jpg,.jpeg,.png" multiple
+                                        class="hidden" />
+                                </label>
+                                <!-- File Preview Container -->
+                                <div id="other_docs_preview" class="hidden grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+                                    <!-- Dynamic Content -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div
+            class="absolute bottom-0 left-0 right-0 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark p-4 px-6 md:px-8 flex justify-between items-center z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div id="declaration_container" class="flex items-center gap-2 p-1 rounded transition-all">
+                <input
+                    class="rounded border-gray-300 dark:bg-gray-900 dark:border-gray-600 text-primary focus:ring-primary"
+                    id="declaration" type="checkbox" />
+                <label
+                    class="text-sm text-text-secondary-light dark:text-text-secondary-dark cursor-pointer select-none"
+                    for="declaration">本人保證以上所填資料及證明文件皆屬實。</label>
+            </div>
+            <div class="flex gap-3">
+
+                <button id="submit_application_btn"
+                    class="px-5 py-2 rounded-md bg-primary text-white font-semibold text-sm hover:bg-blue-700 disabled:bg-primary/50 disabled:cursor-not-allowed transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">send</span>
+                    送出申請
+                </button>
+            </div>
+        </div>
+    </main>
+    <script src="../global.js"></script>
+    <script src="../autosave.js?v=20260604_v1"></script>
+    <script src="js/application-draft.js"></script>
+    <script src="application-form.js?v=23"></script>
+</body>
+
+</html>

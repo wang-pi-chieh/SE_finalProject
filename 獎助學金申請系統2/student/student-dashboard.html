@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>學生儀表板 - 獎學金助學系統</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                        "text": {
+                            "primary-light": "#111827",
+                            "primary-dark": "#FFFFFF",
+                            "secondary-light": "#6B7280",
+                            "secondary-dark": "#9CA3AF"
+                        },
+                        "border": {
+                            "light": "#E5E7EB",
+                            "dark": "#374151"
+                        }
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-sans text-text-primary-light dark:text-text-primary-dark min-h-screen flex flex-col">
+    <!-- Header injected by header.js -->
+    <script src="header.js?v=20260601_preview_close"></script>
+    <!-- Main Content Layout -->
+    <main class="flex-1 flex justify-center py-6 px-4 md:px-10 overflow-hidden">
+        <div class="w-full max-w-7xl flex flex-col gap-6">
+            <!-- Page Heading & Welcome -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div>
+                    <h1 id="dashboard-greeting"
+                        class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2 animate-text">
+                        歡迎回來，同學 👋</h1>
+                    <p id="semester-info" class="text-slate-500 dark:text-slate-400 font-medium">目前學期：112學年度第2學期 |
+                        載入中...</p>
+                </div>
+                <button onclick="window.location.href='scholarships.html'"
+                    class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md shadow-primary/20">
+                    <span class="material-symbols-outlined">add_circle</span>
+                    <span>瀏覽獎學金</span>
+                </button>
+            </div>
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Stat Card 1 -->
+                <div id="stat-reviewing" data-delay="0"
+                    class="animate-on-scroll flashlight-card bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-1 relative overflow-hidden group">
+                    <div
+                        class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity">
+                        <span class="material-symbols-outlined text-9xl text-blue-500">pending_actions</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">審核中案件</p>
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">0</h3>
+                        <span
+                            class="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">加油！</span>
+                    </div>
+                </div>
+                <!-- Stat Card 2 -->
+                <div id="stat-passed" data-delay="0"
+                    class="animate-on-scroll flashlight-card bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-1 relative overflow-hidden group">
+                    <div
+                        class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity">
+                        <span class="material-symbols-outlined text-9xl text-green-500">check_circle</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">本學期已通過</p>
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">0</h3>
+                        <span
+                            class="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">恭喜！</span>
+                    </div>
+                </div>
+                <!-- Stat Card 3 -->
+                <div id="stat-action" data-delay="0"
+                    class="animate-on-scroll flashlight-card bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-1 relative overflow-hidden group">
+                    <div
+                        class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity">
+                        <span class="material-symbols-outlined text-9xl text-orange-500">warning</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">需補件/操作</p>
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">0</h3>
+                        <span
+                            class="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 animate-pulse">請盡快處理</span>
+                    </div>
+                </div>
+                <!-- Stat Card 4 -->
+                <div id="total-amount-card" data-delay="0"
+                    class="animate-on-scroll flashlight-card bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-1 relative overflow-hidden group cursor-pointer hover:scale-[1.02]">
+                    <div
+                        class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity">
+                        <span class="material-symbols-outlined text-9xl text-purple-500">payments</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">已發放金額</p>
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">NT$ 15,000</h3>
+                        <span
+                            class="text-xs font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">總計</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Dashboard Split View -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+                <!-- Left: Notifications & Messages -->
+                <div class="lg:col-span-1 flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">最新通知</h3>
+                        <div class="flex items-center gap-3">
+                            <button id="mark-all-notifications-read-btn" type="button"
+                                class="text-xs font-bold text-slate-500 hover:text-primary transition-colors hidden sm:inline-flex">
+                                全部已讀
+                            </button>
+                            <a id="view-all-notifications-btn"
+                                class="text-sm font-medium text-primary hover:text-primary-dark cursor-pointer">查看全部</a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3" id="notifications-list">
+                        <!-- Notifications loaded dynamically via JS -->
+                        <div class="p-4 text-center text-slate-500 text-sm">載入通知中...</div>
+                    </div>
+                </div>
+                <!-- Center/Right: Current Applications Table -->
+                <div class="lg:col-span-2 flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">我的申請</h3>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-700/50 text-xs uppercase text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                                    <tr>
+                                        <th class="px-6 py-4 font-semibold">獎學金名稱</th>
+                                        <th class="px-6 py-4 font-semibold">申請日期</th>
+                                        <th class="px-6 py-4 font-semibold">申請金額</th>
+                                        <th class="px-6 py-4 font-semibold">狀態</th>
+                                        <th class="px-6 py-4 font-semibold text-right">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="applications-table-body"
+                                    class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+                                    <!-- Content will be loaded by JS -->
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                                            <div class="flex flex-col items-center justify-center gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-4xl text-slate-300">hourglass_empty</span>
+                                                <p>載入中...</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div
+                            class="bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-t border-slate-200 dark:border-slate-700 flex justify-center">
+                            <button id="show-more-applications-btn"
+                                class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white transition-colors flex items-center gap-1 hidden">
+                                顯示更多 <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recommended Scholarships -->
+            <div class="flex flex-col gap-4 mt-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">為您推薦的獎學金</h3>
+                </div>
+                <div id="recommendation-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Opp Card 1 -->
+                    <div data-delay="0"
+                        class="animate-on-scroll group flex flex-col bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+                        <div class="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl relative overflow-hidden"
+                            data-alt="Abstract Blue Gradient">
+                            <div class="absolute inset-0 bg-black/10"></div>
+                            <div
+                                class="absolute top-4 left-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-xs font-bold border border-white/30">
+                                成績優異
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-1 gap-3">
+                            <div class="flex justify-between items-start">
+                                <h4
+                                    class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                                    優秀清寒校友獎學金</h4>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+                                提供予家境清寒且學業成績優異之學生。
+                            </p>
+                            <div
+                                class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-300 mt-auto pt-2">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">payments</span>
+                                    <span>NT$ 20,000</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">event</span>
+                                    <span>截止：09/01</span>
+                                </div>
+                            </div>
+                            <button
+                                onclick="window.location.href='application-form.html?scholarship_name=' + encodeURIComponent('優秀清寒校友獎學金')"
+                                class="mt-3 w-full py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                查看詳情
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Opp Card 2 -->
+                    <div data-delay="0"
+                        class="animate-on-scroll group flex flex-col bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+                        <div class="h-32 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-t-xl relative overflow-hidden"
+                            data-alt="Abstract Green Gradient">
+                            <div class="absolute inset-0 bg-black/10"></div>
+                            <div
+                                class="absolute top-4 left-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-xs font-bold border border-white/30">
+                                志工服務
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-1 gap-3">
+                            <div class="flex justify-between items-start">
+                                <h4
+                                    class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                                    各系專屬獎學金</h4>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+                                限各系學生申請，學業成績需達班排前 10%。
+                            </p>
+                            <div
+                                class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-300 mt-auto pt-2">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">payments</span>
+                                    <span>NT$ 10,000</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">event</span>
+                                    <span>截止：09/01</span>
+                                </div>
+                            </div>
+                            <button
+                                onclick="window.location.href='application-form.html?scholarship_name=' + encodeURIComponent('各系專屬獎學金')"
+                                class="mt-3 w-full py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                查看詳情
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Opp Card 3 -->
+                    <div
+                        class="animate-on-scroll group flex flex-col bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+                        <div class="h-32 bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-xl relative overflow-hidden"
+                            data-alt="Abstract Purple Gradient">
+                            <div class="absolute inset-0 bg-black/10"></div>
+                            <div
+                                class="absolute top-4 left-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-xs font-bold border border-white/30">
+                                海外交流
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-1 gap-3">
+                            <div class="flex justify-between items-start">
+                                <h4
+                                    class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                                    學術研究績優獎勵</h4>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+                                獎勵發表頂尖期刊論文之學生。
+                            </p>
+                            <div
+                                class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-300 mt-auto pt-2">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">payments</span>
+                                    <span>NT$ 30,000</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">event</span>
+                                    <span>截止：09/01</span>
+                                </div>
+                            </div>
+                            <button
+                                onclick="window.location.href='application-form.html?scholarship_name=' + encodeURIComponent('學術研究績優獎勵')"
+                                class="mt-3 w-full py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                查看詳情
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- All Notifications Modal -->
+    <div id="notifications-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity opacity-0"
+            id="notif-modal-backdrop"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Modal Panel -->
+                <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg scale-95 opacity-0"
+                    id="notif-modal-content">
+                    <div class="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-xl font-semibold leading-6 text-slate-900 dark:text-white mb-4"
+                                    id="modal-title">所有通知</h3>
+                                <div class="mt-2 flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2"
+                                    id="modal-notifications-list">
+                                    <!-- Dynamic Content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" id="close-notif-modal-btn"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 sm:mt-0 sm:w-auto">關閉</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div id="celebration-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-backdrop"></div>
+
+        <!-- Modal Content -->
+        <div class="relative z-10 w-full max-w-md p-4 transform scale-95 transition-transform duration-300"
+            id="modal-content">
+            <div class="glass-card overflow-hidden rounded-2xl border border-white/20 shadow-2xl relative">
+                <!-- Close Button -->
+                <button id="close-modal-btn"
+                    class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors z-20">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+
+                <!-- Share Card (The part to be shared) -->
+                <div id="share-card"
+                    class="bg-gradient-to-br from-[#0D57D9] to-[#60a5fa] p-8 text-center relative overflow-hidden">
+                    <!-- Decorative Background -->
+                    <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                        <span class="material-symbols-outlined absolute top-[-20px] left-[-20px] text-9xl">school</span>
+                        <span
+                            class="material-symbols-outlined absolute bottom-[-20px] right-[-20px] text-9xl">payments</span>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="relative z-10 flex flex-col items-center gap-4">
+                        <div
+                            class="size-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-2 shadow-inner border border-white/30">
+                            <span class="material-symbols-outlined text-4xl">emoji_events</span>
+                        </div>
+
+                        <h2 class="animate-text text-white text-2xl font-black tracking-tight">獎學金成就解鎖！</h2>
+
+                        <div class="flex flex-col gap-1 animate-on-view" style="animation-delay: 0.2s;">
+                            <p class="text-white/80 text-sm font-medium uppercase tracking-wider">目前累計獲得</p>
+                            <p class="text-white text-5xl font-black drop-shadow-md" id="modal-total-amount">NT$ 0</p>
+                        </div>
+
+
+
+                        <div class="mt-4 w-full animate-on-view flex justify-center" style="animation-delay: 0.6s;">
+                            <div class="bg-black/20 rounded-lg p-3 text-white/90 min-w-[120px]">
+                                <p class="text-xs opacity-70">通過案件</p>
+                                <p class="text-xl font-bold" id="modal-passed-count">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer / Actions -->
+                <div class="bg-white dark:bg-slate-800 p-4 flex gap-3 justify-center">
+
+                    <button
+                        class="border-beam-btn flex items-center gap-2 px-6 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-gray-200 rounded-xl font-bold transition-all"
+                        id="download-card-btn">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                        下載
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Applications Modal -->
+    <div id="applications-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity opacity-0"
+            id="app-modal-backdrop"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Modal Panel -->
+                <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl scale-95 opacity-0"
+                    id="app-modal-content">
+                    <div class="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-xl font-semibold leading-6 text-slate-900 dark:text-white mb-4"
+                                    id="app-modal-title">所有申請紀錄</h3>
+                                <div class="mt-2 overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead
+                                            class="bg-slate-50 dark:bg-slate-700/50 text-xs uppercase text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                                            <tr>
+                                                <th class="px-6 py-4 font-semibold">獎學金名稱</th>
+                                                <th class="px-6 py-4 font-semibold">申請日期</th>
+                                                <th class="px-6 py-4 font-semibold">申請金額</th>
+                                                <th class="px-6 py-4 font-semibold">狀態</th>
+                                                <th class="px-6 py-4 font-semibold text-right">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="modal-applications-list"
+                                            class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+                                            <!-- Dynamic Content -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" id="close-app-modal-btn"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 sm:mt-0 sm:w-auto">關閉</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reason Modal -->
+    <div id="reason-modal" class="fixed inset-0 z-[60] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity opacity-0"
+            id="reason-modal-backdrop"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Modal Panel -->
+                <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg scale-95 opacity-0"
+                    id="reason-modal-content">
+                    <div class="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div
+                                class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center shrink-0 mx-auto sm:mx-0">
+                                <span
+                                    class="material-symbols-outlined text-orange-600 dark:text-orange-400">priority_high</span>
+                            </div>
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">審核意見</h3>
+                                <p id="reason-modal-text"
+                                    class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed italic border-l-4 border-orange-500 pl-4 py-1">
+                                    這裡將顯示審核意見...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" id="close-reason-modal-btn"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 sm:mt-0 sm:w-auto">好，了解</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="../global.js?v=1716300000"></script>
+    <script src="js/student-notifications.js?v=20260601_unread_first"></script>
+    <script src="student-dashboard.js?v=20260601_preview_db_name"></script>
+</body>
+
+</html>
