@@ -5,7 +5,7 @@
 
     function getCurrentUser() {
         try {
-            const raw = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+            const raw = localStorage.getItem('user') || sessionStorage.getItem('user');
             return raw ? JSON.parse(raw) : {};
         } catch (error) {
             return {};
@@ -57,9 +57,17 @@
     }
 
     async function loadStudents() {
-        const user = getCurrentUser();
-        const payload = await fetchJson(`${API_BASE}/get_mentor_students.php?teacher_username=${encodeURIComponent(user.username || '')}`);
-        renderStudents(payload.data || [], payload.assignment || {});
+        const container = document.getElementById('mentorStudentList');
+        try {
+            if (container) container.innerHTML = '<p class="text-slate-500">載入中...</p>';
+            const user = getCurrentUser();
+            const payload = await fetchJson(`${API_BASE}/get_mentor_students.php?teacher_username=${encodeURIComponent(user.username || '')}`);
+            renderStudents(payload.data || [], payload.assignment || {});
+        } catch (err) {
+            if (container) {
+                container.innerHTML = `<p class="rounded-lg bg-red-50 p-3 text-red-600">錯誤：${escapeHtml(err.message)}</p>`;
+            }
+        }
     }
 
     function renderStudents(students, assignment) {

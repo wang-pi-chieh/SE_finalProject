@@ -5,7 +5,7 @@
 
     function getCurrentUser() {
         try {
-            const raw = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+            const raw = localStorage.getItem('user') || sessionStorage.getItem('user');
             return raw ? JSON.parse(raw) : {};
         } catch (error) {
             return {};
@@ -100,39 +100,54 @@
     }
 
     async function generateLetter() {
-        const user = getCurrentUser();
-        const payload = await fetchJson(`${API_BASE}/generate_recommendation_letter.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                teacher_username: user.username || '',
-                application_id: document.getElementById('templateApplicationId')?.value,
-                template_key: document.getElementById('templateKey')?.value
-            })
-        });
-        document.getElementById('generatedRecommendationLetter').value = payload.content || '';
+        try {
+            const user = getCurrentUser();
+            const payload = await fetchJson(`${API_BASE}/generate_recommendation_letter.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    teacher_username: user.username || '',
+                    application_id: document.getElementById('templateApplicationId')?.value,
+                    template_key: document.getElementById('templateKey')?.value
+                })
+            });
+            document.getElementById('generatedRecommendationLetter').value = payload.content || '';
+        } catch (err) {
+            alert(`錯誤：${err.message}`);
+        }
     }
 
     async function returnSupplement() {
-        const user = getCurrentUser();
-        await fetchJson(`${API_BASE}/return_application_for_supplement.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                teacher_username: user.username || '',
-                application_id: document.getElementById('returnApplicationId')?.value,
-                reason: document.getElementById('returnReason')?.value
-            })
-        });
-        alert('已退回學生補件');
+        try {
+            const user = getCurrentUser();
+            await fetchJson(`${API_BASE}/return_application_for_supplement.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    teacher_username: user.username || '',
+                    application_id: document.getElementById('returnApplicationId')?.value,
+                    reason: document.getElementById('returnReason')?.value
+                })
+            });
+            alert('已退回學生補件');
+        } catch (err) {
+            alert(`退回失敗：${err.message}`);
+        }
     }
 
     async function loadEligibleStudents() {
-        const user = getCurrentUser();
-        const scholarshipId = document.getElementById('eligibleScholarshipId')?.value;
-        const payload = await fetchJson(`${API_BASE}/get_eligible_students_for_scholarship.php?teacher_username=${encodeURIComponent(user.username || '')}&scholarship_id=${encodeURIComponent(scholarshipId)}`);
         const box = document.getElementById('eligibleStudentList');
-        box.innerHTML = (payload.data || []).map(item => `<div class="rounded-lg bg-green-50 p-3 text-green-800">${escapeHtml(item.real_name)} / ${escapeHtml(item.username)}：${escapeHtml((item.reasons || []).join('；'))}</div>`).join('') || '<p class="rounded-lg bg-slate-50 p-3 text-slate-500">沒有符合資格的學生。</p>';
+        try {
+            const user = getCurrentUser();
+            const scholarshipId = document.getElementById('eligibleScholarshipId')?.value;
+            if (!scholarshipId) throw new Error('請輸入獎學金 ID');
+            
+            const payload = await fetchJson(`${API_BASE}/get_eligible_students_for_scholarship.php?teacher_username=${encodeURIComponent(user.username || '')}&scholarship_id=${encodeURIComponent(scholarshipId)}`);
+            box.innerHTML = (payload.data || []).map(item => `<div class="rounded-lg bg-green-50 p-3 text-green-800">${escapeHtml(item.real_name)} / ${escapeHtml(item.username)}：${escapeHtml((item.reasons || []).join('；'))}</div>`).join('') || '<p class="rounded-lg bg-slate-50 p-3 text-slate-500">沒有符合資格的學生。</p>';
+        } catch (err) {
+            if (box) box.innerHTML = `<p class="rounded-lg bg-red-50 p-3 text-red-600">載入錯誤：${escapeHtml(err.message)}</p>`;
+            else alert(`錯誤：${err.message}`);
+        }
     }
 
     function escapeHtml(value) {
