@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="light" lang="zh-Hant">
 
@@ -95,7 +95,8 @@
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
     <!-- Top Navigation -->
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20251226_v4"></script>
+    <script src="header.js?v=20260617_teacher_dashboard_fix"></script>
+    <script src="../issue-report.js?v=20260604_autosave"></script>
     <!-- Main Content -->
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Heading -->
@@ -126,7 +127,7 @@
             <div data-delay="0"
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">審核中申請</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">審核中推薦</p>
                     <span
                         class="material-symbols-outlined text-orange-500 bg-orange-50 dark:bg-orange-500/10 p-1.5 rounded-md">pending</span>
                 </div>
@@ -145,7 +146,7 @@
             <div data-delay="0"
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">待處理事項</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">待補件通知</p>
                     <span
                         class="material-symbols-outlined text-red-500 bg-red-50 dark:bg-red-500/10 p-1.5 rounded-md">assignment_late</span>
                 </div>
@@ -184,7 +185,7 @@
             <!-- Right: Student List -->
             <div class="lg:col-span-2 flex flex-col gap-6">
                 <div>
-                    <h3 class="text-[#111318] dark:text-white text-lg font-bold mb-4">推薦學生列表</h3>
+                        <h3 class="text-[#111318] dark:text-white text-lg font-bold mb-4">推薦學生列表</h3>
 
                     <div
                         class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
@@ -223,12 +224,12 @@
                             <table class="w-full text-left border-collapse">
                                 <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
                                     <tr>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">學院/系所</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">學業成績 (GPA)</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金項目</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">學院/系所</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">學業成績 (GPA)</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金項目</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作
                                         </th>
                                     </tr>
                                 </thead>
@@ -236,7 +237,7 @@
                                     id="dashboard-student-list">
                                     <!-- Dynamic Content -->
                                     <tr>
-                                        <td colspan="6" class="p-4 text-center text-gray-500">載入中...</td>
+                            <td colspan="6" class="p-4 text-center text-gray-500">載入中...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -247,7 +248,7 @@
                             class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex items-center justify-center">
                             <span id="show-more-trigger"
                                 class="text-sm text-[#616f89] dark:text-gray-400 font-medium cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
-                                顯示更多
+                        顯示更多
                                 <span class="material-symbols-outlined text-sm">expand_more</span>
                             </span>
                         </div>
@@ -264,18 +265,33 @@
     <script src="js/mentor-students.js?v=3"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            const previewParams = new URLSearchParams(window.location.search);
+            const isPreviewMode = previewParams.get('preview') === 'teacher';
+            const previewUser = {
+                username: previewParams.get('preview_user') || 'teacher-preview',
+                role: '老師',
+                real_name: '老師身分預覽',
+                email: 'teacher-preview@example.edu'
+            };
             const storedUser = localStorage.getItem('user');
-            if (!storedUser) {
+            if (!storedUser && !isPreviewMode) {
                 alert('請先登入');
                 window.location.href = '../login.html';
                 return;
             }
 
-            const user = JSON.parse(storedUser);
-            if (user.role !== '老師') {
+            const user = isPreviewMode ? previewUser : JSON.parse(storedUser);
+            if (user.role !== '老師' && user.role !== 'teacher') {
                 alert('權限不足');
                 window.location.href = '../login.html';
                 return;
+            }
+
+            if (isPreviewMode) {
+                const headerName = document.getElementById('header-user-name');
+                const headerEmail = document.getElementById('header-user-email');
+                if (headerName) headerName.textContent = user.real_name;
+                if (headerEmail) headerEmail.textContent = user.email;
             }
 
             // 1. Update Greeting
@@ -289,8 +305,17 @@
                 const profileRes = await fetch(`../api/get_teacher_profile.php?username=${user.username}`);
                 const profileData = await profileRes.json();
                 if (profileData.success && profileData.data) {
+                    const dbName = profileData.data.real_name || user.real_name || user.username;
                     const dept = profileData.data.department || '未知系所';
                     const title = profileData.data.display_position || '教授';
+                    user.real_name = dbName;
+                    const headerName = document.getElementById('header-user-name');
+                    const headerEmail = document.getElementById('header-user-email');
+                    if (headerName) headerName.textContent = dbName;
+                    if (headerEmail) headerEmail.textContent = profileData.data.email || user.email || '';
+                    if (greetingEl) {
+                        greetingEl.innerHTML = `歡迎回來，${dbName} 老師 <span class="text-3xl">👋</span>`;
+                    }
                     document.getElementById('teacher-semester-info').textContent = `目前學期：113學年度第1學期 | ${dept} ${title}`;
                 } else {
                     document.getElementById('teacher-semester-info').textContent = '目前學期：113學年度第1學期 | 資料載入失敗';
@@ -313,7 +338,7 @@
                     renderStudentList(allRequests);
                     setupShowMore(allRequests);
                     setupFilters(allRequests);
-                    setupNotifications(allRequests);
+                    await setupNotifications(allRequests, user.username);
                 } else {
                     document.getElementById('dashboard-student-list').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
                 }
@@ -610,6 +635,16 @@
 
         // --- Notification Logic ---
         let globalNotifications = [];
+        let currentTeacherUsername = '';
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
         function generateNotifications(requests) {
             const notifications = [];
@@ -661,13 +696,57 @@
             return notifications;
         }
 
+        async function fetchTeacherDbNotifications(username) {
+            if (!username) return [];
+
+            try {
+                const response = await fetch(`../api/teacher/get_teacher_notifications.php?teacher_username=${encodeURIComponent(username)}`);
+                const result = await response.json();
+                if (!response.ok || !result.success || !Array.isArray(result.data)) {
+                    return [];
+                }
+
+                return result.data.map(item => ({
+                    type: item.type || 'system',
+                    msg: item.title || '系統通知',
+                    detail: item.message || '',
+                    time: item.created_at || '',
+                    link: false,
+                    source: 'teacher-db',
+                    notificationId: Number(item.id),
+                    isRead: Number(item.is_read) === 1
+                }));
+            } catch (error) {
+                console.error('Teacher notification error:', error);
+                return [];
+            }
+        }
+
+        function sortTeacherNotifications(notifications) {
+            return notifications.slice().sort((a, b) => {
+                const readDiff = Number(Boolean(a.isRead)) - Number(Boolean(b.isRead));
+                if (readDiff !== 0) return readDiff;
+
+                const priority = { 'issue_report_update': 0, 'needs_action': 1, 'approved': 2, 'submitted': 3 };
+                const priorityDiff = (priority[a.type] ?? 9) - (priority[b.type] ?? 9);
+                if (priorityDiff !== 0) return priorityDiff;
+
+                return new Date(b.time || 0) - new Date(a.time || 0);
+            });
+        }
+
         function createNotificationItem(notif) {
             let colorClass = '';
             let icon = '';
             let iconBg = '';
             let iconColor = '';
 
-            if (notif.type === 'needs_action') {
+            if (notif.type === 'issue_report_update') {
+                colorClass = notif.isRead ? 'border-slate-300' : 'border-blue-500';
+                icon = 'support_agent';
+                iconBg = notif.isRead ? 'bg-slate-100' : 'bg-blue-100';
+                iconColor = notif.isRead ? 'text-slate-500' : 'text-primary';
+            } else if (notif.type === 'needs_action') {
                 colorClass = 'border-orange-500';
                 icon = 'notifications_active';
                 iconBg = 'bg-orange-100';
@@ -685,17 +764,27 @@
             }
 
             const div = document.createElement('div');
-            div.className = `bg-white dark:bg-[#1e2634] p-4 rounded-xl border-l-4 ${colorClass} shadow-sm hover:shadow-md transition-shadow flex gap-3`;
+            div.className = `bg-white dark:bg-[#1e2634] p-4 rounded-xl border-l-4 ${colorClass} shadow-sm hover:shadow-md transition-shadow flex gap-3 ${notif.isRead ? 'opacity-75' : ''}`;
             div.innerHTML = `
                 <div class="${iconBg} ${iconColor} rounded-full p-2 h-fit shrink-0">
                     <span class="material-symbols-outlined text-[20px]">${icon}</span>
                 </div>
-                <div>
-                    <h4 class="font-bold text-[#111318] dark:text-white text-sm">${notif.msg}</h4>
-                    <p class="text-xs text-[#616f89] dark:text-gray-400 mt-1">${notif.detail}</p>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-3">
+                        <h4 class="font-bold text-[#111318] dark:text-white text-sm">${escapeHtml(notif.msg)}</h4>
+                    ${notif.source === 'teacher-db' ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${notif.isRead ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300' : 'bg-primary/10 text-primary'}">${notif.isRead ? '已讀' : '未讀'}</span>` : ''}
+                    </div>
+                    <p class="text-xs text-[#616f89] dark:text-gray-400 mt-1">${escapeHtml(notif.detail)}</p>
+                    ${notif.time ? `<p class="text-[11px] text-gray-400 mt-2">${escapeHtml(notif.time)}</p>` : ''}
                     ${notif.link ? `<button onclick="window.location.href='recommendations.html'" class="text-orange-600 text-xs font-bold mt-2 inline-block hover:underline">前往處理 -></button>` : ''}
+                    ${notif.source === 'teacher-db' && !notif.isRead ? `<button type="button" data-teacher-notification-read="${notif.notificationId}" class="text-primary text-xs font-bold mt-2 inline-block hover:underline">標記為已讀</button>` : ''}
                 </div>
             `;
+
+            div.querySelector('[data-teacher-notification-read]')?.addEventListener('click', async () => {
+                await markTeacherNotificationRead(notif.notificationId);
+            });
+
             return div;
         }
 
@@ -711,22 +800,54 @@
             });
 
             if (notifications.length === 0) {
-                container.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">目前沒有新通知</div>';
+                container.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">目前沒有通知</div>';
             }
 
             // Setup Show More
             const showMoreBtn = document.getElementById('show-more-notif-trigger');
+            if (showMoreBtn) showMoreBtn.classList.add('hidden');
             if (notifications.length > 3) {
-                showMoreBtn.classList.remove('hidden');
-                showMoreBtn.onclick = openAllNotificationsModal;
-            } else {
-                showMoreBtn.classList.add('hidden');
+                const inlineMoreBtn = document.createElement('button');
+                inlineMoreBtn.type = 'button';
+                inlineMoreBtn.className = 'w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-bold text-primary hover:bg-primary/5 dark:hover:bg-primary/10';
+                inlineMoreBtn.textContent = `顯示更多 (${notifications.length})`;
+                inlineMoreBtn.onclick = openAllNotificationsModal;
+                container.appendChild(inlineMoreBtn);
             }
         }
 
-        function setupNotifications(requests) {
-            const notifications = generateNotifications(requests);
+        async function setupNotifications(requests, teacherUsername) {
+            currentTeacherUsername = teacherUsername || '';
+            const dbNotifications = await fetchTeacherDbNotifications(currentTeacherUsername);
+            const notifications = sortTeacherNotifications(dbNotifications);
             renderNotifications(notifications);
+        }
+
+        async function markTeacherNotificationRead(notificationId) {
+            if (!currentTeacherUsername || !notificationId) return;
+
+            try {
+                const response = await fetch('../api/teacher/mark_teacher_notification_read.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teacher_username: currentTeacherUsername,
+                        notification_id: notificationId
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                alert(result.message || '標記為已讀失敗');
+                    return;
+                }
+
+                const target = globalNotifications.find(n => n.source === 'teacher-db' && n.notificationId === notificationId);
+                if (target) target.isRead = true;
+                renderNotifications(sortTeacherNotifications(globalNotifications));
+            } catch (error) {
+                console.error('Mark teacher notification read error:', error);
+            alert('標記為已讀失敗');
+            }
         }
 
         function openAllNotificationsModal() {
@@ -784,8 +905,8 @@
                 <div
                     class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">待辦事項/通知</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">所有系統通知與待辦事項。</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">待辦事項/通知</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">目前沒有通知或待辦事項</p>
                     </div>
                     <button onclick="closeAllNotificationsModal()"
                         class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -800,7 +921,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
                     <button onclick="closeAllNotificationsModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
                 </div>
             </div>
         </div>
@@ -815,8 +936,8 @@
                 <!-- Header -->
                 <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modalStudentName">學生姓名</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="modalStudentId">學號</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modalStudentName">學生姓名</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="modalStudentId">摮貉?</p>
                     </div>
                     <button onclick="closeGradeModal()"
                         class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -825,15 +946,15 @@
                 </div>
                 <!-- Content -->
                 <div class="p-6">
-                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">歷年成績紀錄</h4>
+                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">歷年成績概覽</h4>
                     <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
                         <table class="w-full text-sm text-left">
                             <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                                 <tr>
-                                    <th class="px-4 py-3 font-medium">學年/學期</th>
-                                    <th class="px-4 py-3 font-medium">平均成績</th>
+                                    <th class="px-4 py-3 font-medium">摮詨僑/摮豢?</th>
+                                <th class="px-4 py-3 font-medium">平均成績</th>
                                     <th class="px-4 py-3 font-medium">GPA</th>
-                                    <th class="px-4 py-3 font-medium">班排名/人數</th>
+                                <th class="px-4 py-3 font-medium">班級排名</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="gradeTableBody">
@@ -845,7 +966,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end">
                     <button onclick="closeGradeModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
                 </div>
             </div>
         </div>
@@ -862,8 +983,8 @@
                 <div
                     class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">所有推薦學生</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">查看所有向您申請推薦信的學生。</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">所有推薦學生</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">尚無需要追蹤的推薦資料</p>
                     </div>
                     <button onclick="closeAllStudentsModal()"
                         class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -892,7 +1013,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
                     <button onclick="closeAllStudentsModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
                 </div>
             </div>
         </div>

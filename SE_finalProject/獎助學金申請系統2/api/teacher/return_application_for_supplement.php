@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/../admin/_admin_ops_common.php';
+
+admin_ops_ensure_teacher_notification_schema($conn);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -36,11 +39,25 @@ try {
     if (!$record->execute()) throw new Exception($record->error);
     $record->close();
 
-    $notify = $conn->prepare("INSERT INTO teacher_notifications (teacher_username, type, title, message, unique_key) VALUES (?, 'return', '已退回學生補件', ?, ?)");
     $message = '申請 #' . $applicationId . ' 已退回補件，理由：' . $reason;
-    $unique = 'return:' . $teacher . ':' . $applicationId . ':' . time();
-    $notify->bind_param('sss', $teacher, $message, $unique);
-    $notify->execute();
+    $dedupKey = 'mentor-return:' . $teacher . ':' . $applicationId;
+    $notify = $conn->prepare("
+        INSERT INTO teacher_notifications
+            (teacher_username, type, title, message, related_application_id, dedup_key, is_read)
+        VALUES (?, 'return', '已退回學生補件', ?, ?, ?, 0)
+        ON DUPLICATE KEY UPDATE
+            message = VALUES(message),
+            related_application_id = VALUES(related_application_id),
+            is_read = 0,
+            created_at = CURRENT_TIMESTAMP
+    ");
+    if (!$notify) {
+        throw new Exception('建立老師通知失敗');
+    }
+    $notify->bind_param('ssis', $teacher, $message, $applicationId, $dedupKey);
+    if (!$notify->execute()) {
+        throw new Exception($notify->error);
+    }
     $notify->close();
 
     $conn->commit();

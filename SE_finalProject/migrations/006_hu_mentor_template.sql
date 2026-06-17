@@ -41,15 +41,20 @@ CREATE TABLE IF NOT EXISTS mentor_return_records (
 CREATE TABLE IF NOT EXISTS teacher_notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     teacher_username VARCHAR(50) NOT NULL,
-    type ENUM('deadline', 'return', 'recommendation', 'system') NOT NULL DEFAULT 'system',
-    title VARCHAR(150) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
+    related_application_id INT DEFAULT NULL,
+    related_issue_report_id INT DEFAULT NULL,
+    dedup_key VARCHAR(255) NOT NULL,
     is_read TINYINT(1) NOT NULL DEFAULT 0,
-    unique_key VARCHAR(180) NOT NULL,
+    email_sent_at DATETIME DEFAULT NULL,
+    email_last_error VARCHAR(255) DEFAULT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    read_at DATETIME NULL,
-    UNIQUE KEY uniq_teacher_notification (unique_key),
-    INDEX idx_teacher_notification (teacher_username, is_read, created_at)
+    UNIQUE KEY uniq_teacher_notification_dedup (dedup_key),
+    INDEX idx_teacher_notifications_user_read (teacher_username, is_read, created_at),
+    INDEX idx_teacher_notifications_application (related_application_id),
+    INDEX idx_teacher_notifications_issue_report (related_issue_report_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS mentor_scholarship_rules (
