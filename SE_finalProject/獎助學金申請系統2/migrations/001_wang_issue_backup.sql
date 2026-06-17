@@ -1,7 +1,3 @@
--- Owner: Wang Bih-Jie
--- Scope: issue reports, backup status, audit-log support, role preview metadata,
---        teacher notifications, restore uploads, and data archives.
-
 CREATE TABLE IF NOT EXISTS `issue_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `reporter_username` varchar(50) DEFAULT NULL,

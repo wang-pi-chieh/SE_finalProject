@@ -13,9 +13,9 @@ $sql = "CREATE TABLE IF NOT EXISTS homepage_announcements (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
 
 if ($conn->query($sql) === TRUE) {
-    echo \"Table homepage_announcements created or already exists.\";
+    echo "Table homepage_announcements created or already exists.";
 } else {
-    echo \"Error creating table: \" . $conn->error;
+    echo "Error creating table: " . $conn->error;
 }
 
 $conn->close();
