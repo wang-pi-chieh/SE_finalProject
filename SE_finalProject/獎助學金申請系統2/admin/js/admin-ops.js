@@ -83,6 +83,7 @@
                         <select id="archive-type-select" class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm">
                             <option value="resolved_issue_reports">已解決問題回報</option>
                             <option value="students_over_years">入學超過 4 年學生</option>
+                            <option value="departed_teachers">離職老師</option>
                             <option value="applications_by_year">年度申請紀錄</option>
                             <option value="expired_scholarships">過期/停用獎學金項目</option>
                             <option value="old_announcements">過期公告</option>
@@ -678,6 +679,18 @@
             return;
         }
 
+        if (type === 'departed_teachers') {
+            container.innerHTML = `
+                <p class="text-xs text-gray-500">系統沒有老師離職狀態欄位，請由管理員確認後勾選要封存的老師。封存檔會包含老師資料、推薦信、老師通知與相關申請關聯。</p>
+                <button id="load-teacher-archive-candidates-btn" type="button" class="px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 text-sm font-bold text-primary hover:bg-primary/5">載入老師清單</button>
+                <div id="archive-teacher-candidates" class="max-h-48 overflow-y-auto rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-3 text-sm text-gray-500">
+                    按「載入老師清單」後選擇離職老師。
+                </div>
+            `;
+            document.getElementById('load-teacher-archive-candidates-btn')?.addEventListener('click', loadTeacherArchiveCandidates);
+            return;
+        }
+
         if (type === 'expired_scholarships') {
             container.innerHTML = '<p class="text-xs text-gray-500">會封存申請截止日早於今天，或已停用的獎學金項目。</p>';
             return;
@@ -738,6 +751,57 @@
 
         document.getElementById('archive-select-all-students')?.addEventListener('change', (event) => {
             container.querySelectorAll('.archive-student-checkbox').forEach((checkbox) => {
+                checkbox.checked = event.currentTarget.checked;
+            });
+        });
+    }
+
+    async function loadTeacherArchiveCandidates() {
+        const container = document.getElementById('archive-teacher-candidates');
+        if (!container) return;
+
+        container.innerHTML = '<p class="text-sm text-gray-500">載入中...</p>';
+
+        try {
+            const result = await fetchJson(`${API_BASE}/get_archive_candidates.php?archive_type=departed_teachers`);
+            if (!result.success) throw new Error(result.message || '讀取候選老師失敗');
+            state.archiveCandidates = result.data || [];
+            renderTeacherArchiveCandidates();
+        } catch (error) {
+            container.innerHTML = `<p class="text-sm text-red-500">${escapeHtml(error.message)}</p>`;
+        }
+    }
+
+    function renderTeacherArchiveCandidates() {
+        const container = document.getElementById('archive-teacher-candidates');
+        if (!container) return;
+
+        if (state.archiveCandidates.length === 0) {
+            container.innerHTML = '<p class="text-sm text-gray-500">沒有可封存的老師。</p>';
+            return;
+        }
+
+        container.innerHTML = `
+            <label class="flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-300 mb-2">
+                <input id="archive-select-all-teachers" type="checkbox">
+                全選 ${state.archiveCandidates.length} 位老師
+            </label>
+            <div class="space-y-2">
+                ${state.archiveCandidates.map((teacher) => `
+                    <label class="flex items-start gap-2 rounded-md bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 p-2">
+                        <input type="checkbox" class="archive-teacher-checkbox mt-1" value="${escapeHtml(teacher.username)}">
+                        <span class="min-w-0">
+                            <span class="block text-sm font-bold text-[#111318] dark:text-white">${escapeHtml(teacher.real_name || teacher.username)}</span>
+                            <span class="block text-xs text-gray-500">${escapeHtml(teacher.username)} · ${escapeHtml(teacher.department || '未填系所')}</span>
+                            <span class="block text-xs text-gray-500">推薦信 ${Number(teacher.reference_letter_count || 0)} 筆 · 申請關聯 ${Number(teacher.referred_application_count || 0)} 筆 · 通知 ${Number(teacher.notification_count || 0)} 筆</span>
+                        </span>
+                    </label>
+                `).join('')}
+            </div>
+        `;
+
+        document.getElementById('archive-select-all-teachers')?.addEventListener('change', (event) => {
+            container.querySelectorAll('.archive-teacher-checkbox').forEach((checkbox) => {
                 checkbox.checked = event.currentTarget.checked;
             });
         });
@@ -935,6 +999,15 @@
                 return null;
             }
             payload.academic_year = academicYear;
+        }
+
+        if (archiveType === 'departed_teachers') {
+            const selected = Array.from(document.querySelectorAll('.archive-teacher-checkbox:checked')).map((item) => item.value);
+            payload.selected_usernames = selected;
+            if (selected.length === 0) {
+                alert('請先載入並選擇要封存的離職老師。');
+                return null;
+            }
         }
 
         return payload;

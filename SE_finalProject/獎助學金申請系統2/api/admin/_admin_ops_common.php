@@ -90,12 +90,25 @@ function admin_ops_ensure_issue_schema($conn)
               title varchar(255) NOT NULL,
               message text NOT NULL,
               is_read tinyint(1) NOT NULL DEFAULT 0,
+              email_sent_at datetime DEFAULT NULL,
+              email_last_error varchar(255) DEFAULT NULL,
               created_at datetime NOT NULL DEFAULT current_timestamp(),
               PRIMARY KEY (id),
               KEY idx_issue_notifications_user_read (recipient_username, is_read, created_at),
               KEY idx_issue_notifications_report (issue_report_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
+    }
+
+    $notification_columns = [
+        'email_sent_at' => "ALTER TABLE issue_report_notifications ADD COLUMN email_sent_at datetime DEFAULT NULL AFTER is_read",
+        'email_last_error' => "ALTER TABLE issue_report_notifications ADD COLUMN email_last_error varchar(255) DEFAULT NULL AFTER email_sent_at"
+    ];
+
+    foreach ($notification_columns as $column => $sql) {
+        if (!admin_ops_column_exists($conn, 'issue_report_notifications', $column)) {
+            $conn->query($sql);
+        }
     }
 }
 
@@ -185,6 +198,8 @@ function admin_ops_ensure_teacher_notification_schema($conn)
               related_issue_report_id int(11) DEFAULT NULL,
               dedup_key varchar(255) NOT NULL,
               is_read tinyint(1) NOT NULL DEFAULT 0,
+              email_sent_at datetime DEFAULT NULL,
+              email_last_error varchar(255) DEFAULT NULL,
               created_at datetime NOT NULL DEFAULT current_timestamp(),
               PRIMARY KEY (id),
               UNIQUE KEY uniq_teacher_notification_dedup (dedup_key),
@@ -204,7 +219,9 @@ function admin_ops_ensure_teacher_notification_schema($conn)
         'related_issue_report_id' => "ALTER TABLE teacher_notifications ADD COLUMN related_issue_report_id int(11) DEFAULT NULL AFTER related_application_id",
         'dedup_key' => "ALTER TABLE teacher_notifications ADD COLUMN dedup_key varchar(255) NOT NULL DEFAULT '' AFTER related_issue_report_id",
         'is_read' => "ALTER TABLE teacher_notifications ADD COLUMN is_read tinyint(1) NOT NULL DEFAULT 0 AFTER dedup_key",
-        'created_at' => "ALTER TABLE teacher_notifications ADD COLUMN created_at datetime NOT NULL DEFAULT current_timestamp() AFTER is_read"
+        'email_sent_at' => "ALTER TABLE teacher_notifications ADD COLUMN email_sent_at datetime DEFAULT NULL AFTER is_read",
+        'email_last_error' => "ALTER TABLE teacher_notifications ADD COLUMN email_last_error varchar(255) DEFAULT NULL AFTER email_sent_at",
+        'created_at' => "ALTER TABLE teacher_notifications ADD COLUMN created_at datetime NOT NULL DEFAULT current_timestamp() AFTER email_last_error"
     ];
 
     foreach ($columns as $column => $sql) {

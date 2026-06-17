@@ -101,6 +101,7 @@ function infer_archive_type($payload)
     if ($source === 'scholarships') return 'expired_scholarships';
     if ($source === 'homepage_announcements') return 'old_announcements';
     if ($source === 'users,students') return 'students_over_years';
+    if ($source === 'users,teachers') return 'departed_teachers';
     return '';
 }
 
@@ -166,6 +167,8 @@ function delete_records_by_archive_type($conn, $archive_type, $records)
             return delete_scholarships($conn, ids_from_records($records));
         case 'old_announcements':
             return delete_simple_ids($conn, 'homepage_announcements', ids_from_records($records));
+        case 'departed_teachers':
+            return delete_departed_teachers($conn, teacher_usernames_from_records($records));
         case 'resolved_issue_reports':
             return delete_issue_reports($conn, ids_from_records($records));
         default:
@@ -231,6 +234,62 @@ function delete_students($conn, $usernames, $record_count)
     return $record_count;
 }
 
+function delete_departed_teachers($conn, $usernames)
+{
+    if (count($usernames) === 0) return 0;
+    delete_where_in($conn, 'teacher_notifications', 'teacher_username', $usernames, 's');
+    delete_where_in($conn, 'reference_letters', 'teacher_username', $usernames, 's');
+    clear_application_referrers($conn, $usernames);
+    delete_where_in($conn, 'teachers', 'username', $usernames, 's');
+    delete_where_in($conn, 'users', 'username', $usernames, 's');
+    return count($usernames);
+}
+
+function teacher_usernames_from_records($records)
+{
+    $usernames = [];
+    foreach ($records as $record) {
+        if (isset($record['record_type']) && $record['record_type'] === 'teacher_profile' && isset($record['username'])) {
+            $usernames[] = (string) $record['username'];
+        }
+    }
+
+    return array_values(array_unique(array_filter($usernames, function ($username) {
+        return trim((string) $username) !== '';
+    })));
+}
+
+function clear_application_referrers($conn, $usernames)
+{
+    if (!admin_ops_table_exists($conn, 'applications') || !admin_ops_column_exists($conn, 'applications', 'referrer_username')) {
+        return 0;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($usernames), '?'));
+    $stmt = $conn->prepare("UPDATE applications SET referrer_username = NULL WHERE referrer_username IN ({$placeholders})");
+    if (!$stmt) {
+        throw new Exception('建立清除老師申請關聯語句失敗。');
+    }
+
+    $types = str_repeat('s', count($usernames));
+    $params = array_merge([$types], $usernames);
+    $refs = [];
+    foreach ($params as $key => $value) {
+        $refs[$key] = &$params[$key];
+    }
+    call_user_func_array([$stmt, 'bind_param'], $refs);
+
+    if (!$stmt->execute()) {
+        $error = $stmt->error;
+        $stmt->close();
+        throw new Exception("清除老師申請關聯失敗：{$error}");
+    }
+
+    $affected = $stmt->affected_rows;
+    $stmt->close();
+    return $affected;
+}
+
 function delete_simple_ids($conn, $table, $ids)
 {
     if (count($ids) === 0) return 0;
@@ -252,6 +311,9 @@ function delete_where_in($conn, $table, $column, $values, $type)
         'applications',
         'scholarship_eligibility_rules',
         'scholarships',
+        'teacher_notifications',
+        'reference_letters',
+        'teachers',
         'students',
         'users',
         'homepage_announcements'
@@ -263,6 +325,7 @@ function delete_where_in($conn, $table, $column, $values, $type)
         'application_id',
         'related_scholarship_id',
         'scholarship_id',
+        'teacher_username',
         'student_username',
         'username'
     ];

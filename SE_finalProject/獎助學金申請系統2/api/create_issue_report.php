@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once 'db_connect.php';
 require_once __DIR__ . '/admin/_admin_ops_common.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -16,6 +15,13 @@ if ($title === '' || $description === '') {
     echo json_encode(['success' => false, 'message' => '請輸入問題標題與描述'], JSON_UNESCAPED_UNICODE);
     exit;
 }
+
+if ($contact_email !== '' && !filter_var($contact_email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => '聯絡 Email 格式不正確'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+require_once 'db_connect.php';
 
 if (!admin_ops_table_exists($conn, 'issue_reports')) {
     http_response_code(500);

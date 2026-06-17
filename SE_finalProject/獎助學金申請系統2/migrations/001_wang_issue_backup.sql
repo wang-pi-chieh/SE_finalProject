@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS `issue_report_notifications` (
   `title` varchar(255) NOT NULL,
   `message` text NOT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `email_sent_at` datetime DEFAULT NULL,
+  `email_last_error` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `idx_issue_notifications_user_read` (`recipient_username`, `is_read`, `created_at`),
@@ -38,6 +40,8 @@ CREATE TABLE IF NOT EXISTS `teacher_notifications` (
   `related_issue_report_id` int(11) DEFAULT NULL,
   `dedup_key` varchar(255) NOT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `email_sent_at` datetime DEFAULT NULL,
+  `email_last_error` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_teacher_notification_dedup` (`dedup_key`),
@@ -105,6 +109,54 @@ CREATE TABLE IF NOT EXISTS `data_archives` (
   PRIMARY KEY (`id`),
   KEY `idx_data_archives_source_created` (`source_table`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET @add_issue_email_sent_at = IF(
+  (SELECT COUNT(*) FROM information_schema.columns
+   WHERE table_schema = DATABASE()
+     AND table_name = 'issue_report_notifications'
+     AND column_name = 'email_sent_at') = 0,
+  'ALTER TABLE `issue_report_notifications` ADD COLUMN `email_sent_at` datetime DEFAULT NULL AFTER `is_read`',
+  'SELECT 1'
+);
+PREPARE stmt_add_issue_email_sent_at FROM @add_issue_email_sent_at;
+EXECUTE stmt_add_issue_email_sent_at;
+DEALLOCATE PREPARE stmt_add_issue_email_sent_at;
+
+SET @add_issue_email_last_error = IF(
+  (SELECT COUNT(*) FROM information_schema.columns
+   WHERE table_schema = DATABASE()
+     AND table_name = 'issue_report_notifications'
+     AND column_name = 'email_last_error') = 0,
+  'ALTER TABLE `issue_report_notifications` ADD COLUMN `email_last_error` varchar(255) DEFAULT NULL AFTER `email_sent_at`',
+  'SELECT 1'
+);
+PREPARE stmt_add_issue_email_last_error FROM @add_issue_email_last_error;
+EXECUTE stmt_add_issue_email_last_error;
+DEALLOCATE PREPARE stmt_add_issue_email_last_error;
+
+SET @add_teacher_email_sent_at = IF(
+  (SELECT COUNT(*) FROM information_schema.columns
+   WHERE table_schema = DATABASE()
+     AND table_name = 'teacher_notifications'
+     AND column_name = 'email_sent_at') = 0,
+  'ALTER TABLE `teacher_notifications` ADD COLUMN `email_sent_at` datetime DEFAULT NULL AFTER `is_read`',
+  'SELECT 1'
+);
+PREPARE stmt_add_teacher_email_sent_at FROM @add_teacher_email_sent_at;
+EXECUTE stmt_add_teacher_email_sent_at;
+DEALLOCATE PREPARE stmt_add_teacher_email_sent_at;
+
+SET @add_teacher_email_last_error = IF(
+  (SELECT COUNT(*) FROM information_schema.columns
+   WHERE table_schema = DATABASE()
+     AND table_name = 'teacher_notifications'
+     AND column_name = 'email_last_error') = 0,
+  'ALTER TABLE `teacher_notifications` ADD COLUMN `email_last_error` varchar(255) DEFAULT NULL AFTER `email_sent_at`',
+  'SELECT 1'
+);
+PREPARE stmt_add_teacher_email_last_error FROM @add_teacher_email_last_error;
+EXECUTE stmt_add_teacher_email_last_error;
+DEALLOCATE PREPARE stmt_add_teacher_email_last_error;
 
 INSERT INTO `issue_reports` (`reporter_username`, `title`, `description`, `status`)
 SELECT 'System Tester', '申請流程測試問題', '測試用問題回報，可用於驗證 open/processing/resolved 狀態切換。', 'open'

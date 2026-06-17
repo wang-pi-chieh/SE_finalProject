@@ -5,6 +5,7 @@ require_once __DIR__ . '/_admin_ops_common.php';
 
 admin_ops_ensure_issue_schema($conn);
 admin_ops_ensure_archive_schema($conn);
+admin_ops_ensure_teacher_notification_schema($conn);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     admin_ops_json(['success' => false, 'message' => '僅支援 POST。'], 405);
@@ -97,6 +98,8 @@ function build_archive_dataset($conn, $archive_type, $input)
             return build_expired_scholarships_archive($conn);
         case 'old_announcements':
             return build_old_announcements_archive($conn);
+        case 'departed_teachers':
+            return build_departed_teachers_archive($conn, $input);
         case 'resolved_issue_reports':
         default:
             return build_resolved_issue_reports_archive($conn);
@@ -274,6 +277,103 @@ function build_old_announcements_archive($conn)
     ];
 }
 
+function build_departed_teachers_archive($conn, $input)
+{
+    $selected = isset($input['selected_usernames']) && is_array($input['selected_usernames']) ? $input['selected_usernames'] : [];
+    $selected = array_values(array_unique(array_filter(array_map(function ($username) {
+        return trim((string) $username);
+    }, $selected), function ($username) {
+        return $username !== '';
+    })));
+
+    if (count($selected) === 0) {
+        admin_ops_json(['success' => false, 'message' => '請先選擇要封存的離職老師。'], 400);
+    }
+
+    $records = [];
+    $placeholders = implode(',', array_fill(0, count($selected), '?'));
+    $types = str_repeat('s', count($selected));
+
+    $profile_stmt = $conn->prepare("
+        SELECT 'teacher_profile' AS record_type,
+               u.username, u.real_name, u.role, u.phone, u.email,
+               t.department, t.position,
+               NULL AS related_id, NULL AS application_id, NULL AS student_username,
+               NULL AS scholarship_id, NULL AS title, NULL AS message,
+               NULL AS content, NULL AS file_path, NULL AS status,
+               NULL AS created_at
+        FROM users u
+        INNER JOIN teachers t ON t.username = u.username
+        WHERE u.username IN ({$placeholders})
+        ORDER BY u.username ASC
+    ");
+    append_rows($records, $profile_stmt, $types, $selected, '讀取離職老師資料失敗。');
+
+    if (admin_ops_table_exists($conn, 'reference_letters')) {
+        $letter_stmt = $conn->prepare("
+            SELECT 'reference_letter' AS record_type,
+                   rl.teacher_username AS username, u.real_name, u.role, u.phone, u.email,
+                   t.department, t.position,
+                   rl.id AS related_id, rl.application_id, a.student_username,
+                   a.scholarship_id, NULL AS title, NULL AS message,
+                   rl.content, rl.file_path, rl.status,
+                   rl.filled_at AS created_at
+            FROM reference_letters rl
+            LEFT JOIN users u ON u.username = rl.teacher_username
+            LEFT JOIN teachers t ON t.username = rl.teacher_username
+            LEFT JOIN applications a ON a.id = rl.application_id
+            WHERE rl.teacher_username IN ({$placeholders})
+            ORDER BY rl.teacher_username ASC, rl.id ASC
+        ");
+        append_rows($records, $letter_stmt, $types, $selected, '讀取老師推薦信資料失敗。');
+    }
+
+    if (admin_ops_table_exists($conn, 'teacher_notifications')) {
+        $notification_stmt = $conn->prepare("
+            SELECT 'teacher_notification' AS record_type,
+                   tn.teacher_username AS username, u.real_name, u.role, u.phone, u.email,
+                   t.department, t.position,
+                   tn.id AS related_id, tn.related_application_id AS application_id,
+                   NULL AS student_username, NULL AS scholarship_id,
+                   tn.title, tn.message,
+                   NULL AS content, NULL AS file_path, NULL AS status,
+                   tn.created_at
+            FROM teacher_notifications tn
+            LEFT JOIN users u ON u.username = tn.teacher_username
+            LEFT JOIN teachers t ON t.username = tn.teacher_username
+            WHERE tn.teacher_username IN ({$placeholders})
+            ORDER BY tn.teacher_username ASC, tn.id ASC
+        ");
+        append_rows($records, $notification_stmt, $types, $selected, '讀取老師通知資料失敗。');
+    }
+
+    if (admin_ops_table_exists($conn, 'applications') && admin_ops_column_exists($conn, 'applications', 'referrer_username')) {
+        $application_stmt = $conn->prepare("
+            SELECT 'referred_application' AS record_type,
+                   a.referrer_username AS username, u.real_name, u.role, u.phone, u.email,
+                   t.department, t.position,
+                   a.id AS related_id, a.id AS application_id, a.student_username,
+                   a.scholarship_id, NULL AS title, NULL AS message,
+                   NULL AS content, NULL AS file_path, a.status,
+                   a.created_at
+            FROM applications a
+            LEFT JOIN users u ON u.username = a.referrer_username
+            LEFT JOIN teachers t ON t.username = a.referrer_username
+            WHERE a.referrer_username IN ({$placeholders})
+            ORDER BY a.referrer_username ASC, a.id ASC
+        ");
+        append_rows($records, $application_stmt, $types, $selected, '讀取老師相關申請資料失敗。');
+    }
+
+    return [
+        'name_prefix' => 'teachers_departed',
+        'source_table' => 'users,teachers',
+        'filter' => ['selected_usernames' => $selected],
+        'records' => $records,
+        'empty_message' => '沒有符合條件的離職老師可以封存。'
+    ];
+}
+
 function fetch_all_or_fail($stmt, $message)
 {
     if (!$stmt || !$stmt->execute()) {
@@ -287,6 +387,25 @@ function fetch_all_or_fail($stmt, $message)
     }
     $stmt->close();
     return $rows;
+}
+
+function append_rows(&$records, $stmt, $types, $params, $message)
+{
+    if (!$stmt) {
+        admin_ops_json(['success' => false, 'message' => $message], 500);
+    }
+
+    $bind = array_merge([$types], $params);
+    $refs = [];
+    foreach ($bind as $key => $value) {
+        $refs[$key] = &$bind[$key];
+    }
+    call_user_func_array([$stmt, 'bind_param'], $refs);
+
+    $rows = fetch_all_or_fail($stmt, $message);
+    foreach ($rows as $row) {
+        $records[] = $row;
+    }
 }
 
 function extract_admission_year($username)

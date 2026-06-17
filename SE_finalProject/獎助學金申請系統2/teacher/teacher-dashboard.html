@@ -818,10 +818,7 @@
         async function setupNotifications(requests, teacherUsername) {
             currentTeacherUsername = teacherUsername || '';
             const dbNotifications = await fetchTeacherDbNotifications(currentTeacherUsername);
-            const notifications = sortTeacherNotifications([
-                ...dbNotifications,
-                ...generateNotifications(requests)
-            ]);
+            const notifications = sortTeacherNotifications(dbNotifications);
             renderNotifications(notifications);
         }
 
@@ -1102,4 +1099,3 @@
     </script>
 
 </html>
-
