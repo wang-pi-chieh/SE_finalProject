@@ -43,7 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.updateHeaderActiveState) {
             window.updateHeaderActiveState(tab);
         }
+        const disbursement = document.getElementById("tab-disbursement-content");
 
+        if (tab === "disbursement") {
+            if (disbursement) disbursement.classList.remove("hidden");
+            if (applicationsTableBody) applicationsTableBody.parentElement.style.display = "none";
+            loadDisbursement();
+            return;
+        } else {
+            if (disbursement) disbursement.classList.add("hidden");
+            if (applicationsTableBody) applicationsTableBody.parentElement.style.display = "block";
+        }
         filterApplications();
     };
 
@@ -91,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => console.error('Error fetching scholarships:', err));
     }
-
+    
     function filterApplications() {
         const query = searchInput.value.toLowerCase().trim();
         const status = statusFilter.value;
@@ -271,7 +281,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/40 dark:text-gray-300">狀態:${status}</span>`;
         }
     }
+    
+    function loadDisbursement() {
+        const tbody = document.getElementById("disbursement-table-body");
+        if (!tbody) return;
 
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="p-4 text-center text-gray-400">
+                    載入撥款資料中...
+                </td>
+            </tr>
+    `   ;
+
+    fetch('../api/get_disbursement.php')
+}
+    
     // Initialize
     fetchApplications();
     populateScholarshipFilter(); // Fetch filters dynamic from DB

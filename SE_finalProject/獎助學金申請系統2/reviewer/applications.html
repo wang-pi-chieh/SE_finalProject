@@ -101,8 +101,41 @@
                 onclick="switchTab('history')">
                 甇瑕撖拇蝝??
             </button>
+            <button id="tab-disbursement"
+                class="tab-btn px-4 py-2 text-sm font-medium text-gray-500 border-b-2 border-transparent"
+                onclick="switchTab('disbursement')">
+                撥款管理
+            </button>
         </div>
+<!-- Disbursement Tab Content -->
+<div id="tab-disbursement-content" class="hidden">
 
+    <div class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm p-4">
+
+        <h2 class="text-lg font-bold mb-4">撥款管理</h2>
+
+        <table class="w-full text-left border-collapse">
+            <thead class="text-gray-500 text-sm">
+                <tr>
+                    <th class="p-3">學生</th>
+                    <th class="p-3">金額</th>
+                    <th class="p-3">狀態</th>
+                    <th class="p-3 text-right">操作</th>
+                </tr>
+            </thead>
+
+            <tbody id="disbursement-table-body">
+                <tr>
+                    <td colspan="4" class="p-4 text-center text-gray-400">
+                        載入中...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
         <!-- Filter & Table Section -->
         <div
             class="animate-on-scroll bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
@@ -168,6 +201,7 @@
     <script src="../global.js"></script>
     <script src="js/award-list.js"></script>
     <script src="applications.js?v=11"></script>
+           <script src="js/disbursement.js"></script>
 </body>
 
 </html>
