@@ -6,14 +6,34 @@ if (function_exists('mysqli_report')) {
     mysqli_report(MYSQLI_REPORT_OFF);
 }
 
-$host = 'localhost';
-$user = 'root';
-$password = '12355';
-$dbname = 'database5';
+if (!function_exists('db_env')) {
+    function db_env($keys, $default = '')
+    {
+        foreach ((array) $keys as $key) {
+            $value = getenv($key);
+            if ($value !== false && $value !== '') {
+                return $value;
+            }
+        }
+        return $default;
+    }
+}
 
-$conn = new mysqli($host, $user, $password, $dbname);
+$host = db_env(['DB_HOST', 'MYSQL_HOST'], 'localhost');
+$user = db_env(['DB_USER', 'MYSQL_USER', 'MYSQL_USERNAME'], 'root');
+$password = db_env(['DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD'], '12355');
+$dbname = db_env(['DB_NAME', 'MYSQL_DATABASE'], 'database5');
+$port = (int) db_env(['DB_PORT', 'MYSQL_PORT'], '3306');
+if ($port <= 0) {
+    $port = 3306;
+}
+
+$conn = @new mysqli($host, $user, $password, $dbname, $port);
 
 if ($conn->connect_error) {
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=utf-8');
+    }
     die(json_encode(["success" => false, "message" => "Database connection failed: " . $conn->connect_error]));
 }
 
