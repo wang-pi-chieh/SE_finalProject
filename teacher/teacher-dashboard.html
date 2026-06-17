@@ -1,0 +1,1105 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>?葦?銵冽 - ?飛?摮貊頂蝯?/title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            "DEFAULT": "#0D57D9",
+                            "light": "#F0F5FF"
+                        },
+                        "secondary": "#E5E7EB",
+                        "background": {
+                            "light": "#F8F9FA",
+                            "dark": "#111827"
+                        },
+                        "card": {
+                            "light": "#FFFFFF",
+                            "dark": "#1F2937"
+                        },
+                        "text": {
+                            "primary-light": "#111827",
+                            "primary-dark": "#FFFFFF",
+                            "secondary-light": "#6B7280",
+                            "secondary-dark": "#9CA3AF"
+                        },
+                        "border": {
+                            "light": "#E5E7EB",
+                            "dark": "#374151"
+                        }
+                    },
+                    fontFamily: {
+                        "sans": ["Public Sans", "Noto Sans TC", "sans-serif"],
+                        "display": ["Public Sans", "Noto Sans TC", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Public Sans", "Noto Sans TC", sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar for table if needed */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Top Navigation -->
+    <!-- Header injected by header.js -->
+    <script src="header.js?v=20260601_teacher_preview_banner"></script>
+    <script src="../issue-report.js?v=20260604_autosave"></script>
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">?葦?銵冽
+                </h1>
+                <h2 id="dashboard-greeting" class="text-3xl font-bold text-[#111318] dark:text-white">
+                    甇∟???嚗葦 <span class="text-3xl">??</span>
+                </h2>
+                <p id="teacher-semester-info" class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">
+                    ?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | 頛銝?..</p>
+            </div>
+
+        </div>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撌脫?血飛?</p>
+                    <span
+                        class="material-symbols-outlined text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1.5 rounded-md">group</span>
+                </div>
+                <p id="stat-recommended" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
+                </p>
+            </div>
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撖拇銝剔隢?/p>
+                    <span
+                        class="material-symbols-outlined text-orange-500 bg-orange-50 dark:bg-orange-500/10 p-1.5 rounded-md">pending</span>
+                </div>
+                <p id="stat-reviewing" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
+                </p>
+            </div>
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撌脤??唾?</p>
+                    <span
+                        class="material-symbols-outlined text-green-500 bg-green-50 dark:bg-green-500/10 p-1.5 rounded-md">check_circle</span>
+                </div>
+                <p id="stat-approved" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0</p>
+            </div>
+            <div data-delay="0"
+                class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
+                <div class="flex items-center justify-between relative z-10">
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">敺?????/p>
+                    <span
+                        class="material-symbols-outlined text-red-500 bg-red-50 dark:bg-red-500/10 p-1.5 rounded-md">assignment_late</span>
+                </div>
+                <p id="stat-pending" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
+                    <span
+                        class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 hidden"
+                        id="stat-pending-badge">(鋆?鞈?)</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Left: Notifications -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-[#111318] dark:text-white text-lg font-bold">敺齒鈭?/?</h3>
+                        <div class="relative group">
+                            <button id="show-more-notif-trigger"
+                                class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden">
+                                <span class="material-symbols-outlined text-blue-500">more_horiz</span>
+                            </button>
+                            <div
+                                class="absolute right-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                                憿舐內?游?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4" id="notification-list">
+                        <!-- Dynamic Notifications -->
+                        <div class="p-4 text-center text-gray-500 text-sm">頛銝?..</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Student List -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <div>
+                    <h3 class="text-[#111318] dark:text-white text-lg font-bold mb-4">?刻摮貊??”</h3>
+
+                    <div
+                        class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
+                        <!-- Toolbar -->
+                        <div
+                            class="p-4 border-b border-[#e5e7eb] dark:border-[#2d3748] flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50 dark:bg-[#252f3e]/50">
+                            <div class="flex flex-1 w-full md:w-auto items-center gap-3">
+                                <div class="relative w-full max-w-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span
+                                            class="material-symbols-outlined text-[#616f89] dark:text-gray-500 text-[20px]">search</span>
+                                    </div>
+                                    <input id="student-search"
+                                        class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
+                                        placeholder="??摮貊?憪??飛?? type="text" />
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                                <select id="filter-status"
+                                    class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                                    <option value="">?????/option>
+                                    <option value="pending">撖拇銝?/option>
+                                    <option value="approved">撌脤?</option>
+                                    <option value="needs_action">?鋆辣</option>
+                                </select>
+                                <select id="filter-dept"
+                                    class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
+                                    <option value="">???蝟?/option>
+                                    <!-- Dynamic options -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
+                                    <tr>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?憪?/摮貉?</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮賊/蝟餅?</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮豢平?蜀 (GPA)</th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">?唾??飛????/th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">???/th>
+                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">??
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]"
+                                    id="dashboard-student-list">
+                                    <!-- Dynamic Content -->
+                                    <tr>
+                                        <td colspan="6" class="p-4 text-center text-gray-500">頛銝?..</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div
+                            class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex items-center justify-center">
+                            <span id="show-more-trigger"
+                                class="text-sm text-[#616f89] dark:text-gray-400 font-medium cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
+                                憿舐內?游?
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Global Scripts -->
+    <script src="../global.js?v=1716300000"></script>
+    <script src="js/mentor-students.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const previewParams = new URLSearchParams(window.location.search);
+            const isPreviewMode = previewParams.get('preview') === 'teacher';
+            const previewUser = {
+                username: previewParams.get('preview_user') || 'teacher-preview',
+                role: '?葦',
+                real_name: '?葦蝡舫?閬?,
+                email: 'teacher-preview@example.edu'
+            };
+            const storedUser = localStorage.getItem('user');
+            if (!storedUser && !isPreviewMode) {
+                alert('隢??餃');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            const user = isPreviewMode ? previewUser : JSON.parse(storedUser);
+            if (user.role !== '?葦') {
+                alert('甈?銝雲');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            if (isPreviewMode) {
+                const headerName = document.getElementById('header-user-name');
+                const headerEmail = document.getElementById('header-user-email');
+                if (headerName) headerName.textContent = user.real_name;
+                if (headerEmail) headerEmail.textContent = user.email;
+            }
+
+            // 1. Update Greeting
+            const greetingEl = document.getElementById('dashboard-greeting');
+            if (greetingEl) {
+                greetingEl.innerHTML = `甇∟???嚗?{user.real_name || user.username} ?葦 <span class="text-3xl">??</span>`;
+            }
+
+            // 2. Load Teacher Profile (Dept & Position)
+            try {
+                const profileRes = await fetch(`../api/get_teacher_profile.php?username=${user.username}`);
+                const profileData = await profileRes.json();
+                if (profileData.success && profileData.data) {
+                    const dbName = profileData.data.real_name || user.real_name || user.username;
+                    const dept = profileData.data.department || '?芰蝟餅?';
+                    const title = profileData.data.display_position || '??';
+                    user.real_name = dbName;
+                    const headerName = document.getElementById('header-user-name');
+                    const headerEmail = document.getElementById('header-user-email');
+                    if (headerName) headerName.textContent = dbName;
+                    if (headerEmail) headerEmail.textContent = profileData.data.email || user.email || '';
+                    if (greetingEl) {
+                        greetingEl.innerHTML = `甇∟???嚗?{dbName} ?葦 <span class="text-3xl">??</span>`;
+                    }
+                    document.getElementById('teacher-semester-info').textContent = `?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | ${dept} ${title}`;
+                } else {
+                    document.getElementById('teacher-semester-info').textContent = '?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | 鞈?頛憭望?';
+                }
+            } catch (err) {
+                console.error('Teacher profile error:', err);
+                document.getElementById('teacher-semester-info').textContent = '?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | ????航炊';
+            }
+
+            // 3. Load Stats & Requests
+            try {
+                // Fetch Stats
+                const apiUrl = `../api/get_recommendation_requests.php?teacher_username=${user.username}`;
+                const res = await fetch(apiUrl);
+                const result = await res.json();
+
+                if (result.success) {
+                    const allRequests = result.data;
+                    updateStats(allRequests);
+                    renderStudentList(allRequests);
+                    setupShowMore(allRequests);
+                    setupFilters(allRequests);
+                    await setupNotifications(allRequests, user.username);
+                } else {
+                    document.getElementById('dashboard-student-list').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('dashboard-student-list').innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">頛憭望?: ${e.message}</td></tr>`;
+            }
+        });
+
+        function createStudentRow(req) {
+            let statusHtml = '';
+            // Use Application Status logic for the table display as per screenshot "Submitted/Passed/Reviewing"
+            // Map app_status to UI
+            // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
+            const s = parseInt(req.app_status);
+            if (s === 1) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>撌脤?</span>`;
+            } else if (s === 4 || s === 3) { // Reviewing or Pending
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>撖拇銝?/span>`;
+            } else if (s === 2) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>?鋆辣</span>`;
+            } else {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>?芰</span>`;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors border-b border-gray-100 dark:border-gray-800';
+            tr.innerHTML = `
+                <td class="p-4">
+                    <p class="text-[#111318] dark:text-white font-bold text-sm">${req.student_name}</p>
+                    <p class="text-[#616f89] dark:text-gray-500 text-xs">${req.student_username}</p>
+                </td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '?芸‵撖?}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_gpa || 'N/A'}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.scholarship_name}</td>
+                <td class="p-4">${statusHtml}</td>
+                <td class="p-4 text-right">
+                    <button onclick="openGradeModal('${req.student_username}', '${req.student_name}')"
+                        class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] text-[#111318] dark:text-white text-xs font-medium hover:bg-gray-50 cursor-pointer transition-colors">
+                        ?亦?閰單?
+                    </button>
+                </td>
+             `;
+            return tr;
+        }
+
+        function renderStudentList(requests) {
+            const tbody = document.getElementById('dashboard-student-list');
+            tbody.innerHTML = '';
+
+            // Display top 5
+            const displayData = requests.slice(0, 5);
+            displayData.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
+            }
+        }
+
+        function setupShowMore(requests) {
+            const container = document.querySelector('#dashboard-student-list').parentNode.parentNode.nextElementSibling; // The pagination div
+            // Or simpler, create a listener for "Show More" text logic. 
+            // The HTML has: <span class="... flex items-center gap-1">憿舐內?游?...</span>
+            // I need to find that element.
+            // Let's assume I can find it by text or structure.
+
+            const showMoreBtn = Array.from(document.querySelectorAll('span')).find(el => el.textContent.includes('憿舐內?游?'));
+            if (showMoreBtn) {
+                // Check if we need to show it
+                if (requests.length <= 5) {
+                    showMoreBtn.parentElement.classList.add('hidden');
+                } else {
+                    showMoreBtn.parentElement.classList.remove('hidden');
+                    showMoreBtn.parentElement.onclick = () => openAllStudentsModal(requests);
+                }
+            }
+        }
+
+        function openAllStudentsModal(requests) {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+            const tbody = document.getElementById('allStudentsTableBody');
+
+            tbody.innerHTML = '';
+            requests.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeAllStudentsModal() {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function updateStats(allRequests) {
+            // 1. Recommended Students (Count unique students with submitted letters)
+            const recommendedStudents = new Set(
+                allRequests
+                    .filter(r => r.letter_status == 1) // 1 = Submitted
+                    .map(r => r.student_username)
+            );
+            document.getElementById('stat-recommended').textContent = recommendedStudents.size;
+
+            // 2. Applications Under Review (App Status 3=Pending or 4=Reviewing)
+            const reviewingCount = allRequests.filter(r => r.app_status == 3 || r.app_status == 4).length;
+            document.getElementById('stat-reviewing').textContent = reviewingCount;
+
+            // 3. Approved Applications (App Status 1)
+            const approvedCount = allRequests.filter(r => r.app_status == 1).length;
+            document.getElementById('stat-approved').textContent = approvedCount;
+
+            // 4. Pending Items (App Status 2=Needs Action)
+            const pendingCount = allRequests.filter(r => r.app_status == 2).length;
+            const pendingEl = document.getElementById('stat-pending');
+            const pendingBadge = document.getElementById('stat-pending-badge');
+
+            // Wait, I messed up the HTML in the previous step slightly (nested span inside p might be overwritten if I set textContent).
+            // Let's use logic to preserve badge or re-add it.
+            pendingEl.innerHTML = `${pendingCount} <span class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 ${pendingCount > 0 ? '' : 'hidden'}" id="stat-pending-badge">(鋆?鞈?)</span>`;
+
+            // Add pulse animation if there are pending items
+            const pendingCard = pendingEl.closest('.flashlight-card');
+            if (pendingCount > 0 && pendingCard) {
+                pendingCard.classList.add('ring-2', 'ring-orange-500', 'ring-offset-2');
+            } else if (pendingCard) {
+                pendingCard.classList.remove('ring-2', 'ring-orange-500', 'ring-offset-2');
+            }
+        }
+
+        function createStudentRow(req) {
+            let statusHtml = '';
+            // Use Application Status logic for the table display as per screenshot "Submitted/Passed/Reviewing"
+            // Map app_status to UI
+            // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
+            const s = parseInt(req.app_status);
+            if (s === 1) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>撌脤?</span>`;
+            } else if (s === 4 || s === 3) { // Reviewing or Pending
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>撖拇銝?/span>`;
+            } else if (s === 2) {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>?鋆辣</span>`;
+            } else {
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>?芰</span>`;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors border-b border-gray-100 dark:border-gray-800';
+            tr.innerHTML = `
+                <td class="p-4">
+                    <p class="text-[#111318] dark:text-white font-bold text-sm">${req.student_name}</p>
+                    <p class="text-[#616f89] dark:text-gray-500 text-xs">${req.student_username}</p>
+                </td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '?芸‵撖?}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_gpa || 'N/A'}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.scholarship_name}</td>
+                <td class="p-4">${statusHtml}</td>
+                <td class="p-4 text-right">
+                    <button onclick="openGradeModal('${req.student_username}', '${req.student_name}')"
+                        class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] text-[#111318] dark:text-white text-xs font-medium hover:bg-gray-50 cursor-pointer transition-colors">
+                        ?亦?閰單?
+                    </button>
+                </td>
+             `;
+            return tr;
+        }
+
+        function renderStudentList(requests) {
+            const tbody = document.getElementById('dashboard-student-list');
+            tbody.innerHTML = '';
+
+            // Display top 5
+            const displayData = requests.slice(0, 5);
+            displayData.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
+            }
+        }
+
+        function setupShowMore(requests) {
+            const showMoreBtn = document.getElementById('show-more-trigger');
+            if (showMoreBtn) {
+                // Check if we need to show it
+                if (requests.length <= 5) {
+                    showMoreBtn.parentElement.classList.add('hidden');
+                } else {
+                    showMoreBtn.parentElement.classList.remove('hidden');
+                    showMoreBtn.onclick = (e) => {
+                        e.preventDefault();
+                        openAllStudentsModal(requests);
+                    };
+                }
+            }
+        }
+
+        function openAllStudentsModal(requests) {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+            const tbody = document.getElementById('allStudentsTableBody');
+
+            tbody.innerHTML = '';
+            requests.forEach(req => {
+                tbody.appendChild(createStudentRow(req));
+            });
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeAllStudentsModal() {
+            const modal = document.getElementById('allStudentsModal');
+            const content = document.getElementById('allStudentsModalContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        let globalRequests = []; // Store all data globally for filtering
+
+        function setupFilters(requests) {
+            globalRequests = requests;
+            const searchInput = document.getElementById('student-search');
+            const statusFilter = document.getElementById('filter-status');
+            const deptFilter = document.getElementById('filter-dept');
+
+            // Populate Dept Filter
+            const depts = new Set(requests.map(r => r.student_dept).filter(Boolean));
+            deptFilter.innerHTML = '<option value="">???蝟?/option>';
+            depts.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept;
+                option.textContent = dept;
+                deptFilter.appendChild(option);
+            });
+
+            function applyFilters() {
+                const query = searchInput.value.toLowerCase();
+                const status = statusFilter.value;
+                const dept = deptFilter.value;
+
+                const filtered = globalRequests.filter(req => {
+                    // Search
+                    const matchSearch = (req.student_name && req.student_name.toLowerCase().includes(query)) ||
+                        (req.student_username && req.student_username.toLowerCase().includes(query));
+                    if (!matchSearch) return false;
+
+                    // Dept
+                    if (dept && req.student_dept !== dept) return false;
+
+                    // Status
+                    // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
+                    const s = parseInt(req.app_status);
+                    if (status) {
+                        if (status === 'approved' && s !== 1) return false;
+                        if (status === 'pending' && (s !== 3 && s !== 4)) return false;
+                        if (status === 'needs_action' && s !== 2) return false;
+                    }
+
+                    return true;
+                });
+
+                renderStudentList(filtered);
+                setupShowMore(filtered); // Update show more logic based on filtered count
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            deptFilter.addEventListener('change', applyFilters);
+        }
+
+        // --- Notification Logic ---
+        let globalNotifications = [];
+        let currentTeacherUsername = '';
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function generateNotifications(requests) {
+            const notifications = [];
+
+            requests.forEach(req => {
+                const s = parseInt(req.app_status);
+                // 1. Needs Action (Priority High)
+                if (s === 2) {
+                    notifications.push({
+                        type: 'needs_action',
+                        student: req.student_name,
+                        id: req.student_username,
+                        msg: `${req.student_name}?飛?隢?鋆辣`,
+                        detail: `${req.student_name}?飛?隢歇鋡恍??隞塚?隢?瘜冽?阡???湔?刻?批捆?,
+                        link: true
+                    });
+                }
+                // 2. Approved (Priority Medium)
+                else if (s === 1) {
+                    notifications.push({
+                        type: 'approved',
+                        student: req.student_name,
+                        id: req.student_username,
+                        msg: `${req.student_name}?飛?隢歇??`,
+                        detail: `?函${req.student_name}?飛?啣神??虫縑撌脣祟?詨??ｇ?撌脣鼠?飛?隢歇???,
+                        link: false
+                    });
+                }
+                // 3. Submitted (Priority Low) - Show if submitted but not yet Approved (Status 1)
+                // If it is Approved (s=1), we already showed the Green one. 
+                // So show Blue only if Letter Submitted (letter_status=1) AND App Status != 1.
+                // Assuming letter_status is available.
+                else if (req.letter_status == 1) {
+                    notifications.push({
+                        type: 'submitted',
+                        student: req.student_name,
+                        id: req.student_username,
+                        msg: `?典歇??刻靽︶,
+                        detail: `?典歇?${req.student_name}?飛??虫縑?,
+                        link: false
+                    });
+                }
+            });
+
+            // Sort: Needs Action > Approved > Submitted
+            const priority = { 'needs_action': 0, 'approved': 1, 'submitted': 2 };
+            notifications.sort((a, b) => priority[a.type] - priority[b.type]);
+
+            return notifications;
+        }
+
+        async function fetchTeacherDbNotifications(username) {
+            if (!username) return [];
+
+            try {
+                const response = await fetch(`../api/teacher/get_teacher_notifications.php?teacher_username=${encodeURIComponent(username)}`);
+                const result = await response.json();
+                if (!response.ok || !result.success || !Array.isArray(result.data)) {
+                    return [];
+                }
+
+                return result.data.map(item => ({
+                    type: item.type || 'system',
+                    msg: item.title || '蝟餌絞?',
+                    detail: item.message || '',
+                    time: item.created_at || '',
+                    link: false,
+                    source: 'teacher-db',
+                    notificationId: Number(item.id),
+                    isRead: Number(item.is_read) === 1
+                }));
+            } catch (error) {
+                console.error('Teacher notification error:', error);
+                return [];
+            }
+        }
+
+        function sortTeacherNotifications(notifications) {
+            return notifications.slice().sort((a, b) => {
+                const readDiff = Number(Boolean(a.isRead)) - Number(Boolean(b.isRead));
+                if (readDiff !== 0) return readDiff;
+
+                const priority = { 'issue_report_update': 0, 'needs_action': 1, 'approved': 2, 'submitted': 3 };
+                const priorityDiff = (priority[a.type] ?? 9) - (priority[b.type] ?? 9);
+                if (priorityDiff !== 0) return priorityDiff;
+
+                return new Date(b.time || 0) - new Date(a.time || 0);
+            });
+        }
+
+        function createNotificationItem(notif) {
+            let colorClass = '';
+            let icon = '';
+            let iconBg = '';
+            let iconColor = '';
+
+            if (notif.type === 'issue_report_update') {
+                colorClass = notif.isRead ? 'border-slate-300' : 'border-blue-500';
+                icon = 'support_agent';
+                iconBg = notif.isRead ? 'bg-slate-100' : 'bg-blue-100';
+                iconColor = notif.isRead ? 'text-slate-500' : 'text-primary';
+            } else if (notif.type === 'needs_action') {
+                colorClass = 'border-orange-500';
+                icon = 'notifications_active';
+                iconBg = 'bg-orange-100';
+                iconColor = 'text-orange-600';
+            } else if (notif.type === 'approved') {
+                colorClass = 'border-green-500';
+                icon = 'check_circle';
+                iconBg = 'bg-green-100';
+                iconColor = 'text-green-600';
+            } else { // submitted
+                colorClass = 'border-blue-500';
+                icon = 'campaign'; // or send
+                iconBg = 'bg-blue-100';
+                iconColor = 'text-blue-600';
+            }
+
+            const div = document.createElement('div');
+            div.className = `bg-white dark:bg-[#1e2634] p-4 rounded-xl border-l-4 ${colorClass} shadow-sm hover:shadow-md transition-shadow flex gap-3 ${notif.isRead ? 'opacity-75' : ''}`;
+            div.innerHTML = `
+                <div class="${iconBg} ${iconColor} rounded-full p-2 h-fit shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">${icon}</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-3">
+                        <h4 class="font-bold text-[#111318] dark:text-white text-sm">${escapeHtml(notif.msg)}</h4>
+                        ${notif.source === 'teacher-db' ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${notif.isRead ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300' : 'bg-primary/10 text-primary'}">${notif.isRead ? '撌脰?' : '?芾?'}</span>` : ''}
+                    </div>
+                    <p class="text-xs text-[#616f89] dark:text-gray-400 mt-1">${escapeHtml(notif.detail)}</p>
+                    ${notif.time ? `<p class="text-[11px] text-gray-400 mt-2">${escapeHtml(notif.time)}</p>` : ''}
+                    ${notif.link ? `<button onclick="window.location.href='recommendations.html'" class="text-orange-600 text-xs font-bold mt-2 inline-block hover:underline">???? -></button>` : ''}
+                    ${notif.source === 'teacher-db' && !notif.isRead ? `<button type="button" data-teacher-notification-read="${notif.notificationId}" class="text-primary text-xs font-bold mt-2 inline-block hover:underline">璅?撌脰?</button>` : ''}
+                </div>
+            `;
+
+            div.querySelector('[data-teacher-notification-read]')?.addEventListener('click', async () => {
+                await markTeacherNotificationRead(notif.notificationId);
+            });
+
+            return div;
+        }
+
+        function renderNotifications(notifications) {
+            globalNotifications = notifications;
+            const container = document.getElementById('notification-list');
+            container.innerHTML = '';
+
+            // Show top 3
+            const displayData = notifications.slice(0, 3);
+            displayData.forEach(n => {
+                container.appendChild(createNotificationItem(n));
+            });
+
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">?桀?瘝??圈</div>';
+            }
+
+            // Setup Show More
+            const showMoreBtn = document.getElementById('show-more-notif-trigger');
+            if (showMoreBtn) showMoreBtn.classList.add('hidden');
+            if (notifications.length > 3) {
+                const inlineMoreBtn = document.createElement('button');
+                inlineMoreBtn.type = 'button';
+                inlineMoreBtn.className = 'w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-bold text-primary hover:bg-primary/5 dark:hover:bg-primary/10';
+                inlineMoreBtn.textContent = `憿舐內?游? (${notifications.length})`;
+                inlineMoreBtn.onclick = openAllNotificationsModal;
+                container.appendChild(inlineMoreBtn);
+            }
+        }
+
+        async function setupNotifications(requests, teacherUsername) {
+            currentTeacherUsername = teacherUsername || '';
+            const dbNotifications = await fetchTeacherDbNotifications(currentTeacherUsername);
+            const notifications = sortTeacherNotifications([
+                ...dbNotifications,
+                ...generateNotifications(requests)
+            ]);
+            renderNotifications(notifications);
+        }
+
+        async function markTeacherNotificationRead(notificationId) {
+            if (!currentTeacherUsername || !notificationId) return;
+
+            try {
+                const response = await fetch('../api/teacher/mark_teacher_notification_read.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teacher_username: currentTeacherUsername,
+                        notification_id: notificationId
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    alert(result.message || '璅?撌脰?憭望?');
+                    return;
+                }
+
+                const target = globalNotifications.find(n => n.source === 'teacher-db' && n.notificationId === notificationId);
+                if (target) target.isRead = true;
+                renderNotifications(sortTeacherNotifications(globalNotifications));
+            } catch (error) {
+                console.error('Mark teacher notification read error:', error);
+                alert('璅?撌脰?憭望?');
+            }
+        }
+
+        function openAllNotificationsModal() {
+            const modal = document.getElementById('allNotificationsModal');
+            const content = document.getElementById('allNotificationsModalContent');
+            const list = document.getElementById('allNotificationsList');
+
+            list.innerHTML = '';
+            globalNotifications.forEach(n => {
+                list.appendChild(createNotificationItem(n));
+            });
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeAllNotificationsModal() {
+            const modal = document.getElementById('allNotificationsModal');
+            const content = document.getElementById('allNotificationsModalContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.flashlight-card');
+            cards.forEach(card => {
+                card.onmousemove = e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                };
+            });
+        });
+    </script>
+
+    <!-- All Notifications Modal -->
+    <div id="allNotificationsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onclick="closeAllNotificationsModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#1e2634] rounded-2xl shadow-2xl w-full max-w-lg flex flex-col transform scale-95 opacity-0 transition-all duration-300"
+                id="allNotificationsModalContent">
+                <!-- Header -->
+                <div
+                    class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">敺齒鈭?/?</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">??頂蝯梢??颲虫???/p>
+                    </div>
+                    <button onclick="closeAllNotificationsModal()"
+                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content (Scrollable) -->
+                <div class="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar flex flex-col gap-4"
+                    id="allNotificationsList">
+                    <!-- Dynamic Content -->
+                </div>
+                <!-- Footer -->
+                <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
+                    <button onclick="closeAllNotificationsModal()"
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Modal -->
+    <div id="gradeModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeGradeModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#1e2634] rounded-2xl shadow-2xl w-full max-w-2xl transform scale-95 opacity-0 transition-all duration-300"
+                id="gradeModalContent">
+                <!-- Header -->
+                <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modalStudentName">摮貊?憪?</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="modalStudentId">摮貉?</p>
+                    </div>
+                    <button onclick="closeGradeModal()"
+                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content -->
+                <div class="p-6">
+                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">甇瑕僑?蜀蝝??/h4>
+                    <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                <tr>
+                                    <th class="px-4 py-3 font-medium">摮詨僑/摮豢?</th>
+                                    <th class="px-4 py-3 font-medium">撟喳??蜀</th>
+                                    <th class="px-4 py-3 font-medium">GPA</th>
+                                    <th class="px-4 py-3 font-medium">?剜???鈭箸</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="gradeTableBody">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                    <button onclick="closeGradeModal()"
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Students Modal -->
+    <div id="allStudentsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeAllStudentsModal()">
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#1e2634] rounded-2xl shadow-2xl w-full max-w-5xl h-[80vh] flex flex-col transform scale-95 opacity-0 transition-all duration-300"
+                id="allStudentsModalContent">
+                <!-- Header -->
+                <div
+                    class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">???血飛??/h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">?亦?????函隢?虫縑?飛??/p>
+                    </div>
+                    <button onclick="closeAllStudentsModal()"
+                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content (Scrollable) -->
+                <div class="p-0 flex-1 overflow-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse sticky top-0">
+                        <thead
+                            class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400 sticky top-0 z-10 shadow-sm">
+                            <tr>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?憪?/摮貉?</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮賊/蝟餅?</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮豢平?蜀 (GPA)</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">?唾??飛????/th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">???/th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">??</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]" id="allStudentsTableBody">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Footer -->
+                <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
+                    <button onclick="closeAllStudentsModal()"
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal & Grade Data Logic
+        const gradeData = {
+            'S1125901': [
+                { term: '111-1', score: 82.5, gpa: 3.5, rank: '10/50' },
+                { term: '111-2', score: 85.0, gpa: 3.8, rank: '5/50' }
+            ],
+            'S1125902': [
+                { term: '111-1', score: 90.0, gpa: 4.0, rank: '1/45' },
+                { term: '111-2', score: 92.5, gpa: 4.2, rank: '1/45' }
+            ],
+            // Default mock for others
+            'default': [
+                { term: '111-1', score: 88.0, gpa: 3.9, rank: '3/48' },
+                { term: '111-2', score: 89.5, gpa: 4.0, rank: '2/48' }
+            ]
+        };
+
+        function openGradeModal(id, name) {
+            const modal = document.getElementById('gradeModal');
+            const content = document.getElementById('gradeModalContent');
+            const title = document.getElementById('modalStudentName');
+            const subtitle = document.getElementById('modalStudentId');
+            const tbody = document.getElementById('gradeTableBody');
+
+            // Set Header
+            title.textContent = name;
+            subtitle.textContent = id;
+
+            // Populate Table
+            tbody.innerHTML = '';
+            const data = gradeData[id] || gradeData['default'];
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${row.term}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 font-bold ${row.score >= 90 ? 'text-green-600 dark:text-green-400' : ''}">${row.score}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">${row.gpa}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-primary cursor-help" title="?函鈭箸: ${row.rank.split('/')[1]}">${row.rank}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Show Modal
+            modal.classList.remove('hidden');
+            // Animate in
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeGradeModal() {
+            const modal = document.getElementById('gradeModal');
+            const content = document.getElementById('gradeModalContent');
+
+            // Animate out
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.flashlight-card');
+            cards.forEach(card => {
+                card.onmousemove = e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
+                };
+            });
+        });
+    </script>
+
+</html>
+
