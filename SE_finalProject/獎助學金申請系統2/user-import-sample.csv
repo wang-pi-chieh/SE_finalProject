@@ -1,0 +1,5 @@
+username,password,real_name,email,phone,role
+test_student_001,pass123,測試學生一,test_student_001@example.edu,0911000001,學生
+test_teacher_001,pass123,測試老師一,test_teacher_001@example.edu,0911000002,老師
+test_unit_001,pass123,測試獎助單位,test_unit_001@example.edu,0911000003,獎助單位
+test_admin_001,pass123,測試系統管理員,test_admin_001@example.edu,0911000004,系統管理員

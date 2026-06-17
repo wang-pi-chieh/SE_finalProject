@@ -32,12 +32,9 @@ try {
         exit;
     }
 
-    // Hash password
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
     // Insert user
     $insertStmt = $conn->prepare("INSERT INTO users (username, password, real_name, email, role) VALUES (?, ?, ?, ?, ?)");
-    $insertStmt->bind_param("sssss", $username, $hashed_password, $real_name, $email, $role);
+    $insertStmt->bind_param("sssss", $username, $password, $real_name, $email, $role);
 
     if ($insertStmt->execute()) {
         $new_id = $conn->insert_id;

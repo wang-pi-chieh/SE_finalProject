@@ -193,6 +193,20 @@
                                             </select>
                                         </div>
                                     </form>
+                                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                                        <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-2">匯入 CSV</h4>
+                                        <form id="import-users-csv-form" class="space-y-3">
+                                            <input type="file" name="csv_file" accept=".csv,text/csv" required
+                                                class="block w-full text-sm text-gray-700 dark:text-gray-300 file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-primary/90">
+                                            <p class="text-xs leading-5 text-gray-500 dark:text-gray-400">
+                                                第一列需為欄位名稱，支援：username/帳號、password/密碼、real_name/真實姓名、email/電子郵件、role/身分組、phone/電話。
+                                            </p>
+                                            <button type="button" onclick="previewUsersCsvImport()"
+                                                class="inline-flex w-full justify-center rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white">
+                                                檢視匯入資料
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -202,6 +216,63 @@
                             class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto">新增</button>
                         <button type="button" onclick="closeAddModal()"
                             class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:w-auto">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Import Preview Modal -->
+    <div id="user-import-preview-modal" class="fixed inset-0 z-[10002] hidden" aria-labelledby="user-import-preview-title"
+        role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm"
+            onclick="closeUserImportPreviewModal()"></div>
+        <div class="fixed inset-0 z-[10003] w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-5xl">
+                    <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6">
+                        <div class="flex items-start justify-between gap-4 mb-4">
+                            <div>
+                                <h3 id="user-import-preview-title"
+                                    class="text-lg font-semibold leading-6 text-gray-900 dark:text-white">檢視 CSV 匯入資料</h3>
+                                <p id="user-import-preview-summary" class="mt-1 text-sm text-gray-500 dark:text-gray-400"></p>
+                            </div>
+                            <button type="button" onclick="closeUserImportPreviewModal()"
+                                class="p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 transition-colors">
+                                <span class="material-symbols-outlined text-xl">close</span>
+                            </button>
+                        </div>
+                        <div id="user-import-errors" class="hidden mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700"></div>
+                        <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                                    <tr>
+                                        <th class="p-3 font-semibold">列號</th>
+                                        <th class="p-3 font-semibold">帳號</th>
+                                        <th class="p-3 font-semibold">密碼</th>
+                                        <th class="p-3 font-semibold">真實姓名</th>
+                                        <th class="p-3 font-semibold">電子郵件</th>
+                                        <th class="p-3 font-semibold">電話</th>
+                                        <th class="p-3 font-semibold">身分組</th>
+                                        <th class="p-3 font-semibold">狀態</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-import-preview-body" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-gray-100 dark:border-gray-700">
+                        <button id="confirm-user-import-btn" type="button" onclick="confirmUsersCsvImport()"
+                            class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto">
+                            確認匯入
+                        </button>
+                        <button type="button" onclick="closeUserImportPreviewModal()"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:w-auto">
+                            返回修改
+                        </button>
                     </div>
                 </div>
             </div>
@@ -259,6 +330,96 @@
         let currentPage = 1;
         const totalPages = 1;
         let userSearchTimer = null;
+        let pendingUserImportRows = [];
+        const validUserRoles = ['學生', '老師', '獎助單位', '系統管理員'];
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function normalizeCsvHeader(value) {
+            return String(value ?? '')
+                .replace(/^\uFEFF/, '')
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_-]/g, '');
+        }
+
+        function parseCsvText(text) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const next = text[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && next === '"') {
+                        field += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                    continue;
+                }
+
+                if (char === ',' && !inQuotes) {
+                    row.push(field);
+                    field = '';
+                    continue;
+                }
+
+                if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (char === '\r' && next === '\n') i++;
+                    row.push(field);
+                    if (row.some(value => String(value).trim() !== '')) {
+                        rows.push(row);
+                    }
+                    row = [];
+                    field = '';
+                    continue;
+                }
+
+                field += char;
+            }
+
+            row.push(field);
+            if (row.some(value => String(value).trim() !== '')) {
+                rows.push(row);
+            }
+
+            return rows;
+        }
+
+        function csvValue(row, headerMap, aliases) {
+            for (const alias of aliases) {
+                const index = headerMap[normalizeCsvHeader(alias)];
+                if (index !== undefined) {
+                    return String(row[index] ?? '').trim();
+                }
+            }
+            return '';
+        }
+
+        function normalizeRole(value) {
+            const role = String(value ?? '').trim();
+            const map = {
+                student: '學生',
+                teacher: '老師',
+                scholarshipunit: '獎助單位',
+                scholarship_unit: '獎助單位',
+                systemadmin: '系統管理員',
+                system_admin: '系統管理員'
+            };
+            return map[role.toLowerCase()] || role;
+        }
 
         async function fetchUsers(page = 1) {
             currentPage = page;
@@ -424,6 +585,7 @@
         function closeAddModal() {
             document.getElementById('add-modal').classList.add('hidden');
             document.getElementById('add-user-form').reset();
+            document.getElementById('import-users-csv-form')?.reset();
         }
 
         async function submitAddForm() {
@@ -483,6 +645,168 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('系統錯誤');
+            }
+        }
+
+        async function previewUsersCsvImport() {
+            const form = document.getElementById('import-users-csv-form');
+            const fileInput = form?.elements.csv_file;
+            if (!form || !fileInput || !fileInput.files || fileInput.files.length === 0) {
+                alert('請選擇 CSV 檔案');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                alert('僅支援 .csv 檔案');
+                return;
+            }
+
+            try {
+                const text = await file.text();
+                const csvRows = parseCsvText(text);
+                if (csvRows.length < 2) {
+                    alert('CSV 需包含標題列與至少一筆資料');
+                    return;
+                }
+
+                const headers = csvRows[0];
+                const headerMap = {};
+                headers.forEach((header, index) => {
+                    headerMap[normalizeCsvHeader(header)] = index;
+                });
+
+                const seenUsernames = new Set();
+                const previewRows = csvRows.slice(1).map((row, index) => {
+                    const line = index + 2;
+                    const username = csvValue(row, headerMap, ['username', '帳號', '使用者名稱']);
+                    const password = csvValue(row, headerMap, ['password', '密碼']);
+                    const realName = csvValue(row, headerMap, ['real_name', 'realname', '真實姓名', '姓名']);
+                    const email = csvValue(row, headerMap, ['email', '電子郵件', '信箱']);
+                    const phone = csvValue(row, headerMap, ['phone', '電話', '手機']);
+                    const role = normalizeRole(csvValue(row, headerMap, ['role', '身分組', '角色', '權限']));
+                    const errors = [];
+
+                    if (username.length < 3) errors.push('帳號至少 3 個字元');
+                    if (password.length < 1) errors.push('缺少密碼');
+                    if (password.length > 20) errors.push('密碼不可超過 20 個字元');
+                    if (!realName) errors.push('缺少真實姓名');
+                    if (!validUserRoles.includes(role)) errors.push('身分組不支援');
+                    if (seenUsernames.has(username)) errors.push('CSV 內帳號重複');
+                    if (username) seenUsernames.add(username);
+
+                    return {
+                        line,
+                        username,
+                        password,
+                        real_name: realName,
+                        email,
+                        phone,
+                        role,
+                        errors
+                    };
+                });
+
+                pendingUserImportRows = previewRows.filter(row => row.errors.length === 0);
+                renderUserImportPreview(previewRows);
+                document.getElementById('user-import-preview-modal').classList.remove('hidden');
+            } catch (error) {
+                console.error(error);
+                alert('CSV 讀取失敗');
+            }
+        }
+
+        function renderUserImportPreview(rows) {
+            const tbody = document.getElementById('user-import-preview-body');
+            const summary = document.getElementById('user-import-preview-summary');
+            const errorsBox = document.getElementById('user-import-errors');
+            const confirmBtn = document.getElementById('confirm-user-import-btn');
+            const validCount = rows.filter(row => row.errors.length === 0).length;
+            const invalidRows = rows.filter(row => row.errors.length > 0);
+
+            summary.textContent = `共 ${rows.length} 筆，${validCount} 筆可匯入，${invalidRows.length} 筆需修正。`;
+            confirmBtn.disabled = validCount === 0 || invalidRows.length > 0;
+            confirmBtn.classList.toggle('opacity-50', confirmBtn.disabled);
+            confirmBtn.classList.toggle('cursor-not-allowed', confirmBtn.disabled);
+
+            if (invalidRows.length > 0) {
+                errorsBox.classList.remove('hidden');
+                errorsBox.innerHTML = invalidRows.slice(0, 10)
+                    .map(row => `第 ${row.line} 列：${escapeHtml(row.errors.join('、'))}`)
+                    .join('<br>');
+            } else {
+                errorsBox.classList.add('hidden');
+                errorsBox.innerHTML = '';
+            }
+
+            tbody.innerHTML = rows.map(row => {
+                const isValid = row.errors.length === 0;
+                return `
+                    <tr class="${isValid ? 'bg-white dark:bg-gray-800' : 'bg-red-50 dark:bg-red-900/20'}">
+                        <td class="p-3 text-gray-500">${row.line}</td>
+                        <td class="p-3 font-medium text-gray-900 dark:text-white">${escapeHtml(row.username)}</td>
+                        <td class="p-3 text-gray-600 dark:text-gray-300">${row.password ? '已填寫' : '-'}</td>
+                        <td class="p-3 text-gray-600 dark:text-gray-300">${escapeHtml(row.real_name)}</td>
+                        <td class="p-3 text-gray-600 dark:text-gray-300">${escapeHtml(row.email || '-')}</td>
+                        <td class="p-3 text-gray-600 dark:text-gray-300">${escapeHtml(row.phone || '-')}</td>
+                        <td class="p-3">${getRoleBadge(row.role || '-')}</td>
+                        <td class="p-3 text-sm ${isValid ? 'text-green-600' : 'text-red-600'}">${isValid ? '可匯入' : escapeHtml(row.errors.join('、'))}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function closeUserImportPreviewModal() {
+            document.getElementById('user-import-preview-modal').classList.add('hidden');
+        }
+
+        async function confirmUsersCsvImport() {
+            if (pendingUserImportRows.length === 0) {
+                alert('沒有可匯入的資料');
+                return;
+            }
+            if (!confirm(`確認匯入 ${pendingUserImportRows.length} 筆使用者資料？`)) return;
+
+            const confirmBtn = document.getElementById('confirm-user-import-btn');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = '匯入中...';
+
+            const storedUser = localStorage.getItem('user');
+            const creator = storedUser ? JSON.parse(storedUser).name : 'System Admin';
+
+            try {
+                const response = await fetch('../api/import_users_csv.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        users: pendingUserImportRows,
+                        creator
+                    })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const errors = Array.isArray(result.errors) && result.errors.length > 0
+                        ? `\n\n未匯入資料：\n${result.errors.slice(0, 8).join('\n')}${result.errors.length > 8 ? '\n...' : ''}`
+                        : '';
+                    alert(`匯入完成，成功新增 ${result.imported_count || 0} 筆。${errors}`);
+                    closeUserImportPreviewModal();
+                    closeAddModal();
+                    pendingUserImportRows = [];
+                    fetchUsers(1);
+                } else {
+                    const errors = Array.isArray(result.errors) && result.errors.length > 0
+                        ? `\n${result.errors.slice(0, 8).join('\n')}${result.errors.length > 8 ? '\n...' : ''}`
+                        : '';
+                    alert('匯入失敗：' + (result.message || '未知錯誤') + errors);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('匯入失敗，請稍後再試');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = originalText;
             }
         }
 

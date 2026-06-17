@@ -240,10 +240,17 @@
                     class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden h-full">
                     <div class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748] flex justify-between items-center">
                         <h3 class="text-[#111318] dark:text-white text-lg font-bold">學系獎學金預算與分配概況</h3>
-                        <button id="export-budget-btn"
-                            class="text-sm text-primary font-bold hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">download</span> 匯出報表
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <select id="budget-export-format"
+                                class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary focus:ring-primary text-sm py-1.5">
+                                <option value="pdf">PDF</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                            <button id="export-budget-btn"
+                                class="text-sm text-primary font-bold hover:underline flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">download</span> 匯出報表
+                            </button>
+                        </div>
                     </div>
                     <div
                         class="p-4 border-b border-[#e5e7eb] dark:border-[#2d3748] bg-gray-50/60 dark:bg-[#252f3e]/60">
@@ -1180,17 +1187,54 @@
             checkSystemStatus();
             const exportBtn = document.getElementById('export-budget-btn');
             if (exportBtn) {
-                exportBtn.onclick = exportBudgetToPDF;
+                exportBtn.onclick = exportBudgetReport;
             }
             fetchRecentLogs();
         });
 
-        async function exportBudgetToPDF() {
+        function getBudgetExportRows() {
             const exportRows = getFilteredBudgetRows();
             if (!exportRows || exportRows.length === 0) {
                 alert('無資料可匯出');
+                return null;
+            }
+            return exportRows;
+        }
+
+        function getBudgetFilterText() {
+            const activeFilters = Object.entries(budgetFilterState)
+                .filter(([, value]) => value)
+                .map(([key, value]) => `${budgetFilterRegistry[key]?.label || key}：${value}`);
+            return activeFilters.length > 0 ? activeFilters.join('、') : '全部系所';
+        }
+
+        function logBudgetExport(format, filterText, count) {
+            const storedUser = localStorage.getItem('user');
+            const user = storedUser ? JSON.parse(storedUser).name : 'System Admin';
+
+            fetch('../api/log_action.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: '匯出報表',
+                    details: `匯出學系獎學金預算與分配概況${format}報表（${filterText}，${count} 筆）`,
+                    operator: user
+                })
+            });
+        }
+
+        function exportBudgetReport() {
+            const format = document.getElementById('budget-export-format')?.value || 'pdf';
+            if (format === 'csv') {
+                exportBudgetToCSV();
                 return;
             }
+            exportBudgetToPDF();
+        }
+
+        async function exportBudgetToPDF() {
+            const exportRows = getBudgetExportRows();
+            if (!exportRows) return;
 
             // Create a temporary container for PDF rendering
             const container = document.createElement('div');
@@ -1208,10 +1252,7 @@
 
             // Build content
             const dateStr = new Date().toLocaleDateString('zh-TW');
-            const activeFilters = Object.entries(budgetFilterState)
-                .filter(([, value]) => value)
-                .map(([key, value]) => `${budgetFilterRegistry[key]?.label || key}：${value}`);
-            const filterText = activeFilters.length > 0 ? activeFilters.join('、') : '全部系所';
+            const filterText = getBudgetFilterText();
             let tableHtml = `
                 <h2 style="text-align: center; margin-bottom: 20px; color: #111318;">學系獎學金預算與分配概況報表</h2>
                 <p style="text-align: right; font-size: 12px; color: #666; margin-bottom: 4px;">匯出日期: ${dateStr}</p>
@@ -1315,19 +1356,7 @@
                 btn.disabled = false;
                 container.remove();
 
-                // Log Action
-                const storedUser = localStorage.getItem('user');
-                const user = storedUser ? JSON.parse(storedUser).name : 'System Admin';
-
-                fetch('../api/log_action.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: '匯出報表',
-                        details: `匯出學系獎學金預算與分配概況報表（${filterText}，${exportRows.length} 筆）`,
-                        operator: user
-                    })
-                });
+                logBudgetExport('PDF', filterText, exportRows.length);
             } catch (err) {
                 console.error(err);
                 alert('匯出失敗');
@@ -1335,6 +1364,54 @@
                 btn.disabled = false;
                 container.remove();
             }
+        }
+
+        function csvCell(value) {
+            const text = String(value ?? '');
+            return `"${text.replace(/"/g, '""')}"`;
+        }
+
+        function exportBudgetToCSV() {
+            const exportRows = getBudgetExportRows();
+            if (!exportRows) return;
+
+            const filterText = getBudgetFilterText();
+            const headers = ['學系名稱', '年度總預算', '已核發金額', '剩餘預算', '使用率', '篩選條件'];
+            const rows = exportRows.map(dept => {
+                const total = parseInt(dept.budget) || 0;
+                const used = parseInt(dept.used) || 0;
+                const remaining = parseInt(dept.remaining ?? (total - used)) || 0;
+                const utilization = Number(dept.utilization ?? (total > 0 ? (used / total) * 100 : 0));
+                return [
+                    dept.department,
+                    total,
+                    used,
+                    remaining,
+                    `${Math.round(utilization * 10) / 10}%`,
+                    filterText
+                ];
+            });
+
+            const totalBudget = exportRows.reduce((sum, row) => sum + (parseInt(row.budget) || 0), 0);
+            const totalUsed = exportRows.reduce((sum, row) => sum + (parseInt(row.used) || 0), 0);
+            rows.push([]);
+            rows.push(['匯出筆數', exportRows.length, '總預算', totalBudget, '總支出', totalUsed]);
+
+            const csv = '\uFEFF' + [headers, ...rows]
+                .map(row => row.map(csvCell).join(','))
+                .join('\r\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Budget_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+
+            logBudgetExport('CSV', filterText, exportRows.length);
         }
 
 
