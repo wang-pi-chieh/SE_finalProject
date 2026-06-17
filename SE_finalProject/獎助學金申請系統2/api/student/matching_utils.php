@@ -1,6 +1,7 @@
 <?php
 // api/student/matching_utils.php
 // Shared helpers for eligible-scholarship matching and notification sync.
+require_once __DIR__ . '/../common/mailer.php';
 
 function wu_table_exists(mysqli $conn, string $tableName): bool
 {
@@ -17,6 +18,104 @@ function wu_table_exists(mysqli $conn, string $tableName): bool
     $stmt->close();
 
     return $exists;
+}
+
+function wu_column_exists(mysqli $conn, string $tableName, string $columnName): bool
+{
+    $stmt = $conn->prepare(
+        'SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ? LIMIT 1'
+    );
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param('ss', $tableName, $columnName);
+    $stmt->execute();
+    $exists = (bool) $stmt->get_result()->fetch_row();
+    $stmt->close();
+
+    return $exists;
+}
+
+function wu_get_student_email(mysqli $conn, string $username): ?array
+{
+    $sql = 'SELECT real_name, email FROM users WHERE username = ? LIMIT 1';
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return null;
+    }
+
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc() ?: null;
+    $stmt->close();
+
+    if (!$result || empty($result['email'])) {
+        return null;
+    }
+
+    return [
+        'real_name' => (string) ($result['real_name'] ?? ''),
+        'email' => (string) $result['email'],
+    ];
+}
+
+function wu_mark_notification_email_status(mysqli $conn, int $notificationId, bool $success, ?string $errorMessage = null): void
+{
+    if (!wu_column_exists($conn, 'student_notifications', 'email_sent_at')) {
+        return;
+    }
+
+    $sql = '
+        UPDATE student_notifications
+        SET email_sent_at = CASE WHEN ? = 1 THEN NOW() ELSE email_sent_at END,
+            email_last_error = ?
+        WHERE id = ?
+    ';
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return;
+    }
+    $flag = $success ? 1 : 0;
+    $safeError = $success ? null : mb_substr((string) ($errorMessage ?? '寄送失敗'), 0, 255);
+    $stmt->bind_param('isi', $flag, $safeError, $notificationId);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function wu_try_send_notification_email(
+    mysqli $conn,
+    int $notificationId,
+    string $username,
+    string $title,
+    string $message,
+    bool $alreadySent
+): void {
+    if ($alreadySent) {
+        return;
+    }
+
+    $student = wu_get_student_email($conn, $username);
+    if (!$student) {
+        wu_mark_notification_email_status($conn, $notificationId, false, '找不到學生 Email');
+        return;
+    }
+
+    $safeTitle = htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $safeMessage = nl2br(htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+    $html = "
+        <div style=\"font-family:Arial,'Noto Sans TC',sans-serif;line-height:1.6;color:#1f2937;\">
+            <h2 style=\"margin:0 0 12px;\">NSAMS 站內通知提醒</h2>
+            <p style=\"margin:0 0 8px;\">您好，{$student['real_name']}：</p>
+            <p style=\"margin:0 0 8px;\"><strong>{$safeTitle}</strong></p>
+            <p style=\"margin:0 0 12px;\">{$safeMessage}</p>
+            <p style=\"margin:0;color:#6b7280;font-size:12px;\">此信件由系統自動寄出，請勿直接回覆。</p>
+        </div>
+    ";
+
+    $error = null;
+    $success = wu_send_gmail_notification($student['email'], $student['real_name'], "【NSAMS】{$title}", $html, $error);
+    wu_mark_notification_email_status($conn, $notificationId, $success, $error);
 }
 
 function wu_get_student_context(mysqli $conn, string $username): ?array
@@ -303,15 +402,46 @@ function wu_upsert_notification(
         return;
     }
 
-    $sql = "
-        INSERT INTO student_notifications
-            (student_username, type, title, message, related_application_id, related_scholarship_id, dedup_key, is_read)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 0)
-        ON DUPLICATE KEY UPDATE
-            title = VALUES(title),
-            message = VALUES(message),
-            is_read = IF(student_notifications.is_read = 1, 1, 0)
-    ";
+    $existingId = null;
+    $existingEmailSentAt = null;
+    if (wu_column_exists($conn, 'student_notifications', 'email_sent_at')) {
+        $checkStmt = $conn->prepare('SELECT id, email_sent_at FROM student_notifications WHERE dedup_key = ? LIMIT 1');
+        if ($checkStmt) {
+            $checkStmt->bind_param('s', $dedupKey);
+            $checkStmt->execute();
+            $existing = $checkStmt->get_result()->fetch_assoc();
+            if ($existing) {
+                $existingId = (int) $existing['id'];
+                $existingEmailSentAt = $existing['email_sent_at'];
+            }
+            $checkStmt->close();
+        }
+    }
+
+    $hasEmailColumns = wu_column_exists($conn, 'student_notifications', 'email_sent_at')
+        && wu_column_exists($conn, 'student_notifications', 'email_last_error');
+
+    if ($hasEmailColumns) {
+        $sql = "
+            INSERT INTO student_notifications
+                (student_username, type, title, message, related_application_id, related_scholarship_id, dedup_key, is_read, email_sent_at, email_last_error)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0, NULL, NULL)
+            ON DUPLICATE KEY UPDATE
+                title = VALUES(title),
+                message = VALUES(message),
+                is_read = IF(student_notifications.is_read = 1, 1, 0)
+        ";
+    } else {
+        $sql = "
+            INSERT INTO student_notifications
+                (student_username, type, title, message, related_application_id, related_scholarship_id, dedup_key, is_read)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+            ON DUPLICATE KEY UPDATE
+                title = VALUES(title),
+                message = VALUES(message),
+                is_read = IF(student_notifications.is_read = 1, 1, 0)
+        ";
+    }
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
@@ -329,7 +459,38 @@ function wu_upsert_notification(
         $dedupKey
     );
     $stmt->execute();
+    $insertId = (int) $stmt->insert_id;
     $stmt->close();
+
+    if (!$hasEmailColumns) {
+        return;
+    }
+
+    $notificationId = $existingId ?: $insertId;
+    if ($notificationId <= 0) {
+        $idStmt = $conn->prepare('SELECT id, email_sent_at FROM student_notifications WHERE dedup_key = ? LIMIT 1');
+        if ($idStmt) {
+            $idStmt->bind_param('s', $dedupKey);
+            $idStmt->execute();
+            $row = $idStmt->get_result()->fetch_assoc();
+            if ($row) {
+                $notificationId = (int) $row['id'];
+                $existingEmailSentAt = $row['email_sent_at'];
+            }
+            $idStmt->close();
+        }
+    }
+
+    if ($notificationId > 0) {
+        wu_try_send_notification_email(
+            $conn,
+            $notificationId,
+            $username,
+            $title,
+            $message,
+            !empty($existingEmailSentAt)
+        );
+    }
 }
 
 function wu_sync_student_notifications(mysqli $conn, string $username): void

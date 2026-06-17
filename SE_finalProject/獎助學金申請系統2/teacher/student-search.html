@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="zh-Hant">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>學生查詢 - 獎學金助學系統</title>
+    <title>摮貊??亥岷 - ?飛?摮貊頂蝯?/title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -46,15 +46,16 @@
 <body
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen font-sans">
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20251226_v4"></script>
+    <script src="header.js?v=20260601_issue_report"></script>
+    <script src="../issue-report.js?v=20260604_autosave"></script>
 
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Heading -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">學生查詢
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">摮貊??亥岷
                 </h1>
-                <p id="dept-info" class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">載入中...</p>
+                <p id="dept-info" class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">頛銝?..</p>
             </div>
         </div>
 
@@ -71,10 +72,10 @@
                     </div>
                     <input id="student-search"
                         class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
-                        placeholder="搜尋學生姓名、學號或班級" type="text" />
+                        placeholder="??摮貊?憪??飛???剔?" type="text" />
                 </div>
                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                    共 <span id="student-count" class="font-bold text-[#111318] dark:text-white">0</span> 位學生
+                    ??<span id="student-count" class="font-bold text-[#111318] dark:text-white">0</span> 雿飛??
                 </div>
             </div>
 
@@ -83,15 +84,15 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
                         <tr>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">班級/年級</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?憪?/摮貉?</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider">?剔?/撟渡?</th>
                             <th class="p-4 text-xs font-semibold uppercase tracking-wider">Email</th>
-                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">詳細資料</th>
+                            <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">閰喟敦鞈?</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]" id="student-table-body">
                         <tr>
-                            <td colspan="4" class="p-4 text-center text-gray-500">載入中...</td>
+                            <td colspan="4" class="p-4 text-center text-gray-500">頛銝?..</td>
                         </tr>
                     </tbody>
                 </table>
@@ -99,7 +100,7 @@
             <!-- Pagination (Optional, simplified for now) -->
             <div
                 class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex items-center justify-center text-xs text-gray-500">
-                顯示所有符合條件的學生
+                憿舐內??泵??隞嗥?摮貊?
             </div>
         </div>
     </main>
@@ -122,10 +123,10 @@
                                 <div>
                                     <h3 id="student-detail-title"
                                         class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-                                        學生註冊資料
+                                        摮貊?閮餃?鞈?
                                     </h3>
                                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                        帳號：<span id="detail-student-username"
+                                        撣唾?嚗?span id="detail-student-username"
                                             class="font-medium text-gray-900 dark:text-gray-100"></span>
                                     </p>
                                 </div>
@@ -138,13 +139,13 @@
                     </div>
                     <div id="student-detail-body"
                         class="px-4 py-5 sm:p-6 space-y-2 text-sm text-gray-700 dark:text-gray-200">
-                        載入中...
+                        頛銝?..
                     </div>
                     <div
                         class="bg-gray-50 dark:bg-[#252f3e]/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-gray-100 dark:border-gray-700">
                         <button type="button" onclick="closeStudentDetailModal()"
                             class="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto">
-                            關閉
+                            ??
                         </button>
                     </div>
                 </div>
@@ -162,8 +163,8 @@
                 return;
             }
             const user = JSON.parse(storedUser);
-            if (user.role !== '老師') {
-                alert('權限不足');
+            if (user.role !== '?葦') {
+                alert('甈?銝雲');
                 window.location.href = '../index.html';
                 return;
             }
@@ -174,16 +175,16 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    document.getElementById('dept-info').innerHTML = `系所：<span class="font-bold text-primary">${data.department}</span> | 學生列表`;
+                    document.getElementById('dept-info').innerHTML = `蝟餅?嚗?span class="font-bold text-primary">${data.department}</span> | 摮貊??”`;
                     renderTable(data.data);
                     setupSearch(data.data);
                 } else {
-                    document.getElementById('dept-info').textContent = '載入失敗';
-                    document.getElementById('student-table-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">${data.message || '無法取得資料'}</td></tr>`;
+                    document.getElementById('dept-info').textContent = '頛憭望?';
+                    document.getElementById('student-table-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">${data.message || '?⊥???鞈?'}</td></tr>`;
                 }
             } catch (err) {
                 console.error(err);
-                document.getElementById('student-table-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">連線錯誤</td></tr>`;
+                document.getElementById('student-table-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">????航炊</td></tr>`;
             }
         });
 
@@ -194,7 +195,7 @@
             countEl.textContent = students.length;
 
             if (students.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">目前該系所沒有學生資料</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">?桀?閰脩頂?瘝?摮貊?鞈?</td></tr>';
                 return;
             }
 
@@ -202,7 +203,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50 dark:hover:bg-[#2a3441] transition-colors border-b border-gray-100 dark:border-gray-800';
 
-                const gradeText = s.grade_level ? `${s.grade_level}年級` : '';
+                const gradeText = s.grade_level ? `${s.grade_level}撟渡?` : '';
                 const classText = s.class_name ? `${s.class_name}` : '';
                 const fullClass = [gradeText, classText].filter(Boolean).join(' / ') || '-';
 
@@ -210,7 +211,7 @@
 
                 tr.innerHTML = `
                     <td class="p-4">
-                        <p class="text-[#111318] dark:text-white font-bold text-sm">${s.real_name || '未命名'}</p>
+                        <p class="text-[#111318] dark:text-white font-bold text-sm">${s.real_name || '?芸??}</p>
                         <p class="text-[#616f89] dark:text-gray-500 text-xs">${s.username}</p>
                     </td>
                     <td class="p-4 text-sm text-[#111318] dark:text-white">${fullClass}</td>
@@ -219,7 +220,7 @@
                         <button onclick="openStudentDetailModal('${safeUsername}')"
                             class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#d1d5db] dark:border-gray-600 text-xs font-medium text-[#111318] dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             <span class="material-symbols-outlined text-[16px]">visibility</span>
-                            檢視
+                            瑼Ｚ?
                         </button>
                     </td>
                 `;
@@ -247,7 +248,7 @@
             const usernameSpan = document.getElementById('detail-student-username');
 
             usernameSpan.textContent = username;
-            body.textContent = '載入中...';
+            body.textContent = '頛銝?..';
             modal.classList.remove('hidden');
 
             try {
@@ -255,18 +256,18 @@
                 const result = await res.json();
 
                 if (!result.success) {
-                    body.textContent = result.message || '載入失敗';
+                    body.textContent = result.message || '頛憭望?';
                     return;
                 }
 
                 const u = result.data || {};
                 const rows = [];
 
-                rows.push({ label: '姓名', value: u.real_name || '-' });
-                rows.push({ label: '身分別', value: u.role || '-' });
-                if (u.department) rows.push({ label: '系所', value: u.department });
-                if (u.phone) rows.push({ label: '手機號碼', value: u.phone });
-                if (u.email) rows.push({ label: '電子信箱', value: u.email });
+                rows.push({ label: '憪?', value: u.real_name || '-' });
+                rows.push({ label: '頨怠???, value: u.role || '-' });
+                if (u.department) rows.push({ label: '蝟餅?', value: u.department });
+                if (u.phone) rows.push({ label: '???Ⅳ', value: u.phone });
+                if (u.email) rows.push({ label: '?餃?靽∠拳', value: u.email });
 
                 body.innerHTML = rows.map(r => `
                     <div class="flex justify-between items-center py-1">
@@ -276,7 +277,7 @@
                 `).join('');
             } catch (err) {
                 console.error(err);
-                body.textContent = '系統錯誤，請稍後再試。';
+                body.textContent = '蝟餌絞?航炊嚗?蝔??岫??;
             }
         }
 

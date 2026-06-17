@@ -21,8 +21,8 @@ if (!function_exists('db_env')) {
 
 $host = db_env(['DB_HOST', 'MYSQL_HOST'], 'localhost');
 $user = db_env(['DB_USER', 'MYSQL_USER', 'MYSQL_USERNAME'], 'root');
-$password = db_env(['DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD'], '12355');
-$dbname = db_env(['DB_NAME', 'MYSQL_DATABASE'], 'database5');
+$password = db_env(['DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD'], '');
+$dbname = db_env(['DB_NAME', 'MYSQL_DATABASE'], 'se_finalproject');
 $port = (int) db_env(['DB_PORT', 'MYSQL_PORT'], '3306');
 if ($port <= 0) {
     $port = 3306;

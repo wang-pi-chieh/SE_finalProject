@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS `student_notifications` (
   `related_scholarship_id` int(11) DEFAULT NULL COMMENT '關聯獎學金編號',
   `dedup_key` varchar(255) NOT NULL COMMENT '去重用鍵值',
   `is_read` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已讀',
+  `email_sent_at` datetime DEFAULT NULL COMMENT 'Email 寄送成功時間',
+  `email_last_error` varchar(255) DEFAULT NULL COMMENT '最近一次 Email 錯誤',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_student_notification_dedup` (`dedup_key`),
@@ -21,6 +23,30 @@ CREATE TABLE IF NOT EXISTS `student_notifications` (
   CONSTRAINT `student_notifications_application_fk` FOREIGN KEY (`related_application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE,
   CONSTRAINT `student_notifications_scholarship_fk` FOREIGN KEY (`related_scholarship_id`) REFERENCES `scholarships` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='學生站內通知';
+
+SET @add_email_sent_at = IF(
+  (SELECT COUNT(*) FROM information_schema.columns
+   WHERE table_schema = DATABASE()
+     AND table_name = 'student_notifications'
+     AND column_name = 'email_sent_at') = 0,
+  'ALTER TABLE `student_notifications` ADD COLUMN `email_sent_at` datetime DEFAULT NULL COMMENT ''Email 寄送成功時間'' AFTER `is_read`',
+  'SELECT 1'
+);
+PREPARE stmt_add_email_sent_at FROM @add_email_sent_at;
+EXECUTE stmt_add_email_sent_at;
+DEALLOCATE PREPARE stmt_add_email_sent_at;
+
+SET @add_email_last_error = IF(
+  (SELECT COUNT(*) FROM information_schema.columns
+   WHERE table_schema = DATABASE()
+     AND table_name = 'student_notifications'
+     AND column_name = 'email_last_error') = 0,
+  'ALTER TABLE `student_notifications` ADD COLUMN `email_last_error` varchar(255) DEFAULT NULL COMMENT ''最近一次 Email 錯誤'' AFTER `email_sent_at`',
+  'SELECT 1'
+);
+PREPARE stmt_add_email_last_error FROM @add_email_last_error;
+EXECUTE stmt_add_email_last_error;
+DEALLOCATE PREPARE stmt_add_email_last_error;
 
 CREATE TABLE IF NOT EXISTS `scholarship_eligibility_rules` (
   `scholarship_id` int(11) NOT NULL COMMENT '獎學金編號',

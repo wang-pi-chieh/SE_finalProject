@@ -116,6 +116,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error fetching initial data:', err);
     }
 
+    const applicationAutosave = (!isViewOnly && window.FormAutosave && form)
+        ? window.FormAutosave.register(form, {
+            key: `student-application:${editingApplicationId || 'new'}`,
+            interval: 30000
+        })
+        : null;
+
     // 載入既有申請（補件 / 編輯 / 僅檢視用）
     async function loadExistingApplication(applicationId, user, viewOnly = false) {
         try {
@@ -726,6 +733,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const result = await res.json();
 
             if (result.success) {
+                applicationAutosave?.clear();
                 alert(isEditMode ? '已更新並重新送出申請！' : '申請成功！');
                 window.location.href = 'student-dashboard.html';
             } else {
