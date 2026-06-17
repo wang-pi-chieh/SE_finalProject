@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>?葦?銵冽 - ?飛?摮貊頂蝯?/title>
+    <title>老師儀表板 - 獎學金助學系統</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -95,20 +95,20 @@
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
     <!-- Top Navigation -->
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20260601_teacher_preview_banner"></script>
+    <script src="header.js?v=20260617_teacher_dashboard_fix"></script>
     <script src="../issue-report.js?v=20260604_autosave"></script>
     <!-- Main Content -->
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Heading -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">?葦?銵冽
+                <h1 class="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">老師儀表板
                 </h1>
                 <h2 id="dashboard-greeting" class="text-3xl font-bold text-[#111318] dark:text-white">
-                    甇∟???嚗葦 <span class="text-3xl">??</span>
+                    歡迎回來，老師 <span class="text-3xl">👋</span>
                 </h2>
                 <p id="teacher-semester-info" class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">
-                    ?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | 頛銝?..</p>
+                    目前學期：113學年度第1學期 | 載入中...</p>
             </div>
 
         </div>
@@ -117,7 +117,7 @@
             <div data-delay="0"
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撌脫?血飛?</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">已推薦學生數</p>
                     <span
                         class="material-symbols-outlined text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1.5 rounded-md">group</span>
                 </div>
@@ -127,7 +127,7 @@
             <div data-delay="0"
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撖拇銝剔隢?/p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">審核中推薦</p>
                     <span
                         class="material-symbols-outlined text-orange-500 bg-orange-50 dark:bg-orange-500/10 p-1.5 rounded-md">pending</span>
                 </div>
@@ -137,7 +137,7 @@
             <div data-delay="0"
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">撌脤??唾?</p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">已通過申請</p>
                     <span
                         class="material-symbols-outlined text-green-500 bg-green-50 dark:bg-green-500/10 p-1.5 rounded-md">check_circle</span>
                 </div>
@@ -146,14 +146,14 @@
             <div data-delay="0"
                 class="animate-on-scroll flashlight-card flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#1e2634] border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm hover:shadow-md transition-shadow relative group cursor-default">
                 <div class="flex items-center justify-between relative z-10">
-                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">敺?????/p>
+                    <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">待補件通知</p>
                     <span
                         class="material-symbols-outlined text-red-500 bg-red-50 dark:bg-red-500/10 p-1.5 rounded-md">assignment_late</span>
                 </div>
                 <p id="stat-pending" class="text-[#111318] dark:text-white text-3xl font-bold mt-1 relative z-10">0
                     <span
                         class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 hidden"
-                        id="stat-pending-badge">(鋆?鞈?)</span>
+                        id="stat-pending-badge">(補開資料)</span>
                 </p>
             </div>
         </div>
@@ -163,7 +163,7 @@
             <div class="lg:col-span-1 flex flex-col gap-6">
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-[#111318] dark:text-white text-lg font-bold">敺齒鈭?/?</h3>
+                        <h3 class="text-[#111318] dark:text-white text-lg font-bold">待辦事項/通知</h3>
                         <div class="relative group">
                             <button id="show-more-notif-trigger"
                                 class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden">
@@ -171,13 +171,13 @@
                             </button>
                             <div
                                 class="absolute right-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-                                憿舐內?游?
+                                顯示更多
                             </div>
                         </div>
                     </div>
                     <div class="flex flex-col gap-4" id="notification-list">
                         <!-- Dynamic Notifications -->
-                        <div class="p-4 text-center text-gray-500 text-sm">頛銝?..</div>
+                        <div class="p-4 text-center text-gray-500 text-sm">載入中...</div>
                     </div>
                 </div>
             </div>
@@ -185,7 +185,7 @@
             <!-- Right: Student List -->
             <div class="lg:col-span-2 flex flex-col gap-6">
                 <div>
-                    <h3 class="text-[#111318] dark:text-white text-lg font-bold mb-4">?刻摮貊??”</h3>
+                        <h3 class="text-[#111318] dark:text-white text-lg font-bold mb-4">推薦學生列表</h3>
 
                     <div
                         class="bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm flex flex-col overflow-hidden">
@@ -200,20 +200,20 @@
                                     </div>
                                     <input id="student-search"
                                         class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all shadow-sm"
-                                        placeholder="??摮貊?憪??飛?? type="text" />
+                                        placeholder="搜尋學生姓名或學號" type="text" />
                                 </div>
                             </div>
                             <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
                                 <select id="filter-status"
                                     class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
-                                    <option value="">?????/option>
-                                    <option value="pending">撖拇銝?/option>
-                                    <option value="approved">撌脤?</option>
-                                    <option value="needs_action">?鋆辣</option>
+                                    <option value="">所有狀態</option>
+                                    <option value="pending">審核中</option>
+                                    <option value="approved">已通過</option>
+                                    <option value="needs_action">需補件</option>
                                 </select>
                                 <select id="filter-dept"
                                     class="px-3 py-2 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] bg-white dark:bg-[#1e2634] text-[#111318] dark:text-white text-sm focus:ring-1 focus:ring-primary outline-none shadow-sm cursor-pointer">
-                                    <option value="">???蝟?/option>
+                                    <option value="">所有科系</option>
                                     <!-- Dynamic options -->
                                 </select>
                             </div>
@@ -224,12 +224,12 @@
                             <table class="w-full text-left border-collapse">
                                 <thead class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400">
                                     <tr>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?憪?/摮貉?</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮賊/蝟餅?</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮豢平?蜀 (GPA)</th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">?唾??飛????/th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider">???/th>
-                                        <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">??
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">學院/系所</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">學業成績 (GPA)</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金項目</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
+                                    <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作
                                         </th>
                                     </tr>
                                 </thead>
@@ -237,7 +237,7 @@
                                     id="dashboard-student-list">
                                     <!-- Dynamic Content -->
                                     <tr>
-                                        <td colspan="6" class="p-4 text-center text-gray-500">頛銝?..</td>
+                            <td colspan="6" class="p-4 text-center text-gray-500">載入中...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -248,7 +248,7 @@
                             class="p-4 border-t border-[#e5e7eb] dark:border-[#2d3748] flex items-center justify-center">
                             <span id="show-more-trigger"
                                 class="text-sm text-[#616f89] dark:text-gray-400 font-medium cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
-                                憿舐內?游?
+                        顯示更多
                                 <span class="material-symbols-outlined text-sm">expand_more</span>
                             </span>
                         </div>
@@ -268,20 +268,20 @@
             const isPreviewMode = previewParams.get('preview') === 'teacher';
             const previewUser = {
                 username: previewParams.get('preview_user') || 'teacher-preview',
-                role: '?葦',
-                real_name: '?葦蝡舫?閬?,
+                role: '老師',
+                real_name: '老師身分預覽',
                 email: 'teacher-preview@example.edu'
             };
             const storedUser = localStorage.getItem('user');
             if (!storedUser && !isPreviewMode) {
-                alert('隢??餃');
+                alert('請先登入');
                 window.location.href = '../login.html';
                 return;
             }
 
             const user = isPreviewMode ? previewUser : JSON.parse(storedUser);
-            if (user.role !== '?葦') {
-                alert('甈?銝雲');
+            if (user.role !== '老師' && user.role !== 'teacher') {
+                alert('權限不足');
                 window.location.href = '../login.html';
                 return;
             }
@@ -296,7 +296,7 @@
             // 1. Update Greeting
             const greetingEl = document.getElementById('dashboard-greeting');
             if (greetingEl) {
-                greetingEl.innerHTML = `甇∟???嚗?{user.real_name || user.username} ?葦 <span class="text-3xl">??</span>`;
+                greetingEl.innerHTML = `歡迎回來，${user.real_name || user.username} 老師 <span class="text-3xl">👋</span>`;
             }
 
             // 2. Load Teacher Profile (Dept & Position)
@@ -305,23 +305,23 @@
                 const profileData = await profileRes.json();
                 if (profileData.success && profileData.data) {
                     const dbName = profileData.data.real_name || user.real_name || user.username;
-                    const dept = profileData.data.department || '?芰蝟餅?';
-                    const title = profileData.data.display_position || '??';
+                    const dept = profileData.data.department || '未知系所';
+                    const title = profileData.data.display_position || '教授';
                     user.real_name = dbName;
                     const headerName = document.getElementById('header-user-name');
                     const headerEmail = document.getElementById('header-user-email');
                     if (headerName) headerName.textContent = dbName;
                     if (headerEmail) headerEmail.textContent = profileData.data.email || user.email || '';
                     if (greetingEl) {
-                        greetingEl.innerHTML = `甇∟???嚗?{dbName} ?葦 <span class="text-3xl">??</span>`;
+                        greetingEl.innerHTML = `歡迎回來，${dbName} 老師 <span class="text-3xl">👋</span>`;
                     }
-                    document.getElementById('teacher-semester-info').textContent = `?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | ${dept} ${title}`;
+                    document.getElementById('teacher-semester-info').textContent = `目前學期：113學年度第1學期 | ${dept} ${title}`;
                 } else {
-                    document.getElementById('teacher-semester-info').textContent = '?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | 鞈?頛憭望?';
+                    document.getElementById('teacher-semester-info').textContent = '目前學期：113學年度第1學期 | 資料載入失敗';
                 }
             } catch (err) {
                 console.error('Teacher profile error:', err);
-                document.getElementById('teacher-semester-info').textContent = '?桀?摮豢?嚗?13摮詨僑摨衣洵1摮豢? | ????航炊';
+                document.getElementById('teacher-semester-info').textContent = '目前學期：113學年度第1學期 | 連線錯誤';
             }
 
             // 3. Load Stats & Requests
@@ -339,11 +339,11 @@
                     setupFilters(allRequests);
                     await setupNotifications(allRequests, user.username);
                 } else {
-                    document.getElementById('dashboard-student-list').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
+                    document.getElementById('dashboard-student-list').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById('dashboard-student-list').innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">頛憭望?: ${e.message}</td></tr>`;
+                document.getElementById('dashboard-student-list').innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">載入失敗: ${e.message}</td></tr>`;
             }
         });
 
@@ -354,13 +354,13 @@
             // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
             const s = parseInt(req.app_status);
             if (s === 1) {
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>撌脤?</span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>已通過</span>`;
             } else if (s === 4 || s === 3) { // Reviewing or Pending
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>撖拇銝?/span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>審核中</span>`;
             } else if (s === 2) {
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>?鋆辣</span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>需補件</span>`;
             } else {
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>?芰</span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>未知</span>`;
             }
 
             const tr = document.createElement('tr');
@@ -370,14 +370,14 @@
                     <p class="text-[#111318] dark:text-white font-bold text-sm">${req.student_name}</p>
                     <p class="text-[#616f89] dark:text-gray-500 text-xs">${req.student_username}</p>
                 </td>
-                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '?芸‵撖?}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '未填寫'}</td>
                 <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_gpa || 'N/A'}</td>
                 <td class="p-4 text-sm text-[#111318] dark:text-white">${req.scholarship_name}</td>
                 <td class="p-4">${statusHtml}</td>
                 <td class="p-4 text-right">
                     <button onclick="openGradeModal('${req.student_username}', '${req.student_name}')"
                         class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] text-[#111318] dark:text-white text-xs font-medium hover:bg-gray-50 cursor-pointer transition-colors">
-                        ?亦?閰單?
+                        查看詳情
                     </button>
                 </td>
              `;
@@ -395,18 +395,18 @@
             });
 
             if (requests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
             }
         }
 
         function setupShowMore(requests) {
             const container = document.querySelector('#dashboard-student-list').parentNode.parentNode.nextElementSibling; // The pagination div
             // Or simpler, create a listener for "Show More" text logic. 
-            // The HTML has: <span class="... flex items-center gap-1">憿舐內?游?...</span>
+            // The HTML has: <span class="... flex items-center gap-1">顯示更多...</span>
             // I need to find that element.
             // Let's assume I can find it by text or structure.
 
-            const showMoreBtn = Array.from(document.querySelectorAll('span')).find(el => el.textContent.includes('憿舐內?游?'));
+            const showMoreBtn = Array.from(document.querySelectorAll('span')).find(el => el.textContent.includes('顯示更多'));
             if (showMoreBtn) {
                 // Check if we need to show it
                 if (requests.length <= 5) {
@@ -471,7 +471,7 @@
 
             // Wait, I messed up the HTML in the previous step slightly (nested span inside p might be overwritten if I set textContent).
             // Let's use logic to preserve badge or re-add it.
-            pendingEl.innerHTML = `${pendingCount} <span class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 ${pendingCount > 0 ? '' : 'hidden'}" id="stat-pending-badge">(鋆?鞈?)</span>`;
+            pendingEl.innerHTML = `${pendingCount} <span class="text-xs font-normal text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full ml-2 ${pendingCount > 0 ? '' : 'hidden'}" id="stat-pending-badge">(補開資料)</span>`;
 
             // Add pulse animation if there are pending items
             const pendingCard = pendingEl.closest('.flashlight-card');
@@ -489,13 +489,13 @@
             // 0=Rejected, 1=Approved, 2=NeedsAction, 3=Pending, 4=Reviewing
             const s = parseInt(req.app_status);
             if (s === 1) {
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>撌脤?</span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"><span class="size-1.5 rounded-full bg-green-500"></span>已通過</span>`;
             } else if (s === 4 || s === 3) { // Reviewing or Pending
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>撖拇銝?/span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300"><span class="size-1.5 rounded-full bg-orange-500"></span>審核中</span>`;
             } else if (s === 2) {
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>?鋆辣</span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"><span class="size-1.5 rounded-full bg-red-500"></span>需補件</span>`;
             } else {
-                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>?芰</span>`;
+                statusHtml = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"><span class="size-1.5 rounded-full bg-gray-500"></span>未知</span>`;
             }
 
             const tr = document.createElement('tr');
@@ -505,14 +505,14 @@
                     <p class="text-[#111318] dark:text-white font-bold text-sm">${req.student_name}</p>
                     <p class="text-[#616f89] dark:text-gray-500 text-xs">${req.student_username}</p>
                 </td>
-                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '?芸‵撖?}</td>
+                <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_dept || '未填寫'}</td>
                 <td class="p-4 text-sm text-[#111318] dark:text-white">${req.student_gpa || 'N/A'}</td>
                 <td class="p-4 text-sm text-[#111318] dark:text-white">${req.scholarship_name}</td>
                 <td class="p-4">${statusHtml}</td>
                 <td class="p-4 text-right">
                     <button onclick="openGradeModal('${req.student_username}', '${req.student_name}')"
                         class="px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-[#3f4a5a] text-[#111318] dark:text-white text-xs font-medium hover:bg-gray-50 cursor-pointer transition-colors">
-                        ?亦?閰單?
+                        查看詳情
                     </button>
                 </td>
              `;
@@ -530,7 +530,7 @@
             });
 
             if (requests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">?桀?瘝??刻靽∟?瘙?/td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有推薦信請求</td></tr>';
             }
         }
 
@@ -589,7 +589,7 @@
 
             // Populate Dept Filter
             const depts = new Set(requests.map(r => r.student_dept).filter(Boolean));
-            deptFilter.innerHTML = '<option value="">???蝟?/option>';
+            deptFilter.innerHTML = '<option value="">所有科系</option>';
             depts.forEach(dept => {
                 const option = document.createElement('option');
                 option.value = dept;
@@ -656,8 +656,8 @@
                         type: 'needs_action',
                         student: req.student_name,
                         id: req.student_username,
-                        msg: `${req.student_name}?飛?隢?鋆辣`,
-                        detail: `${req.student_name}?飛?隢歇鋡恍??隞塚?隢?瘜冽?阡???湔?刻?批捆?,
+                        msg: `${req.student_name}同學的申請需補件`,
+                        detail: `${req.student_name}同學的申請已被退回補件，請關注是否需協助更新推薦內容。`,
                         link: true
                     });
                 }
@@ -667,8 +667,8 @@
                         type: 'approved',
                         student: req.student_name,
                         id: req.student_username,
-                        msg: `${req.student_name}?飛?隢歇??`,
-                        detail: `?函${req.student_name}?飛?啣神??虫縑撌脣祟?詨??ｇ?撌脣鼠?飛?隢歇???,
+                        msg: `${req.student_name}同學的申請已通過`,
+                        detail: `您為${req.student_name}同學撰寫的推薦信已審核完畢，已幫同學的申請已通過。`,
                         link: false
                     });
                 }
@@ -681,8 +681,8 @@
                         type: 'submitted',
                         student: req.student_name,
                         id: req.student_username,
-                        msg: `?典歇??刻靽︶,
-                        detail: `?典歇?${req.student_name}?飛??虫縑?,
+                        msg: `您已送出推薦信`,
+                        detail: `您已送出${req.student_name}同學的推薦信。`,
                         link: false
                     });
                 }
@@ -707,7 +707,7 @@
 
                 return result.data.map(item => ({
                     type: item.type || 'system',
-                    msg: item.title || '蝟餌絞?',
+                    msg: item.title || '系統通知',
                     detail: item.message || '',
                     time: item.created_at || '',
                     link: false,
@@ -771,12 +771,12 @@
                 <div class="min-w-0 flex-1">
                     <div class="flex items-start justify-between gap-3">
                         <h4 class="font-bold text-[#111318] dark:text-white text-sm">${escapeHtml(notif.msg)}</h4>
-                        ${notif.source === 'teacher-db' ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${notif.isRead ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300' : 'bg-primary/10 text-primary'}">${notif.isRead ? '撌脰?' : '?芾?'}</span>` : ''}
+                    ${notif.source === 'teacher-db' ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${notif.isRead ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300' : 'bg-primary/10 text-primary'}">${notif.isRead ? '已讀' : '未讀'}</span>` : ''}
                     </div>
                     <p class="text-xs text-[#616f89] dark:text-gray-400 mt-1">${escapeHtml(notif.detail)}</p>
                     ${notif.time ? `<p class="text-[11px] text-gray-400 mt-2">${escapeHtml(notif.time)}</p>` : ''}
-                    ${notif.link ? `<button onclick="window.location.href='recommendations.html'" class="text-orange-600 text-xs font-bold mt-2 inline-block hover:underline">???? -></button>` : ''}
-                    ${notif.source === 'teacher-db' && !notif.isRead ? `<button type="button" data-teacher-notification-read="${notif.notificationId}" class="text-primary text-xs font-bold mt-2 inline-block hover:underline">璅?撌脰?</button>` : ''}
+                    ${notif.link ? `<button onclick="window.location.href='recommendations.html'" class="text-orange-600 text-xs font-bold mt-2 inline-block hover:underline">前往處理 -></button>` : ''}
+                    ${notif.source === 'teacher-db' && !notif.isRead ? `<button type="button" data-teacher-notification-read="${notif.notificationId}" class="text-primary text-xs font-bold mt-2 inline-block hover:underline">標記為已讀</button>` : ''}
                 </div>
             `;
 
@@ -799,7 +799,7 @@
             });
 
             if (notifications.length === 0) {
-                container.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">?桀?瘝??圈</div>';
+                container.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">目前沒有通知</div>';
             }
 
             // Setup Show More
@@ -809,7 +809,7 @@
                 const inlineMoreBtn = document.createElement('button');
                 inlineMoreBtn.type = 'button';
                 inlineMoreBtn.className = 'w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-bold text-primary hover:bg-primary/5 dark:hover:bg-primary/10';
-                inlineMoreBtn.textContent = `憿舐內?游? (${notifications.length})`;
+                inlineMoreBtn.textContent = `顯示更多 (${notifications.length})`;
                 inlineMoreBtn.onclick = openAllNotificationsModal;
                 container.appendChild(inlineMoreBtn);
             }
@@ -839,7 +839,7 @@
                 });
                 const result = await response.json();
                 if (!response.ok || !result.success) {
-                    alert(result.message || '璅?撌脰?憭望?');
+                alert(result.message || '標記為已讀失敗');
                     return;
                 }
 
@@ -848,7 +848,7 @@
                 renderNotifications(sortTeacherNotifications(globalNotifications));
             } catch (error) {
                 console.error('Mark teacher notification read error:', error);
-                alert('璅?撌脰?憭望?');
+            alert('標記為已讀失敗');
             }
         }
 
@@ -907,8 +907,8 @@
                 <div
                     class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">敺齒鈭?/?</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">??頂蝯梢??颲虫???/p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">待辦事項/通知</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">目前沒有通知或待辦事項</p>
                     </div>
                     <button onclick="closeAllNotificationsModal()"
                         class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -923,7 +923,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
                     <button onclick="closeAllNotificationsModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
                 </div>
             </div>
         </div>
@@ -938,7 +938,7 @@
                 <!-- Header -->
                 <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modalStudentName">摮貊?憪?</h3>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modalStudentName">學生姓名</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="modalStudentId">摮貉?</p>
                     </div>
                     <button onclick="closeGradeModal()"
@@ -948,15 +948,15 @@
                 </div>
                 <!-- Content -->
                 <div class="p-6">
-                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">甇瑕僑?蜀蝝??/h4>
+                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">歷年成績概覽</h4>
                     <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
                         <table class="w-full text-sm text-left">
                             <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                                 <tr>
                                     <th class="px-4 py-3 font-medium">摮詨僑/摮豢?</th>
-                                    <th class="px-4 py-3 font-medium">撟喳??蜀</th>
+                                <th class="px-4 py-3 font-medium">平均成績</th>
                                     <th class="px-4 py-3 font-medium">GPA</th>
-                                    <th class="px-4 py-3 font-medium">?剜???鈭箸</th>
+                                <th class="px-4 py-3 font-medium">班級排名</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="gradeTableBody">
@@ -968,7 +968,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end">
                     <button onclick="closeGradeModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
                 </div>
             </div>
         </div>
@@ -985,8 +985,8 @@
                 <div
                     class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">???血飛??/h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">?亦?????函隢?虫縑?飛??/p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">所有推薦學生</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">尚無需要追蹤的推薦資料</p>
                     </div>
                     <button onclick="closeAllStudentsModal()"
                         class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -999,12 +999,12 @@
                         <thead
                             class="bg-[#f9fafb] dark:bg-[#252f3e] text-[#616f89] dark:text-gray-400 sticky top-0 z-10 shadow-sm">
                             <tr>
-                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮貊?憪?/摮貉?</th>
-                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮賊/蝟餅?</th>
-                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">摮豢平?蜀 (GPA)</th>
-                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">?唾??飛????/th>
-                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">???/th>
-                                <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">??</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">學生姓名/學號</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">學院/系所</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">學業成績 (GPA)</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">申請獎學金項目</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider">狀態</th>
+                                <th class="p-4 text-xs font-semibold uppercase tracking-wider text-right">操作</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2d3748]" id="allStudentsTableBody">
@@ -1015,7 +1015,7 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end shrink-0">
                     <button onclick="closeAllStudentsModal()"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">??</button>
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">關閉</button>
                 </div>
             </div>
         </div>
@@ -1060,7 +1060,7 @@
                     <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${row.term}</td>
                     <td class="px-4 py-3 text-gray-600 dark:text-gray-300 font-bold ${row.score >= 90 ? 'text-green-600 dark:text-green-400' : ''}">${row.score}</td>
                     <td class="px-4 py-3 text-gray-600 dark:text-gray-300">${row.gpa}</td>
-                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-primary cursor-help" title="?函鈭箸: ${row.rank.split('/')[1]}">${row.rank}</td>
+                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-primary cursor-help" title="全班人數: ${row.rank.split('/')[1]}">${row.rank}</td>
                 `;
                 tbody.appendChild(tr);
             });

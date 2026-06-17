@@ -13,7 +13,7 @@ $links = [
     [
         'role' => 'teacher',
         'label' => '老師端',
-        'url' => '../teacher/teacher-dashboard.html?preview=teacher&preview_user=teacher-preview'
+        'url' => '../teacher/teacher-dashboard.html?v=20260617_teacher_dashboard_fix&preview=teacher&preview_user=teacher-preview'
     ],
     [
         'role' => 'reviewer',
