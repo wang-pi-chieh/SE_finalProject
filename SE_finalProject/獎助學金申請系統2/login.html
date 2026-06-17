@@ -180,10 +180,10 @@
 
                                 // 依照身分跳轉到不同頁面
                                 const role = data.user.role;
-                                if (role === '學生') {
+                                if (role === '學生' || role === 'student') {
                                     window.location.href = 'student/student-dashboard.html';
-                                } else if (role === '老師') {
-                                    window.location.href = 'teacher/teacher-dashboard.html';
+                                } else if (role === '老師' || role === 'teacher') {
+                                    window.location.href = 'teacher/teacher-dashboard.html?v=20260617_teacher_dashboard_fix';
                                 } else if (role === '管理員' || role === '系管' || role === '系統管理員') {
                                     window.location.href = 'admin/admin-dashboard.html';
                                 } else if (role === '獎學金單位' || role === '獎助單位') {
