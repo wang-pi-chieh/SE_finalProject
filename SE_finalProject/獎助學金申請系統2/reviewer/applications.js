@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const applicationsTableBody = document.getElementById('applications-table-body');
+    const applicationsSection = applicationsTableBody ? applicationsTableBody.closest('.animate-on-scroll') : null;
     const searchInput = document.getElementById('search-input');
     const statusFilter = document.getElementById('status-filter');
     const scholarshipFilter = document.getElementById('scholarship-filter');
@@ -47,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tab === "disbursement") {
             if (disbursement) disbursement.classList.remove("hidden");
-            if (applicationsTableBody) applicationsTableBody.parentElement.style.display = "none";
+            if (applicationsSection) applicationsSection.classList.add("hidden");
             loadDisbursement();
             return;
         } else {
             if (disbursement) disbursement.classList.add("hidden");
-            if (applicationsTableBody) applicationsTableBody.parentElement.style.display = "block";
+            if (applicationsSection) applicationsSection.classList.remove("hidden");
         }
         filterApplications();
     };
@@ -122,9 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 (app.student_username || '').toLowerCase().includes(query);
 
             // Status dropdown
-            // Note: API returns string 'pending', 'approved' etc. mapped, but check get_reviewer_applications.php
             const s = String(app.status);
-            const matchStatus = status === 'all' || s === status;
+            const statusMap = {
+                pending: ['3'],
+                approved: ['1'],
+                rejected: ['0'],
+                needs_action: ['2']
+            };
+            const matchStatus = status === 'all' || (statusMap[status] || []).includes(s);
 
             // Scholarship
             const matchScholarship = scholarship === 'all' || app.scholarship_name === scholarship;
@@ -282,27 +288,138 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function loadDisbursement() {
+    async function loadDisbursement() {
         const tbody = document.getElementById("disbursement-table-body");
         if (!tbody) return;
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="4" class="p-4 text-center text-gray-400">
+                <td colspan="5" class="p-4 text-center text-gray-400">
                     載入撥款資料中...
                 </td>
             </tr>
-    `   ;
+        `;
 
-    fetch('../api/get_disbursement.php')
-}
-    
+        try {
+            const response = await fetch(`../api/reviewer/get_disbursements.php?provider_username=${encodeURIComponent(user.username)}&t=${Date.now()}`);
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || '無法取得撥款資料');
+            }
+
+            renderDisbursements(result.data || []);
+        } catch (err) {
+            console.error('Error fetching disbursements:', err);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="p-4 text-center text-red-500">
+                        ${escapeHtml(err.message || '撥款資料載入失敗')}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderDisbursements(list) {
+        const tbody = document.getElementById("disbursement-table-body");
+        if (!tbody) return;
+
+        if (list.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="p-4 text-center text-gray-500">
+                        目前沒有已核准且待撥款的申請。
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = list.map(item => {
+            const isPaid = item.status === 'paid';
+            const isFailed = item.status === 'failed';
+            const action = isPaid
+                ? '<span class="text-xs text-gray-400">已完成</span>'
+                : `<button class="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-blue-700 transition-colors" data-disbursement-id="${escapeHtml(item.id)}" data-disbursement-status="paid">標記已撥款</button>`;
+
+            return `
+                <tr class="border-t border-[#e5e7eb] dark:border-[#2d3748]">
+                    <td class="p-3">
+                        <div class="font-medium text-sm">${escapeHtml(item.student_name || item.student_username || '-')}</div>
+                        <div class="text-xs text-gray-500">${escapeHtml(item.student_username || '')}</div>
+                    </td>
+                    <td class="p-3 text-sm">${escapeHtml(item.scholarship_name || '-')}</td>
+                    <td class="p-3 text-sm">${escapeHtml(item.amount || '-')}</td>
+                    <td class="p-3">${formatDisbursementStatus(item.status, isFailed)}</td>
+                    <td class="p-3 text-right">${action}</td>
+                </tr>
+            `;
+        }).join('');
+
+        tbody.querySelectorAll('[data-disbursement-id]').forEach(button => {
+            button.addEventListener('click', () => {
+                updateDisbursementStatus(button.dataset.disbursementId, button.dataset.disbursementStatus);
+            });
+        });
+    }
+
+    async function updateDisbursementStatus(id, status) {
+        if (!id || !status) return;
+        const tbody = document.getElementById("disbursement-table-body");
+
+        try {
+            const response = await fetch('../api/reviewer/update_disbursement.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: Number(id),
+                    status,
+                    provider_username: user.username
+                })
+            });
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || '撥款狀態更新失敗');
+            }
+
+            loadDisbursement();
+        } catch (err) {
+            console.error('Error updating disbursement:', err);
+            if (tbody) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="5" class="p-4 text-center text-red-500">${escapeHtml(err.message || '撥款狀態更新失敗')}</td>`;
+                tbody.prepend(row);
+            }
+        }
+    }
+
+    function formatDisbursementStatus(status) {
+        const labels = {
+            pending: ['待撥款', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300'],
+            paid: ['已撥款', 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'],
+            failed: ['撥款失敗', 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300']
+        };
+        const [label, classes] = labels[status] || ['待撥款', labels.pending[1]];
+        return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${classes}">${label}</span>`;
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     // Initialize
     fetchApplications();
     populateScholarshipFilter(); // Fetch filters dynamic from DB
     const urlParams = new URLSearchParams(window.location.search);
     const initialTab = urlParams.get('tab');
-    if (initialTab && (initialTab === 'pending' || initialTab === 'history')) {
+    if (initialTab && (initialTab === 'pending' || initialTab === 'history' || initialTab === 'disbursement')) {
         switchTab(initialTab);
     }
 });
