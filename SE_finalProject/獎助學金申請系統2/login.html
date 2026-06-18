@@ -170,7 +170,22 @@
                             password: passwordInput
                         })
                     })
-                        .then(response => response.json())
+                        .then(async response => {
+                            const rawText = await response.text();
+                            let payload;
+
+                            try {
+                                payload = rawText ? JSON.parse(rawText) : {};
+                            } catch (parseError) {
+                                throw new Error(`登入 API 回應格式錯誤（HTTP ${response.status}）：${rawText.slice(0, 120)}`);
+                            }
+
+                            if (!response.ok && response.status !== 401) {
+                                throw new Error(payload.message || `登入 API 錯誤（HTTP ${response.status}）`);
+                            }
+
+                            return payload;
+                        })
                         .then(data => {
                             if (data.success) {
                                 alert('登入成功！你好，' + data.user.real_name); // 顯示使用者的名字
@@ -198,13 +213,16 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
+                            const isLocalHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
                             let msg = '連線錯誤。';
-                            const currentPort = window.location.port;
-                            if (currentPort !== '8080') {
-                                msg += '\n偵測到您可能未用 XAMPP Port 8080 開啟。\n請確認網址是否為：http://localhost:8080/獎助學金申請系統/login.html';
+
+                            if (isLocalHost) {
+                                msg += '\n請確認 XAMPP Apache 是否已啟動，並使用 http://localhost:8080/獎助學金申請系統/login.html 開啟。';
                             } else {
-                                msg += '\n請確認 XAMPP Apache 是否已啟動。';
+                                msg += '\n目前是在正式站台，請確認 Zeabur web / MySQL 服務與登入 API 狀態。';
                             }
+
+                            msg += `\n錯誤內容：${error.message || error}`;
                             alert(msg);
                         });
                 });
