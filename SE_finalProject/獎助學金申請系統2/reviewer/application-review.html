@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>?唾?撖拇閰單? - ?飛?恣?頂蝯?/title>
+    <title>審核申請詳情 - 獎助學金申請系統</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -102,24 +102,24 @@
             <!-- Breadcrumbs & Meta -->
             <div class="flex flex-col gap-2">
                 <div class="flex flex-wrap gap-2 text-sm">
-                    <a class="text-slate-500 dark:text-slate-400 hover:underline" href="reviewer-dashboard.html">擐?</a>
+                    <a class="text-slate-500 dark:text-slate-400 hover:underline" href="reviewer-dashboard.html">儀表板</a>
                     <span class="text-slate-400 dark:text-slate-600">/</span>
-                    <a class="text-slate-500 dark:text-slate-400 hover:underline" href="#">?唾?獢辣</a>
+                    <a class="text-slate-500 dark:text-slate-400 hover:underline" href="applications.html">申請審核</a>
                     <span class="text-slate-400 dark:text-slate-600">/</span>
-                    <span class="text-slate-900 dark:text-white font-medium">?唾?蝺刻? #2024-892</span>
+                    <span class="text-slate-900 dark:text-white font-medium">申請詳情</span>
                 </div>
             </div>
             <!-- Page Header & Actions -->
             <div
                 class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">?唾?撖拇閰單?</h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">113摮詨僑摨行?撖蝘摮貊??飛????敺祟??/p>
+                    <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">審核申請詳情</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">檢視學生申請資料、證明文件與審查結果。</p>
                 </div>
                 <a href="reviewer-dashboard.html"
                     class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-200">
                     <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-                    餈??”
+                    返回儀表板
                 </a>
             </div>
             <!-- Confidential Warning -->
@@ -127,13 +127,13 @@
                 class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 flex items-center gap-3">
                 <span class="material-symbols-outlined text-amber-600 dark:text-amber-500">lock</span>
                 <p class="text-sm text-amber-800 dark:text-amber-200 font-medium">
-                    ?? 璈?鞈?嚗迨閮???犖霅鞈? (PII)??雓寞?????
+                    此頁包含學生個人資料與申請文件，請依權限審閱並避免外流。
                 </p>
             </div>
             <!-- Loading State -->
             <div id="loading-state" class="flex flex-col items-center justify-center py-20">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-                <p class="text-slate-500 text-sm">甇?頛?唾?鞈?...</p>
+                <p class="text-slate-500 text-sm">載入申請資料中...</p>
             </div>
 
             <!-- Main Layout Grid (Hidden initially) -->
@@ -250,39 +250,39 @@
                         class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">family_home</span>
-                            摰嗅滬??瞈?瘜?
+                            家庭與經濟狀況
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">摰嗅滬撅??瘜?/p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">家庭居住狀況</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="family-housing">...
                                 </p>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">?犖撅??瘜?/p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">個人居住狀況</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="personal-housing">...
                                 </p>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">撠勗飛鞎豢狡</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">就學貸款</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="student-loan">...</p>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">摮賊?鞎餅???/p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">學雜費減免</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="tuition-waiver">...
                                 </p>
                             </div>
                         </div>
                         <div class="space-y-4">
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">摰嗅滬?瘜牧??/p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">家庭狀況說明</p>
                                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg text-sm text-slate-700 dark:text-slate-300 leading-relaxed"
                                     id="family-desc">
                                     ...
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">摰嗅滬??瘜?/p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">家庭成員狀況</p>
                                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg text-sm text-slate-700 dark:text-slate-300 leading-relaxed"
                                     id="family-members">
                                     ...
@@ -295,7 +295,7 @@
                         class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">description</span>
-                            ?芸???貉???
+                            自傳與申請說明
                         </h3>
                         <div class="prose prose-slate dark:prose-invert max-w-none text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
                             id="biography-content">
@@ -312,7 +312,7 @@
                         class="hidden animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">verified</span>
-                            ???刻靽?
+                            推薦資料
                         </h3>
                         <div class="prose prose-slate dark:prose-invert max-w-none text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4"
                             id="recommendation-content">
@@ -328,9 +328,9 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <span class="material-symbols-outlined text-primary">table_chart</span>
-                                餈?摮豢平銵函
+                                成績資料
                             </h3>
-                            <button class="text-sm text-primary font-medium hover:underline">?亦?摰?蜀??/button>
+                            <button class="text-sm text-primary font-medium hover:underline">查看完整成績</button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 text-sm text-left">
@@ -444,10 +444,10 @@
                                 </li>
                                 <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                                         href="#grades-section"><span
-                                            class="size-1.5 rounded-full bg-slate-400"></span>?蜀</a></li>
+                                            class="size-1.5 rounded-full bg-slate-400"></span>成績</a></li>
                                 <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                                         href="#documents-section"><span
-                                            class="size-1.5 rounded-full bg-slate-400"></span>?辣</a>
+                                            class="size-1.5 rounded-full bg-slate-400"></span>文件</a>
                                 </li>
                             </ul>
                         </div>
@@ -457,7 +457,6 @@
         </div>
     </main>
     <script src="../global.js"></script>
-    <script src="js/award-list.js"></script>
     <script src="application-review.js?v=18"></script>
 </body>
 
