@@ -47,6 +47,7 @@
 | 線上 API 權限錯誤 | 未登入呼叫 admin import/export history、student draft API | 通過 | admin API 回 `Permission denied: 請先登入系統管理員帳號`；student API 回 `Permission denied: 請先登入學生帳號` |
 | 線上 DB table read-only check | Zeabur MCP `execute_command` 執行 `SHOW TABLES LIKE ...` | 通過 | `application_drafts`、`scholarship_import_batches`、`scholarship_export_logs` 三張表存在 |
 | 線上登入 E2E | 暫時建立 `codex_admin_e2e`、`codex_student_e2e` 後用 curl session 測 CSV preview、confirm、export、draft save/get/delete | 通過 | 匯入測試批次 `2`、測試獎學金 `CODEX_E2E_IMPORT_20260619035206`、草稿皆成功；測後已刪除所有 `codex_*` 測試資料與 log，DB 檢查剩餘筆數皆為 0 |
+| 手機 viewport smoke test | Browser plugin，390x844，直接開 `student/application-form.html`、`admin/system-settings.html` | 通過 | 未登入會導向 `login.html`；首屏不是空白、無水平溢出、無 framework error overlay。console 只有 Tailwind CDN production warning |
 
 ## 未完成或限制
 
@@ -55,3 +56,4 @@
 | XAMPP 本機 DB | 目前被本機權限阻擋，需用 XAMPP GUI 或修正 `/Applications/XAMPP/xamppfiles/var/mysql` 寫入權限後才能做本機 DB API 實測 |
 | 檔案草稿 | 草稿只記錄檔名 metadata；真正檔案仍在正式送出申請時上傳，避免未送出檔案殘留在 server |
 | 可選欄位報表 | 本次只補獎學金資料 CSV 匯出，不等於完整任意欄位/期間報表產生器 |
+| Tailwind CDN warning | 線上頁面 console 會出現 `cdn.tailwindcss.com should not be used in production`，屬於既有前端載入方式；本次未改 build pipeline |
