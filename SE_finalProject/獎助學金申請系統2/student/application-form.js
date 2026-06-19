@@ -119,7 +119,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const applicationAutosave = (!isViewOnly && window.FormAutosave && form)
         ? window.FormAutosave.register(form, {
             key: `student-application:${editingApplicationId || 'new'}`,
-            interval: 30000
+            interval: 30000,
+            remote: {
+                studentUsername: user.username,
+                saveUrl: '../api/student/save_application_draft.php',
+                loadUrl: '../api/student/get_application_draft.php',
+                deleteUrl: '../api/student/delete_application_draft.php',
+                getContext: () => ({
+                    scholarship_id: scholarshipSelect ? scholarshipSelect.value : null,
+                    application_id: editingApplicationId || null
+                })
+            }
         })
         : null;
 

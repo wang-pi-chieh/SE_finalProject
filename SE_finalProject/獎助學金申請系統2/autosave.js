@@ -103,7 +103,8 @@
 
         el.textContent = text;
         el.classList.toggle('bg-green-700', type === 'success');
-        el.classList.toggle('bg-slate-900', type !== 'success');
+        el.classList.toggle('bg-red-700', type === 'error');
+        el.classList.toggle('bg-slate-900', type !== 'success' && type !== 'error');
         el.classList.remove('opacity-0');
 
         clearTimeout(el.__autosaveTimer);
@@ -120,6 +121,7 @@
 
         const key = storageKey(options.key);
         const intervalMs = options.interval || DEFAULT_INTERVAL;
+        const remote = options.remote || null;
 
         if (handles.has(key)) {
             handles.get(key).stop();
@@ -128,18 +130,102 @@
         let dirty = false;
         let stopped = false;
 
+        function remoteContext() {
+            if (!remote) return {};
+            if (typeof remote.getContext === 'function') {
+                return remote.getContext() || {};
+            }
+            return {};
+        }
+
+        async function syncRemoteDraft(payload, silent) {
+            if (!remote || !remote.saveUrl || !remote.studentUsername) return;
+            try {
+                const context = remoteContext();
+                const res = await fetch(remote.saveUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student_username: remote.studentUsername,
+                        draft_key: options.key,
+                        scholarship_id: context.scholarship_id || null,
+                        application_id: context.application_id || null,
+                        draft: payload
+                    })
+                });
+                const result = await res.json();
+                if (!res.ok || !result.success) {
+                    throw new Error(result.message || '網站暫存失敗');
+                }
+                if (!silent) {
+                    showStatus('已同步網站暫存', 'success');
+                }
+            } catch (error) {
+                showStatus(`網站暫存失敗：${error.message}`, 'error');
+            }
+        }
+
+        async function loadRemoteDraft(localSavedAt) {
+            if (!remote || !remote.loadUrl || !remote.studentUsername) return;
+            try {
+                const params = new URLSearchParams({
+                    student_username: remote.studentUsername,
+                    draft_key: options.key
+                });
+                const res = await fetch(`${remote.loadUrl}?${params.toString()}`);
+                const result = await res.json();
+                if (!res.ok || !result.success) {
+                    throw new Error(result.message || '讀取網站暫存失敗');
+                }
+                if (!result.draft || !result.draft.data) return;
+                if (localSavedAt && result.draft.savedAt === localSavedAt) return;
+
+                const when = formatSavedAt(result.draft.savedAt);
+                const shouldRestore = window.confirm(`偵測到網站暫存內容${when ? `（${when}）` : ''}，是否恢復？`);
+                if (shouldRestore) {
+                    restoreFormData(form, result.draft);
+                    localStorage.setItem(key, JSON.stringify(result.draft));
+                    if (typeof options.onRestore === 'function') {
+                        options.onRestore(result.draft);
+                    }
+                    showStatus('已恢復網站暫存內容', 'success');
+                }
+            } catch (error) {
+                showStatus(`讀取網站暫存失敗：${error.message}`, 'error');
+            }
+        }
+
+        async function deleteRemoteDraft() {
+            if (!remote || !remote.deleteUrl || !remote.studentUsername) return;
+            try {
+                await fetch(remote.deleteUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student_username: remote.studentUsername,
+                        draft_key: options.key
+                    })
+                });
+            } catch (error) {
+                showStatus(`清除網站暫存失敗：${error.message}`, 'error');
+            }
+        }
+
         function save(silent) {
             if (stopped) return;
             const payload = collectFormData(form);
             localStorage.setItem(key, JSON.stringify(payload));
             dirty = false;
-            if (!silent) {
+            if (remote) {
+                syncRemoteDraft(payload, silent);
+            } else if (!silent) {
                 showStatus('已自動暫存', 'success');
             }
         }
 
         function clear() {
             localStorage.removeItem(key);
+            deleteRemoteDraft();
             dirty = false;
         }
 
@@ -156,9 +242,11 @@
         }
 
         const existing = localStorage.getItem(key);
+        let localSavedAt = '';
         if (existing) {
             try {
                 const draft = JSON.parse(existing);
+                localSavedAt = draft.savedAt || '';
                 const when = formatSavedAt(draft.savedAt);
                 const shouldRestore = window.confirm(`偵測到上次未送出的暫存內容${when ? `（${when}）` : ''}，是否恢復？`);
                 if (shouldRestore) {
@@ -172,6 +260,7 @@
                 localStorage.removeItem(key);
             }
         }
+        loadRemoteDraft(localSavedAt);
 
         form.addEventListener('input', markDirty, true);
         form.addEventListener('change', markDirty, true);

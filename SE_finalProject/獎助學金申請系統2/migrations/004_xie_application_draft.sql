@@ -1,5 +1,5 @@
 -- Owner: Hsieh Tsung-Feng
--- Scope: student application drafts, draft attachments, application validation metadata.
+-- Scope: server-side student application drafts for 30-second autosave.
 CREATE TABLE IF NOT EXISTS `application_drafts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `student_username` varchar(50) NOT NULL,
