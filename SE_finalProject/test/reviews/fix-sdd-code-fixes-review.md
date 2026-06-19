@@ -66,13 +66,19 @@
 | 本機頁面 smoke test | `php -S 127.0.0.1:8081 -t SE_finalProject/獎助學金申請系統2` 後 `curl -I` | 通過 | 學生、管理員、審查端主要頁面皆回 200；測後已關閉臨時 server |
 | Reviewer DOM check | `curl -s http://127.0.0.1:8081/reviewer/applications.html \| rg "最終名單|confirm-final-awards-btn"`；`application-review.html \| rg "review-score|review-stage"` | 通過 | 審查詳情頁有評分/階段欄位，申請審核頁有最終名單 tab 與確認按鈕 |
 | 本機 MySQL/API 實測 | `/Applications/XAMPP/xamppfiles/bin/mysql.server start` | 阻擋 | XAMPP MariaDB 無法寫入 log：`Permission denied`，不是程式碼錯誤 |
-| 線上 Zeabur service 狀態 | Zeabur MCP `list_projects` / `list_services` / `get_deployments` | 通過 | `scholarship` project 的 `mysql`、`web` service 均為 RUNNING；最新部署 `6a34baccdc8a677a9ed75637` 為 RUNNING |
+| 線上 Zeabur service 狀態 | Zeabur MCP `list_projects` / `list_services` / `get_deployments` | 通過 | `scholarship` project 的 `mysql`、`web` service 均為 RUNNING；最新部署 `6a34c4cddc8a677a9ed759b3` 為 RUNNING |
+| Zeabur deploy check | `main` push 後查 `get_deployments`；自動部署未觸發，改用 Zeabur MCP `deploy_from_specification` 以現有 Dockerfile spec 部署 `main` | 通過 | 手動部署 `6a34c4cddc8a677a9ed759b3` 成功，舊 deployment `6a34baccdc8a677a9ed75637` 已移除 |
 | Zeabur build log | Zeabur MCP `get_build_logs` | 通過 | Build log 顯示 `DONE build completed`，舊 deployment 已移除 |
 | 線上 HTTP smoke test | `curl -I https://scholarship.zeabur.app/admin/system-settings.html`、`student/application-form.html` | 通過 | 兩頁皆回 200，`last-modified` 更新為 2026-06-19 03:39 UTC |
 | 線上新功能 DOM 檢查 | `curl -s .../admin/system-settings.html \| rg "獎學金資料匯入|scholarship-import-preview-btn|下載範本|匯出 CSV"` | 通過 | 線上頁面已出現匯入/匯出區塊 |
 | 線上 API 權限錯誤 | 未登入呼叫 admin import/export history、student draft API | 通過 | admin API 回 `Permission denied: 請先登入系統管理員帳號`；student API 回 `Permission denied: 請先登入學生帳號` |
 | 線上 DB table read-only check | Zeabur MCP `execute_command` 執行 `SHOW TABLES LIKE ...` | 通過 | `application_drafts`、`scholarship_import_batches`、`scholarship_export_logs` 三張表存在 |
 | 線上登入 E2E | 暫時建立 `codex_admin_e2e`、`codex_student_e2e` 後用 curl session 測 CSV preview、confirm、export、draft save/get/delete | 通過 | 匯入測試批次 `2`、測試獎學金 `CODEX_E2E_IMPORT_20260619035206`、草稿皆成功；測後已刪除所有 `codex_*` 測試資料與 log，DB 檢查剩餘筆數皆為 0 |
+| 線上學生推薦/通知 E2E | 暫時建立 `codex_student_e2e`、`CODEX_E2E_RECOMMEND`，呼叫 `get_eligible_scholarships.php`、`get_student_notifications.php?sync=1`、舊 `get_recommended_scholarships.php`、`mark_notification_read.php` | 通過 | 推薦 API 回傳 `CODEX_E2E_RECOMMEND`；通知同步建立推薦通知；已讀 API 回 `unread_count: 0` |
+| 線上審查/最終名單 E2E | 暫時建立 `CODEX_E2E_REVIEW` 申請，呼叫 `submit_review.php`、`get_review_results.php`、`get_final_award_list.php`、`confirm_final_award_list.php` | 通過 | 評分 `88.5` 寫入；整合分數 `88.5`；最終名單 rank `1`、result `selected`；確認名單 saved_count `1` |
+| 線上撥款 E2E | 呼叫 `get_disbursements.php`、`update_disbursement.php` | 通過 | 撥款紀錄由核准申請同步建立，更新為 `paid` 成功，學生通知建立成功 |
+| 線上問題回報 E2E | 呼叫 `create_issue_report.php` 建立 `CODEX_E2E_issue_report` | 通過 | API 回 `問題回報已送出`，驗證首次建表順序不再阻擋 |
+| 線上測試資料清理 | Zeabur MCP `execute_command` 刪除 `codex_*` users、申請、成績、通知、審查紀錄、撥款、最終名單、問題回報 | 通過 | 清理後 users/scholarships/applications/review_records/final_award_results/student_notifications/issue_reports 的 `codex_*` 或 `CODEX_E2E_*` 剩餘筆數皆為 0 |
 | 手機 viewport smoke test | Browser plugin，390x844，直接開 `student/application-form.html`、`admin/system-settings.html` | 通過 | 未登入會導向 `login.html`；首屏不是空白、無水平溢出、無 framework error overlay。console 只有 Tailwind CDN production warning |
 
 ## 未完成或限制
@@ -85,3 +91,4 @@
 | 最終名單評分來源 | 最終名單只使用審查評分或審查階段整合分數；沒有評分會標示缺少審查評分，不用成績資料當 fallback 來假裝已評分 |
 | Tailwind CDN warning | 線上頁面 console 會出現 `cdn.tailwindcss.com should not be used in production`，屬於既有前端載入方式；本次未改 build pipeline |
 | Gmail SMTP | 程式已有 Gmail SMTP helper 與 `email_last_error` 紀錄；實際寄信需 Zeabur 設定 `NSAMS_SMTP_*` 與安裝 PHPMailer，這需要正式憑證，不能由測試假資料取代 |
+| PHPMailer runtime | 線上撥款 E2E 已驗證通知建立成功，但 Email 回報 `PHPMailer 未安裝（vendor/autoload.php 不存在）`；系統沒有假裝寄信成功 |
