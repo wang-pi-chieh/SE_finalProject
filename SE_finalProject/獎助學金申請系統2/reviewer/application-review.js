@@ -179,6 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (app.review_comment) {
             document.getElementById('review-comment').value = app.review_comment;
         }
+
+        if (app.review_score !== undefined && app.review_score !== null) {
+            const scoreInput = document.getElementById('review-score');
+            if (scoreInput) scoreInput.value = app.review_score;
+        }
     }
 
     function createFileCardHTML(file) {
@@ -297,10 +302,23 @@ document.addEventListener('DOMContentLoaded', () => {
     async function submitReview(appId, isDraft) {
         const statusEl = document.querySelector('input[name="status"]:checked');
         const comment = document.getElementById('review-comment').value;
+        const scoreInput = document.getElementById('review-score');
+        const stageInput = document.getElementById('review-stage');
+        const score = scoreInput ? scoreInput.value.trim() : '';
+        const stage = stageInput ? stageInput.value : 'initial';
 
         if (!isDraft) {
             if (!statusEl) {
                 alert('請選擇審查決議 (通過/需補件/駁回)');
+                return;
+            }
+            if (score === '') {
+                alert('請輸入審查評分');
+                return;
+            }
+            const scoreNumber = Number(score);
+            if (!Number.isFinite(scoreNumber) || scoreNumber < 0 || scoreNumber > 100) {
+                alert('審查評分必須介於 0 到 100');
                 return;
             }
         }
@@ -317,6 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 application_id: appId,
                 reviewer_username: user.username,
                 status: status,
+                score: score,
+                stage: stage,
                 comment: comment,
                 is_draft: isDraft ? '1' : '0'
             };

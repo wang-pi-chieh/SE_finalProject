@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchApplications(username);
 
     // Search Input
-    const searchInput = document.querySelector('input[placeholder="搜尋學生姓名或學號..."]');
+    const searchInput = document.querySelector('input[placeholder^="搜尋學生"]');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             state.filters.search = e.target.value.toLowerCase();

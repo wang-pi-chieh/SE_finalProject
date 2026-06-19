@@ -115,16 +115,13 @@
             if (actionBtn) {
                 event.stopPropagation();
                 const action = actionBtn.dataset.action;
-                if (action === 'open-application') {
+                if (action === 'mark-read') {
+                    await markAsRead(notification.id);
+                } else if (action === 'open-application') {
                     window.location.href = `application-form.html?application_id=${actionBtn.dataset.applicationId}`;
                 } else if (action === 'open-scholarship') {
                     window.location.href = `application-form.html?scholarship_id=${actionBtn.dataset.scholarshipId}`;
                 }
-                return;
-            }
-            if (actionBtn && actionBtn.dataset.action === 'mark-read') {
-                event.stopPropagation();
-                await markAsRead(notification.id);
                 return;
             }
 

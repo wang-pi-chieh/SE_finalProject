@@ -9,24 +9,24 @@
 | 報告需求 | 目前狀態 | 負責分工 |
 | --- | --- | --- |
 | UC005 匯入獎助單位資料 | 已補。管理端可下載 CSV 範本、上傳 CSV 預覽、顯示錯誤列、人工確認有效資料並記錄匯入批次。 | 陳鐿中 |
-| UC006/UC022/UC030 Email 或站內通知 | 缺後端。程式沒有 `mail()`、SMTP、PHPMailer，也沒有 notification table。現在只是前端依申請狀態臨時產生通知卡片。 | 吳茹婷、胡詠瀚、陳鐿中 |
-| UC010 管理員檢視不同角色頁面 | 缺。沒有 readonly preview mode，也沒有角色頁面模擬入口。 | 王碧婕 |
+| UC006/UC022/UC030 Email 或站內通知 | 部分。已有 `student_notifications`、`teacher_notifications`、通知 API 與 Gmail SMTP helper；若未安裝 PHPMailer 或未設定 `NSAMS_SMTP_*`，系統會記錄 `email_last_error`，不會假裝寄送成功。仍缺 Zeabur 正式 SMTP 憑證設定與排程器。 | 吳茹婷、胡詠瀚、陳鐿中 |
+| UC010 管理員檢視不同角色頁面 | 已補。新增 `api/admin/get_role_preview_links.php`，可建立學生、老師、審查單位 preview 帳號並回傳預覽入口。 | 王碧婕 |
 | UC011 可選欄位匯出系統報表 | 部分。已有預算 PDF、審查端 PDF，並新增獎學金資料 CSV 匯出與匯出紀錄；仍未完成任意欄位選擇、期間選擇與隱私檢查。 | 陳鐿中 |
-| UC012 備份狀態、排程、還原驗證 | 部分。只有手動下載備份。沒有自動排程、備份狀態表、還原功能、還原測試報告。現有備份程式還有既有 fallback：ZIP 失敗會改下載 SQL。見 `api/create_backup.php:167`。 | 王碧婕 |
-| UC013 問題回報與追蹤 | 缺。沒有 issue report table、API、頁面、處理狀態。 | 王碧婕 |
-| UC008/UC039 審查與核發/發放紀錄 | 缺主要功能。只有用核准金額估算，沒有發放紀錄資料表、發放狀態、備註、不可隨意更改的流程。 | 蔡博宇 |
-| UC015/NSAMS016 學生資格自動推薦 | 不符合。`get_recommended_scholarships.php` 只是抓前三筆啟用獎學金，不是依學生資料/成績/系所比對。見 `api/get_recommended_scholarships.php:6`。 | 吳茹婷 |
+| UC012 備份狀態、排程、還原驗證 | 部分。已有 `backup_jobs`、`restore_logs`、`restore_uploads`、備份工作 API、SQL 上傳紀錄與管理端狀態列表；仍缺真正自動排程與還原後資料一致性測試報告。舊 `api/create_backup.php` 仍有 SQL fallback，新的 `api/admin/create_backup_job.php` 會把 ZIP 失敗記錄為 failed。 | 王碧婕 |
+| UC013 問題回報與追蹤 | 已補。新增 `issue_reports`、`issue_report_notifications`、問題回報建立 API、管理端列表與狀態更新，會同步學生/老師/一般通知與 Gmail 狀態欄位。 | 王碧婕 |
+| UC008/UC039 審查與核發/發放紀錄 | 已補。新增 `award_disbursements`、審查端撥款管理 tab、撥款狀態更新 API 與學生通知紀錄；發放狀態不再只用核准金額估算。 | 蔡博宇 |
+| UC015/NSAMS016 學生資格自動推薦 | 已補。學生端改用 `api/student/get_eligible_scholarships.php`，依學生系所、GPA、平均成績、班排與申請期間比對；舊 `get_recommended_scholarships.php` 已改為委派到同一套 matcher，不再回傳固定前三筆。 | 吳茹婷 |
 | UC018 學生申請暫存 | 已補。學生申請表每 30 秒將草稿同步到 `application_drafts`，重新開啟可恢復網站暫存；檔案本體仍在正式送出時上傳，草稿只保存檔名 metadata。 | 謝從峰 |
-| UC024 導師名下學生名單 | 部分且不符合報告。現在用老師系所抓全部學生，沒有奇偶數導師規則。見 `api/get_department_students.php:32`。 | 胡詠瀚 |
-| UC025 成績視覺化圖表 | 部分/不符合。資料表有 grades，但導師頁成績 Modal 是硬寫假資料，沒有真正圖表。見 `teacher/teacher-dashboard.html:901`。 | 胡詠瀚 |
-| UC028 推薦信範本 | 缺。沒有推薦信範本表、API、按鈕或自動代入學生資料。 | 胡詠瀚 |
-| UC029 導師退回學生補件 | 缺導師端退回功能。審查端可設「需補件」，但導師不能退回並填退回理由。 | 胡詠瀚 |
-| UC030 截止日前 5 天提醒導師 | 缺。沒有排程、每日檢查、Email/站內通知紀錄。 | 胡詠瀚 |
-| UC031 推薦符合資格學生名單給導師 | 缺。沒有獎學金條件比對學生名單的 API 或頁面。 | 胡詠瀚 |
-| UC036 審查評分 | 不符合。報告寫評分，但現在 `submit_review.php` 把 score 移除，固定 `$score = 0`。見 `api/submit_review.php:27`。 | 蔡博宇 |
-| UC037 多階段審查結果整合 | 缺。只有單次審查紀錄，沒有多階段、總分、排序。 | 蔡博宇 |
-| UC038 最終錄取名單 | 缺。沒有名單產生、名額限制檢查、確認流程。 | 蔡博宇 |
-| DBS 備份還原、封存、一致性控制 | 部分。資料表只有核心資料，沒有 archive、backup_jobs、restore_logs 等表。資料表目前只有 applications、grades、reference_letters、review_records、scholarships、users 等。見 `database4.sql:30`。 | 王碧婕 |
+| UC024 導師名下學生名單 | 已補。新增 `mentor_assignments` 與 `api/teacher/get_mentor_students.php`，可依導師系所與奇偶規則取得學生名單。 | 胡詠瀚 |
+| UC025 成績視覺化圖表 | 部分。新增 `api/teacher/get_student_grade_chart.php` 與導師工具面板可讀 DB 成績；既有 `teacher-dashboard.html` 內仍保留一段舊硬寫 Modal，需後續移除或改接 API。 | 胡詠瀚 |
+| UC028 推薦信範本 | 已補。新增 `recommendation_templates`、`api/teacher/get_recommendation_templates.php`、`api/teacher/generate_recommendation_letter.php` 與導師端自動代入工具。 | 胡詠瀚 |
+| UC029 導師退回學生補件 | 已補。新增 `mentor_return_records` 與 `api/teacher/return_application_for_supplement.php`，會更新申請狀態並建立學生通知。 | 胡詠瀚 |
+| UC030 截止日前 5 天提醒導師 | 部分。已有 `teacher_notifications` 與 `api/teacher/get_teacher_reminders.php` 讀取提醒；仍缺伺服器排程器自動每日觸發與正式 Gmail SMTP 設定。 | 胡詠瀚 |
+| UC031 推薦符合資格學生名單給導師 | 已補。新增 `mentor_scholarship_rules` 與 `api/teacher/get_eligible_students_for_scholarship.php`，依導師名下學生、系所、成績與排名條件比對。 | 胡詠瀚 |
+| UC036 審查評分 | 已補。審查詳情頁新增 0-100 評分與審查階段，`submit_review.php` 會驗證並寫入 `applications.review_score`、`review_records.score`。 | 蔡博宇 |
+| UC037 多階段審查結果整合 | 已補。`review_records.stage` 記錄初審/複審/決審，`api/reviewer/get_review_results.php` 回傳階段數、整合分數與審查歷程。 | 蔡博宇 |
+| UC038 最終錄取名單 | 已補。新增 `final_award_results`、`api/reviewer/get_final_award_list.php`、`confirm_final_award_list.php` 與審查端「最終名單」tab，依 quota 和整合分數產生錄取/備取並可確認。 | 蔡博宇 |
+| DBS 備份還原、封存、一致性控制 | 部分。已有 `backup_jobs`、`restore_logs`、`restore_uploads`、`data_archives` 與封存/下載/刪除原資料 API；仍缺自動排程、還原後自動比對與正式一致性驗證報告。 | 王碧婕 |
 
 ## 分工規劃
 

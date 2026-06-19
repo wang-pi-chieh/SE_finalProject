@@ -23,15 +23,6 @@ if ($contact_email !== '' && !filter_var($contact_email, FILTER_VALIDATE_EMAIL))
 
 require_once 'db_connect.php';
 
-if (!admin_ops_table_exists($conn, 'issue_reports')) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => '缺少 issue_reports 資料表，請先匯入 migrations/001_wang_issue_backup.sql'
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
 admin_ops_ensure_issue_schema($conn);
 
 $reporter = $reporter_username !== '' ? $reporter_username : 'anonymous';

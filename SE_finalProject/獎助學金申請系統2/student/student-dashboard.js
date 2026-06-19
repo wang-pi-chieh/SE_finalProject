@@ -126,15 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => console.error('Error fetching stats:', err));
 
-            // 5. Fetch Recommended Scholarships
-            fetch('../api/get_recommended_scholarships.php')
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success && result.data) {
-                        renderRecommendedScholarships(result.data);
-                    }
-                })
-                .catch(err => console.error('Error fetching recommendations:', err));
+            // 5. Fetch database-backed notifications and eligible scholarship recommendations.
+            if (window.StudentNotifications) {
+                window.StudentNotifications.loadNotifications(user.username);
+                window.StudentNotifications.loadRecommendations(user.username, renderRecommendedScholarships);
+            } else {
+                console.error('Student notification module is not loaded.');
+                renderNotifications([], new Error('學生通知模組未載入'));
+            }
 
         } catch (e) {
             console.error(e);

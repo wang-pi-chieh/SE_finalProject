@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once 'db_connect.php';
+require_once __DIR__ . '/reviewer/_review_award_common.php';
 session_start();
 
 // 1. Check Authentication (Reviewer/Admin only)
@@ -12,77 +13,107 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'scholarship_unit') {
    // exit;
 }
 */
-// For demo/simplicity, using a default admin username if not set, or trusting session.
-$reviewer_username = $_SESSION['username'] ?? 'admin'; // Fallback for debugging
-
 // 2. Get Input
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input) {
-    echo json_encode(['success' => false, 'message' => 'Invalid input']);
+    echo json_encode(['success' => false, 'message' => '輸入格式錯誤']);
     exit;
 }
 
 $application_id = $input['application_id'] ?? null;
-$score = 0; // Score removed from UI
 $status_text = $input['status'] ?? null; // 'approved' or 'rejected'
 $comment = $input['comment'] ?? '';
+$score_input = $input['score'] ?? null;
+$stage = isset($input['stage']) ? trim((string) $input['stage']) : 'initial';
+$is_draft = isset($input['is_draft']) && (string) $input['is_draft'] === '1';
+$reviewer_username = trim((string) ($input['reviewer_username'] ?? ($_SESSION['username'] ?? '')));
 
-if (!$application_id || !isset($status_text)) {
-    echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+if (!$application_id || (!$is_draft && !isset($status_text))) {
+    echo json_encode(['success' => false, 'message' => '缺少必要欄位：application_id 或審查狀態']);
     exit;
 }
 
-// Map numeric status codes (0, 1, 2, 3)
-// 0: Rejected, 1: Approved, 2: Revision, 3: Pending
-$db_status = 3; // Default
+if ($reviewer_username === '') {
+    echo json_encode(['success' => false, 'message' => '缺少 reviewer_username，無法確認審查權限']);
+    exit;
+}
 
-if ($status_text === '1' || $status_text === 1 || $status_text === 'approved' || $status_text === '通過') {
-    $db_status = 1;
-} elseif ($status_text === '2' || $status_text === 2 || $status_text === 'supplement' || $status_text === 'needs_action' || $status_text === '需補件') {
-    $db_status = 2;
-} elseif ($status_text === '0' || $status_text === 0 || $status_text === 'rejected' || $status_text === '駁回') {
-    $db_status = 0;
-} elseif ($status_text === '3' || $status_text === 3 || $status_text === 'reviewing' || $status_text === '未審查' || $status_text === 'pending') {
-    $db_status = 3;
-} else {
-    // If it's number, assume it matches
-    if (is_numeric($status_text)) {
-        $db_status = (int) $status_text;
-    } else {
-        $db_status = 3;
+$allowed_stages = ['initial', 'second', 'final', 'supplement', 'draft'];
+if (!in_array($stage, $allowed_stages, true)) {
+    echo json_encode(['success' => false, 'message' => '審查階段不正確']);
+    exit;
+}
+
+$score = null;
+if ($score_input !== null && $score_input !== '') {
+    if (!is_numeric($score_input)) {
+        echo json_encode(['success' => false, 'message' => '評分必須是 0 到 100 的數字']);
+        exit;
+    }
+    $score = round((float) $score_input, 2);
+    if ($score < 0 || $score > 100) {
+        echo json_encode(['success' => false, 'message' => '評分必須介於 0 到 100']);
+        exit;
     }
 }
+
+if (!$is_draft && $score === null) {
+    echo json_encode(['success' => false, 'message' => '請輸入審查評分']);
+    exit;
+}
+$db_status = $is_draft ? 3 : reviewer_award_normalize_status($status_text);
 $numeric_result = (string) $db_status;
 
 $conn->begin_transaction();
 
 try {
-    // 3. Update Application Status (Removed Score)
-    // Note: status column is likely VARCHAR, so we store '1', '2', '3' string representations or rely on loose typing
-    $stmt = $conn->prepare("UPDATE applications SET status = ?, review_comment = ?, reviewed_at = NOW(), reviewed_by = ? WHERE id = ?");
-    $stmt->bind_param("issi", $db_status, $comment, $reviewer_username, $application_id);
+    reviewer_award_ensure_schema($conn);
 
-    if (!$stmt->execute()) {
-        throw new Exception("Update application failed: " . $stmt->error);
+    $actor = reviewer_award_actor($conn, $reviewer_username);
+    if (!$actor) {
+        throw new Exception('找不到審查人員帳號');
     }
 
-    // 4. Insert Review Record (History)
-    // Note: 'review_records' uses 'result' column which is varchar, 'note' for comment
-    // Score column removed as it does not exist in the table
-    $stmt_hist = $conn->prepare("INSERT INTO review_records (application_id, review_date, result, note, admin_username) VALUES (?, CURRENT_DATE, ?, ?, ?)");
-    $stmt_hist->bind_param("isss", $application_id, $numeric_result, $comment, $reviewer_username);
+    $application = reviewer_award_fetch_application($conn, (int) $application_id, $actor);
+    if (!$application) {
+        throw new Exception('找不到可審查的申請或權限不足');
+    }
+
+    $stmt = $conn->prepare(
+        "UPDATE applications
+         SET status = ?, review_comment = ?, review_score = ?, reviewed_at = NOW(), reviewed_by = ?
+         WHERE id = ?"
+    );
+    $stmt->bind_param("isdsi", $db_status, $comment, $score, $reviewer_username, $application_id);
+
+    if (!$stmt->execute()) {
+        throw new Exception("更新申請審查狀態失敗：" . $stmt->error);
+    }
+
+    $record_stage = $is_draft ? 'draft' : $stage;
+    $stmt_hist = $conn->prepare(
+        "INSERT INTO review_records
+            (application_id, review_date, result, note, score, stage, admin_username)
+         VALUES (?, CURRENT_DATE, ?, ?, ?, ?, ?)"
+    );
+    $stmt_hist->bind_param("issdss", $application_id, $numeric_result, $comment, $score, $record_stage, $reviewer_username);
 
     if (!$stmt_hist->execute()) {
-        throw new Exception("Insert review record failed: " . $stmt_hist->error);
+        throw new Exception("寫入審查紀錄失敗：" . $stmt_hist->error);
     }
 
     $conn->commit();
-    echo json_encode(['success' => true, 'message' => 'Review submitted successfully']);
+    echo json_encode([
+        'success' => true,
+        'message' => $is_draft ? '審查草稿已儲存' : '審查已送出',
+        'score' => $score,
+        'stage' => $record_stage
+    ], JSON_UNESCAPED_UNICODE);
 
 } catch (Exception $e) {
     $conn->rollback();
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
 
 $conn->close();

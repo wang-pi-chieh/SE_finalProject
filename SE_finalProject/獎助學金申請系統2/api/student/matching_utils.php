@@ -3,6 +3,24 @@
 // Shared helpers for eligible-scholarship matching and notification sync.
 require_once __DIR__ . '/../common/mailer.php';
 
+function wu_json_response(array $payload, int $status = 200): void
+{
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+function wu_read_json_body(): array
+{
+    $raw = file_get_contents('php://input');
+    $data = json_decode($raw ?: '{}', true);
+    if (!is_array($data)) {
+        wu_json_response(['success' => false, 'message' => 'Input invalid: JSON 格式錯誤'], 400);
+    }
+    return $data;
+}
+
 function wu_table_exists(mysqli $conn, string $tableName): bool
 {
     $stmt = $conn->prepare(
@@ -35,6 +53,133 @@ function wu_column_exists(mysqli $conn, string $tableName, string $columnName): 
     $stmt->close();
 
     return $exists;
+}
+
+function wu_ensure_matching_schema(mysqli $conn): void
+{
+    $notificationSql = "
+        CREATE TABLE IF NOT EXISTS student_notifications (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          student_username varchar(50) NOT NULL,
+          type varchar(50) NOT NULL,
+          title varchar(255) NOT NULL,
+          message text NOT NULL,
+          related_application_id int(11) DEFAULT NULL,
+          related_scholarship_id int(11) DEFAULT NULL,
+          dedup_key varchar(255) NOT NULL,
+          is_read tinyint(1) NOT NULL DEFAULT 0,
+          email_sent_at datetime DEFAULT NULL,
+          email_last_error varchar(255) DEFAULT NULL,
+          created_at timestamp NOT NULL DEFAULT current_timestamp(),
+          PRIMARY KEY (id),
+          UNIQUE KEY uniq_student_notification_dedup (dedup_key),
+          KEY idx_student_notifications_user_read (student_username, is_read, created_at),
+          KEY idx_student_notifications_application (related_application_id),
+          KEY idx_student_notifications_scholarship (related_scholarship_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+    ";
+    if (!$conn->query($notificationSql)) {
+        wu_json_response(['success' => false, 'message' => 'Database connection failed: 無法建立學生通知資料表'], 500);
+    }
+
+    if (!wu_column_exists($conn, 'student_notifications', 'email_sent_at')) {
+        if (!$conn->query("ALTER TABLE student_notifications ADD COLUMN email_sent_at datetime DEFAULT NULL AFTER is_read")) {
+            wu_json_response(['success' => false, 'message' => 'Database connection failed: 無法補上通知 Email 欄位'], 500);
+        }
+    }
+    if (!wu_column_exists($conn, 'student_notifications', 'email_last_error')) {
+        if (!$conn->query("ALTER TABLE student_notifications ADD COLUMN email_last_error varchar(255) DEFAULT NULL AFTER email_sent_at")) {
+            wu_json_response(['success' => false, 'message' => 'Database connection failed: 無法補上通知錯誤欄位'], 500);
+        }
+    }
+
+    $ruleSql = "
+        CREATE TABLE IF NOT EXISTS scholarship_eligibility_rules (
+          scholarship_id int(11) NOT NULL,
+          min_gpa decimal(4,2) DEFAULT NULL,
+          min_avg_score decimal(5,2) DEFAULT NULL,
+          max_class_rank_percent decimal(5,2) DEFAULT NULL,
+          allowed_departments text DEFAULT NULL,
+          provider_department varchar(100) DEFAULT NULL,
+          notes varchar(255) DEFAULT NULL,
+          PRIMARY KEY (scholarship_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+    ";
+    if (!$conn->query($ruleSql)) {
+        wu_json_response(['success' => false, 'message' => 'Database connection failed: 無法建立資格比對規則資料表'], 500);
+    }
+
+    wu_seed_default_eligibility_rules($conn);
+}
+
+function wu_seed_default_eligibility_rules(mysqli $conn): void
+{
+    $rules = [
+        [1, 3.50, 85.00, null, null, null, '提供予家境清寒且學業成績優異之學生'],
+        [2, null, null, 10.00, '["資訊工程學系"]', '資訊工程學系', '限各系學生申請，學業成績需達班排前 10%'],
+        [3, 3.80, 90.00, null, null, null, '獎勵發表頂尖期刊論文之學生'],
+        [4, 3.00, 80.00, null, null, null, '補助赴海外交換學生之機票與生活費'],
+        [5, null, 60.00, null, null, null, '弱勢學生生活津貼，前一學期成績須達 60 分以上'],
+    ];
+
+    $existsStmt = $conn->prepare('SELECT id FROM scholarships WHERE id = ? LIMIT 1');
+    $upsertStmt = $conn->prepare(
+        "INSERT INTO scholarship_eligibility_rules
+            (scholarship_id, min_gpa, min_avg_score, max_class_rank_percent, allowed_departments, provider_department, notes)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+            min_gpa = VALUES(min_gpa),
+            min_avg_score = VALUES(min_avg_score),
+            max_class_rank_percent = VALUES(max_class_rank_percent),
+            allowed_departments = VALUES(allowed_departments),
+            provider_department = VALUES(provider_department),
+            notes = VALUES(notes)"
+    );
+    if (!$existsStmt || !$upsertStmt) {
+        return;
+    }
+
+    foreach ($rules as $rule) {
+        $scholarshipId = (int) $rule[0];
+        $existsStmt->bind_param('i', $scholarshipId);
+        $existsStmt->execute();
+        if (!$existsStmt->get_result()->fetch_assoc()) {
+            continue;
+        }
+
+        [$id, $minGpa, $minAvg, $maxRank, $departments, $providerDepartment, $notes] = $rule;
+        $upsertStmt->bind_param('idddsss', $id, $minGpa, $minAvg, $maxRank, $departments, $providerDepartment, $notes);
+        $upsertStmt->execute();
+    }
+
+    $existsStmt->close();
+    $upsertStmt->close();
+}
+
+function wu_validate_student_username(mysqli $conn, string $username): void
+{
+    if ($username === '') {
+        wu_json_response(['success' => false, 'message' => 'Input invalid: 缺少學生帳號'], 400);
+    }
+
+    $stmt = $conn->prepare("SELECT u.username, u.role, s.username AS student_username FROM users u LEFT JOIN students s ON s.username = u.username WHERE u.username = ? LIMIT 1");
+    if (!$stmt) {
+        wu_json_response(['success' => false, 'message' => 'Database connection failed: 無法檢查學生帳號'], 500);
+    }
+
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$user || empty($user['student_username'])) {
+        wu_json_response(['success' => false, 'message' => 'Permission denied: 找不到學生帳號'], 403);
+    }
+
+    $role = (string) ($user['role'] ?? '');
+    if ($role !== 'student' && $role !== '學生') {
+        wu_json_response(['success' => false, 'message' => 'Permission denied: 只有學生可以讀取推薦與通知'], 403);
+    }
 }
 
 function wu_get_student_email(mysqli $conn, string $username): ?array

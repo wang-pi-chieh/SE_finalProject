@@ -1,5 +1,6 @@
 <?php
 require_once 'db_connect.php';
+require_once __DIR__ . '/reviewer/_review_award_common.php';
 
 header('Content-Type: application/json');
 header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
@@ -12,6 +13,7 @@ try {
     }
 
     $application_id = intval($_GET['id']);
+    reviewer_award_ensure_schema($conn);
 
     // 1. Fetch Application & Student & Scholarship Info
     $sql = "SELECT 
@@ -139,6 +141,7 @@ try {
                 'referrer' => ($application['referrer_relationship'] ?? '') . ' (推薦人：' . ($application['referrer_name'] ?? '無') . ')',
                 'status' => $application['status'] ?? 'pending',
                 'review_comment' => $application['review_comment'] ?? '',
+                'review_score' => $application['review_score'] !== null ? (float) $application['review_score'] : null,
                 'biography' => $bio_content,
                 'biography_files' => $bio_files,
                 'bio_is_file' => $bio_is_file,

@@ -42,6 +42,7 @@ try {
                 a.student_username,
                 a.application_date,
                 a.status,
+                a.review_score,
                 s.name as scholarship_name,
                 u.real_name as student_name,
                 st.department

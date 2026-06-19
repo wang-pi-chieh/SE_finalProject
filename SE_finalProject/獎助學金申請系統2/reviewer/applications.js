@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusFilter = document.getElementById('status-filter');
     const scholarshipFilter = document.getElementById('scholarship-filter');
     const paginationControls = document.getElementById('footer-pagination'); // Ensure this ID exists or add it
+    const finalAwardsSection = document.getElementById("tab-final-awards-content");
 
     let allApplications = [];
     let currentTab = 'pending';
@@ -48,11 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tab === "disbursement") {
             if (disbursement) disbursement.classList.remove("hidden");
+            if (finalAwardsSection) finalAwardsSection.classList.add("hidden");
             if (applicationsSection) applicationsSection.classList.add("hidden");
             loadDisbursement();
             return;
+        } else if (tab === "final-awards") {
+            if (disbursement) disbursement.classList.add("hidden");
+            if (finalAwardsSection) finalAwardsSection.classList.remove("hidden");
+            if (applicationsSection) applicationsSection.classList.add("hidden");
+            loadFinalAwards();
+            return;
         } else {
             if (disbursement) disbursement.classList.add("hidden");
+            if (finalAwardsSection) finalAwardsSection.classList.add("hidden");
             if (applicationsSection) applicationsSection.classList.remove("hidden");
         }
         filterApplications();
@@ -395,6 +404,96 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function loadFinalAwards() {
+        const tbody = document.getElementById("final-awards-table-body");
+        if (!tbody) return;
+
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-400">載入最終名單中...</td></tr>';
+
+        try {
+            const response = await fetch(`../api/reviewer/get_final_award_list.php?provider_username=${encodeURIComponent(user.username)}&t=${Date.now()}`);
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || '無法取得最終名單');
+            }
+
+            renderFinalAwards(result.data || []);
+        } catch (err) {
+            console.error('Error fetching final awards:', err);
+            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">${escapeHtml(err.message || '最終名單載入失敗')}</td></tr>`;
+        }
+    }
+
+    function renderFinalAwards(list) {
+        const tbody = document.getElementById("final-awards-table-body");
+        if (!tbody) return;
+
+        if (list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">目前沒有已核准且可排序的申請。</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = list.map(item => {
+            const resultText = item.result === 'selected' ? '錄取' : '備取';
+            const resultClass = item.result === 'selected'
+                ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
+                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
+            const confirmed = item.confirmed_at
+                ? `已確認 ${escapeHtml(item.confirmed_at)}`
+                : '尚未確認';
+            return `
+                <tr class="border-t border-[#e5e7eb] dark:border-[#2d3748]">
+                    <td class="p-3 text-sm font-bold">#${Number(item.rank_no || 0)}</td>
+                    <td class="p-3">
+                        <div class="font-medium text-sm">${escapeHtml(item.student_name || item.student_username || '-')}</div>
+                        <div class="text-xs text-gray-500">${escapeHtml(item.student_username || '')}</div>
+                    </td>
+                    <td class="p-3 text-sm">
+                        <div>${escapeHtml(item.scholarship_name || '-')}</div>
+                        <div class="text-xs text-gray-500">名額 ${Number(item.quota || 0)} 人</div>
+                    </td>
+                    <td class="p-3 text-sm">
+                        <div class="font-bold">${Number(item.final_score || 0).toFixed(2)}</div>
+                        <div class="text-xs text-gray-500">${escapeHtml(item.score_missing ? '缺少審查評分' : ((item.review_stage_labels || []).join('、') || '尚無階段紀錄'))}</div>
+                    </td>
+                    <td class="p-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${resultClass}">${resultText}</span>
+                    </td>
+                    <td class="p-3 text-sm text-gray-500">${confirmed}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    async function confirmFinalAwards() {
+        const button = document.getElementById("confirm-final-awards-btn");
+        if (!button) return;
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = '確認中...';
+
+        try {
+            const response = await fetch('../api/reviewer/confirm_final_award_list.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ provider_username: user.username })
+            });
+            const result = await response.json();
+            if (!result.success) {
+                throw new Error(result.message || '最終名單確認失敗');
+            }
+            renderFinalAwards(result.data || []);
+            alert(`最終名單已確認，共 ${Number(result.saved_count || 0)} 筆。`);
+        } catch (err) {
+            console.error('Error confirming final awards:', err);
+            alert(err.message || '最終名單確認失敗');
+        } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+
     function formatDisbursementStatus(status) {
         const labels = {
             pending: ['待撥款', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300'],
@@ -418,8 +517,10 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchApplications();
     populateScholarshipFilter(); // Fetch filters dynamic from DB
     const urlParams = new URLSearchParams(window.location.search);
+    document.getElementById("confirm-final-awards-btn")?.addEventListener("click", confirmFinalAwards);
+
     const initialTab = urlParams.get('tab');
-    if (initialTab && (initialTab === 'pending' || initialTab === 'history' || initialTab === 'disbursement')) {
+    if (initialTab && (initialTab === 'pending' || initialTab === 'history' || initialTab === 'disbursement' || initialTab === 'final-awards')) {
         switchTab(initialTab);
     }
 });

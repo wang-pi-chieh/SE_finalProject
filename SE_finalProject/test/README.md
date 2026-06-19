@@ -12,4 +12,4 @@ Current branch verification:
 
 | Branch | Review note | Scope |
 | --- | --- | --- |
-| `fix/sdd-code-fixes` | `reviews/fix-sdd-code-fixes-review.md` | Student draft autosave and admin scholarship CSV import/export fixes, including Zeabur E2E verification |
+| `fix/sdd-code-fixes` | `reviews/fix-sdd-code-fixes-review.md` | Student draft autosave, admin scholarship CSV import/export, student notification/recommendation, issue-report schema, and reviewer scoring/final-award fixes, including Zeabur E2E verification |

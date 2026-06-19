@@ -67,7 +67,26 @@ function admin_ops_index_exists($conn, $table_name, $index_name)
 
 function admin_ops_ensure_issue_schema($conn)
 {
-    admin_ops_require_table($conn, 'issue_reports');
+    if (!admin_ops_table_exists($conn, 'issue_reports')) {
+        $conn->query("
+            CREATE TABLE issue_reports (
+              id int(11) NOT NULL AUTO_INCREMENT,
+              reporter_username varchar(50) DEFAULT NULL,
+              reporter_role varchar(50) DEFAULT NULL,
+              title varchar(255) NOT NULL,
+              description text DEFAULT NULL,
+              contact_email varchar(100) DEFAULT NULL,
+              contact_phone varchar(30) DEFAULT NULL,
+              status enum('open','processing','resolved') NOT NULL DEFAULT 'open',
+              handled_by varchar(50) DEFAULT NULL,
+              created_at datetime NOT NULL DEFAULT current_timestamp(),
+              updated_at datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+              PRIMARY KEY (id),
+              KEY idx_issue_reports_status_created (status, created_at),
+              KEY idx_issue_reports_reporter (reporter_username)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+    }
 
     $columns = [
         'reporter_role' => "ALTER TABLE issue_reports ADD COLUMN reporter_role varchar(50) DEFAULT NULL AFTER reporter_username",
