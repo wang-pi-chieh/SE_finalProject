@@ -40,12 +40,13 @@
 | 錯誤訊息檢查 | `rg "Permission denied|Input invalid|網站暫存失敗"` | 通過 | 權限錯誤、輸入錯誤、網站暫存失敗會回傳/顯示明確訊息 |
 | 本機頁面 smoke test | `php -S 127.0.0.1:8080 -t SE_finalProject/獎助學金申請系統2` 後 `curl -I` | 通過 | `admin/system-settings.html`、`student/application-form.html` 皆回 200 |
 | 本機 MySQL/API 實測 | `/Applications/XAMPP/xamppfiles/bin/mysql.server start` | 阻擋 | XAMPP MariaDB 無法寫入 log：`Permission denied`，不是程式碼錯誤 |
-| 線上 Zeabur service 狀態 | Zeabur MCP `list_projects` / `list_services` / `get_deployments` | 通過 | `scholarship` project 的 `mysql`、`web` service 均為 RUNNING；本次部署 `6a34b9c3dc8a677a9ed755f8` 為 RUNNING |
+| 線上 Zeabur service 狀態 | Zeabur MCP `list_projects` / `list_services` / `get_deployments` | 通過 | `scholarship` project 的 `mysql`、`web` service 均為 RUNNING；最新部署 `6a34baccdc8a677a9ed75637` 為 RUNNING |
 | Zeabur build log | Zeabur MCP `get_build_logs` | 通過 | Build log 顯示 `DONE build completed`，舊 deployment 已移除 |
 | 線上 HTTP smoke test | `curl -I https://scholarship.zeabur.app/admin/system-settings.html`、`student/application-form.html` | 通過 | 兩頁皆回 200，`last-modified` 更新為 2026-06-19 03:39 UTC |
 | 線上新功能 DOM 檢查 | `curl -s .../admin/system-settings.html \| rg "獎學金資料匯入|scholarship-import-preview-btn|下載範本|匯出 CSV"` | 通過 | 線上頁面已出現匯入/匯出區塊 |
 | 線上 API 權限錯誤 | 未登入呼叫 admin import/export history、student draft API | 通過 | admin API 回 `Permission denied: 請先登入系統管理員帳號`；student API 回 `Permission denied: 請先登入學生帳號` |
 | 線上 DB table read-only check | Zeabur MCP `execute_command` 執行 `SHOW TABLES LIKE ...` | 通過 | `application_drafts`、`scholarship_import_batches`、`scholarship_export_logs` 三張表存在 |
+| 線上登入 E2E | 暫時建立 `codex_admin_e2e`、`codex_student_e2e` 後用 curl session 測 CSV preview、confirm、export、draft save/get/delete | 通過 | 匯入測試批次 `2`、測試獎學金 `CODEX_E2E_IMPORT_20260619035206`、草稿皆成功；測後已刪除所有 `codex_*` 測試資料與 log，DB 檢查剩餘筆數皆為 0 |
 
 ## 未完成或限制
 
