@@ -27,6 +27,27 @@
         status.textContent = '';
     }
 
+    function openImportModal() {
+        const modal = document.getElementById('scholarship-import-modal');
+        if (!modal) return;
+
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        loadImportHistory();
+
+        window.setTimeout(() => {
+            document.querySelector('label[for="scholarship-import-file"]')?.focus();
+        }, 0);
+    }
+
+    function closeImportModal() {
+        const modal = document.getElementById('scholarship-import-modal');
+        if (!modal) return;
+
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+
     function downloadTemplate() {
         const headers = [
             'name',
@@ -58,6 +79,17 @@
         link.click();
         link.remove();
         URL.revokeObjectURL(url);
+    }
+
+    function updateImportFileName() {
+        const fileInput = document.getElementById('scholarship-import-file');
+        const fileName = document.getElementById('scholarship-import-file-name');
+        if (!fileInput || !fileName) return;
+
+        const selectedFile = fileInput.files && fileInput.files.length > 0 ? fileInput.files[0] : null;
+        fileName.textContent = selectedFile ? selectedFile.name : '尚未選擇檔案';
+        fileName.classList.toggle('text-primary', Boolean(selectedFile));
+        fileName.classList.toggle('font-semibold', Boolean(selectedFile));
     }
 
     function escapeCsv(value) {
@@ -257,11 +289,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        const openImportBtn = document.getElementById('open-scholarship-import-btn');
+        const fileInput = document.getElementById('scholarship-import-file');
         const previewBtn = document.getElementById('scholarship-import-preview-btn');
         const confirmBtn = document.getElementById('scholarship-import-confirm-btn');
         const exportBtn = document.getElementById('scholarship-export-csv-btn');
         const templateBtn = document.getElementById('scholarship-template-btn');
+        const closeImportTriggers = document.querySelectorAll('[data-import-modal-close]');
 
+        if (openImportBtn) openImportBtn.addEventListener('click', openImportModal);
+        if (fileInput) fileInput.addEventListener('change', updateImportFileName);
         if (previewBtn) previewBtn.addEventListener('click', uploadPreview);
         if (confirmBtn) {
             confirmBtn.addEventListener('click', confirmImport);
@@ -269,6 +306,14 @@
         }
         if (exportBtn) exportBtn.addEventListener('click', exportScholarships);
         if (templateBtn) templateBtn.addEventListener('click', downloadTemplate);
+        closeImportTriggers.forEach(trigger => {
+            trigger.addEventListener('click', closeImportModal);
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeImportModal();
+            }
+        });
 
         loadImportHistory();
     });
