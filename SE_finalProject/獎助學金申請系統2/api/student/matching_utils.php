@@ -116,26 +116,20 @@ function wu_seed_default_eligibility_rules(mysqli $conn): void
 {
     $rules = [
         [1, 3.50, 85.00, null, null, null, '提供予家境清寒且學業成績優異之學生'],
-        [2, null, null, 10.00, '["資訊工程學系"]', '資訊工程學系', '限各系學生申請，學業成績需達班排前 10%'],
+        [2, null, null, null, null, null, '各系學生皆可申請'],
         [3, 3.80, 90.00, null, null, null, '獎勵發表頂尖期刊論文之學生'],
         [4, 3.00, 80.00, null, null, null, '補助赴海外交換學生之機票與生活費'],
         [5, null, 60.00, null, null, null, '弱勢學生生活津貼，前一學期成績須達 60 分以上'],
     ];
 
     $existsStmt = $conn->prepare('SELECT id FROM scholarships WHERE id = ? LIMIT 1');
-    $upsertStmt = $conn->prepare(
+    $seedStmt = $conn->prepare(
         "INSERT INTO scholarship_eligibility_rules
             (scholarship_id, min_gpa, min_avg_score, max_class_rank_percent, allowed_departments, provider_department, notes)
          VALUES (?, ?, ?, ?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE
-            min_gpa = VALUES(min_gpa),
-            min_avg_score = VALUES(min_avg_score),
-            max_class_rank_percent = VALUES(max_class_rank_percent),
-            allowed_departments = VALUES(allowed_departments),
-            provider_department = VALUES(provider_department),
-            notes = VALUES(notes)"
+         ON DUPLICATE KEY UPDATE scholarship_id = scholarship_id"
     );
-    if (!$existsStmt || !$upsertStmt) {
+    if (!$existsStmt || !$seedStmt) {
         return;
     }
 
@@ -148,12 +142,12 @@ function wu_seed_default_eligibility_rules(mysqli $conn): void
         }
 
         [$id, $minGpa, $minAvg, $maxRank, $departments, $providerDepartment, $notes] = $rule;
-        $upsertStmt->bind_param('idddsss', $id, $minGpa, $minAvg, $maxRank, $departments, $providerDepartment, $notes);
-        $upsertStmt->execute();
+        $seedStmt->bind_param('idddsss', $id, $minGpa, $minAvg, $maxRank, $departments, $providerDepartment, $notes);
+        $seedStmt->execute();
     }
 
     $existsStmt->close();
-    $upsertStmt->close();
+    $seedStmt->close();
 }
 
 function wu_validate_student_username(mysqli $conn, string $username): void
