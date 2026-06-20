@@ -45,8 +45,7 @@
 <body
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden font-sans">
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20260601_issue_report"></script>
-    <script src="../issue-report.js?v=20260604_autosave"></script>
+    <script src="header.js?v=20260620_lazy_widget"></script>
 
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Heading -->
@@ -238,6 +237,7 @@
     <!-- Global Scripts -->
     <script src="../global.js?v=1716300000"></script>
     <script src="../autosave.js?v=20260604_v1"></script>
+    <script src="../server-draft-autosave.js?v=20260620_work_drafts"></script>
     <script src="js/recommendation-template.js?v=4"></script>
     <script>
         // Flashlight logic (manual init to be safe)
@@ -259,9 +259,15 @@
         const modalPanel = document.getElementById('modal-panel');
         const modalBackdrop = document.getElementById('modal-backdrop');
         let currentApplicationId = null;
+        let recommendationAutosaveHandle = null;
 
         function openModal(studentName, scholarshipName, applicationId, existingContent, existingFile) {
             console.log('Opening modal for App ID:', applicationId); // Debug
+            if (recommendationAutosaveHandle) {
+                recommendationAutosaveHandle.stop();
+                recommendationAutosaveHandle = null;
+            }
+
             currentApplicationId = applicationId;
             document.getElementById('modal-student-name').textContent = studentName;
             document.getElementById('modal-scholarship-name').textContent = scholarshipName;
@@ -292,9 +298,17 @@
                 modalPanel.classList.remove('scale-95', 'opacity-0');
                 modalPanel.classList.add('scale-100', 'opacity-100');
             }, 10);
+
+            initRecommendationAutosave(applicationId);
         }
 
         function closeModal() {
+            if (recommendationAutosaveHandle) {
+                recommendationAutosaveHandle.save(true);
+                recommendationAutosaveHandle.stop();
+                recommendationAutosaveHandle = null;
+            }
+
             modal.classList.add('opacity-0');
             modalPanel.classList.remove('scale-100', 'opacity-100');
             modalPanel.classList.add('scale-95', 'opacity-0');
@@ -314,6 +328,35 @@
                 display.textContent = '或拖放檔案至此';
                 display.className = 'pl-1';
             }
+        }
+
+        function initRecommendationAutosave(applicationId) {
+            if (!window.ServerDraftAutosave) return;
+
+            const contentInput = document.getElementById('letter-content');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!contentInput || !user.username || !applicationId) return;
+
+            recommendationAutosaveHandle = window.ServerDraftAutosave.register({
+                actorUsername: user.username,
+                draftType: 'teacher_recommendation',
+                draftKey: `application:${applicationId}`,
+                context: { application_id: applicationId },
+                fields: [contentInput],
+                collect() {
+                    return {
+                        content: contentInput.value
+                    };
+                },
+                apply(data) {
+                    if (data.content !== undefined) {
+                        contentInput.value = data.content || '';
+                    }
+                },
+                shouldSave() {
+                    return Boolean(currentApplicationId);
+                }
+            });
         }
 
         async function saveDraft() {
@@ -362,6 +405,9 @@
                 const data = await res.json();
 
                 if (data.success) {
+                    if (recommendationAutosaveHandle) {
+                        await recommendationAutosaveHandle.clear();
+                    }
                     const msg = type === 'submit' ? '推薦信已成功提交！' : '草稿已儲存！';
                     alert(msg);
                     closeModal();

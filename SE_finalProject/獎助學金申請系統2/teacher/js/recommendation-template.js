@@ -2,6 +2,8 @@
 // Scope: recommendation letter templates, auto-fill helpers, return-for-supplement actions, and reminders.
 (function () {
     const API_BASE = '../api/teacher';
+    let templateDraftHandle = null;
+    let returnDraftHandle = null;
 
     function getCurrentUser() {
         try {
@@ -70,7 +72,62 @@
         document.getElementById('generateRecommendationLetter')?.addEventListener('click', generateLetter);
         document.getElementById('returnSupplement')?.addEventListener('click', returnSupplement);
         document.getElementById('loadEligibleStudents')?.addEventListener('click', loadEligibleStudents);
+        initTeacherToolAutosave();
         refreshTools();
+    }
+
+    function initTeacherToolAutosave() {
+        if (!window.ServerDraftAutosave) return;
+        const user = getCurrentUser();
+        if (!user.username) return;
+
+        const templateApplicationId = document.getElementById('templateApplicationId');
+        const generatedRecommendationLetter = document.getElementById('generatedRecommendationLetter');
+        if (templateApplicationId && generatedRecommendationLetter) {
+            templateDraftHandle = window.ServerDraftAutosave.register({
+                actorUsername: user.username,
+                draftType: 'teacher_tool',
+                draftKey: 'teacher:recommendation-template',
+                fields: [templateApplicationId, generatedRecommendationLetter],
+                collect() {
+                    return {
+                        application_id: templateApplicationId.value,
+                        content: generatedRecommendationLetter.value
+                    };
+                },
+                apply(data) {
+                    templateApplicationId.value = data.application_id || '';
+                    generatedRecommendationLetter.value = data.content || '';
+                },
+                shouldSave() {
+                    return true;
+                }
+            });
+        }
+
+        const returnApplicationId = document.getElementById('returnApplicationId');
+        const returnReason = document.getElementById('returnReason');
+        if (returnApplicationId && returnReason) {
+            returnDraftHandle = window.ServerDraftAutosave.register({
+                actorUsername: user.username,
+                draftType: 'teacher_tool',
+                draftKey: 'teacher:return-supplement',
+                fields: [returnApplicationId, returnReason],
+                collect() {
+                    return {
+                        application_id: returnApplicationId.value,
+                        reason: returnReason.value
+                    };
+                },
+                apply(data) {
+                    returnApplicationId.value = data.application_id || '';
+                    returnReason.value = data.reason || '';
+                },
+                shouldSave() {
+                    return true;
+                }
+            });
+        }
     }
 
     async function refreshTools() {
@@ -112,6 +169,7 @@
                 })
             });
             document.getElementById('generatedRecommendationLetter').value = payload.content || '';
+            templateDraftHandle?.markDirty();
         } catch (err) {
             alert(`錯誤：${err.message}`);
         }
@@ -130,6 +188,7 @@
                 })
             });
             alert('已退回學生補件');
+            returnDraftHandle?.clear();
         } catch (err) {
             alert(`退回失敗：${err.message}`);
         }

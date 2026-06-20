@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '../login.html';
         return;
     }
+    let reviewAutosaveHandle = null;
 
     // 2. Get Application ID
     const appId = urlParams.get('id');
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success) {
                 document.getElementById('main-content').classList.remove('hidden');
                 renderData(result.data);
+                initReviewAutosave(id);
             } else {
                 alert('載入失敗: ' + result.message);
                 window.location.href = 'reviewer-dashboard.html';
@@ -229,6 +231,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function initReviewAutosave(applicationId) {
+        if (!window.ServerDraftAutosave) return;
+        if (reviewAutosaveHandle) {
+            reviewAutosaveHandle.stop();
+        }
+
+        const statusInputs = Array.from(document.querySelectorAll('input[name="status"]'));
+        const scoreInput = document.getElementById('review-score');
+        const stageInput = document.getElementById('review-stage');
+        const commentInput = document.getElementById('review-comment');
+        const fields = [...statusInputs, scoreInput, stageInput, commentInput].filter(Boolean);
+
+        reviewAutosaveHandle = window.ServerDraftAutosave.register({
+            actorUsername: user.username,
+            draftType: 'reviewer_review',
+            draftKey: `application:${applicationId}`,
+            context: { application_id: applicationId },
+            fields,
+            collect() {
+                const selectedStatus = document.querySelector('input[name="status"]:checked');
+                return {
+                    status: selectedStatus ? selectedStatus.value : '',
+                    score: scoreInput ? scoreInput.value.trim() : '',
+                    stage: stageInput ? stageInput.value : 'initial',
+                    comment: commentInput ? commentInput.value : ''
+                };
+            },
+            apply(data) {
+                if (data.status !== undefined) {
+                    statusInputs.forEach((input) => {
+                        input.checked = String(input.value) === String(data.status);
+                    });
+                }
+                if (scoreInput && data.score !== undefined) scoreInput.value = data.score || '';
+                if (stageInput && data.stage !== undefined) stageInput.value = data.stage || 'initial';
+                if (commentInput && data.comment !== undefined) commentInput.value = data.comment || '';
+            },
+            shouldSave() {
+                return true;
+            }
+        });
+    }
+
     function createFileCardHTML(file) {
         if (!file) return '';
 
@@ -360,6 +405,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await res.json();
 
             if (result.success) {
+                if (reviewAutosaveHandle) {
+                    reviewAutosaveHandle.clear();
+                }
                 alert(isDraft ? '草稿已儲存' : '審查已送出');
                 if (!isDraft) window.location.href = 'reviewer-dashboard.html';
             } else {

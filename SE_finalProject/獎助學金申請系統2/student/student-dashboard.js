@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             card.innerHTML = `
                 <div class="h-32 bg-slate-200 dark:bg-slate-700 rounded-t-xl relative overflow-hidden">
-                    <img src="${style.img}" class="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-110 transition-transform duration-700" 
+                    <img src="${style.img}" class="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-110 transition-transform duration-700" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.parentElement.classList.add('bg-gradient-to-r', '${style.fallback}')">
                     <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
                     <div class="absolute top-4 left-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-xs font-bold border border-white/30">

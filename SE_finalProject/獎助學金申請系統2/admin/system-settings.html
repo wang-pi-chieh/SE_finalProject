@@ -265,9 +265,11 @@
     </div>
     <!-- Global Scripts -->
     <script src="../global.js?v=1716300000"></script>
+    <script src="../server-draft-autosave.js?v=20260620_work_drafts"></script>
     <script src="js/scholarship-admin.js"></script>
     <script>
         let currentPage = 1;
+        let scholarshipFormAutosaveHandle = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const storedUser = localStorage.getItem('user');
@@ -355,6 +357,7 @@
         function openAddModal() {
             document.getElementById('add-modal').classList.remove('hidden');
             fetchScholarshipUnits();
+            initScholarshipFormAutosave();
         }
 
         function fetchScholarshipUnits() {
@@ -381,7 +384,44 @@
         }
 
         function closeAddModal() {
+            if (scholarshipFormAutosaveHandle) {
+                scholarshipFormAutosaveHandle.save(true);
+                scholarshipFormAutosaveHandle.stop();
+                scholarshipFormAutosaveHandle = null;
+            }
             document.getElementById('add-modal').classList.add('hidden');
+        }
+
+        function initScholarshipFormAutosave() {
+            if (!window.ServerDraftAutosave) return;
+            const form = document.getElementById('add-scholarship-form');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!form || !user.username) return;
+
+            if (scholarshipFormAutosaveHandle) {
+                scholarshipFormAutosaveHandle.stop();
+            }
+
+            const fields = Array.from(form.querySelectorAll('input, textarea, select'));
+            scholarshipFormAutosaveHandle = window.ServerDraftAutosave.register({
+                actorUsername: user.username,
+                draftType: 'admin_form',
+                draftKey: 'admin:scholarship-form',
+                fields,
+                collect() {
+                    return Object.fromEntries(new FormData(form).entries());
+                },
+                apply(data) {
+                    fields.forEach((field) => {
+                        if (Object.prototype.hasOwnProperty.call(data, field.name)) {
+                            field.value = data[field.name] || '';
+                        }
+                    });
+                },
+                shouldSave() {
+                    return true;
+                }
+            });
         }
 
         function submitAddForm() {
@@ -403,6 +443,9 @@
                         const data = JSON.parse(text);
                         if (data.success) {
                             alert('新增成功！');
+                            if (scholarshipFormAutosaveHandle) {
+                                scholarshipFormAutosaveHandle.clear();
+                            }
                             closeAddModal();
                             form.reset();
                             fetchScholarships(1);

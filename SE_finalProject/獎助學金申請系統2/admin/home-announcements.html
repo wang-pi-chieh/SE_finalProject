@@ -165,11 +165,13 @@
         </div>
     </div>
 
+    <script src="../server-draft-autosave.js?v=20260620_work_drafts"></script>
     <script src="js/scholarship-admin.js"></script>
     <script>
         let currentPage = 1;
         let announcementsData = [];
         let editingId = null;
+        let announcementFormAutosaveHandle = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const storedUser = localStorage.getItem('user');
@@ -283,12 +285,50 @@
             if (form) form.reset();
 
             document.getElementById('add-modal').classList.remove('hidden');
+            initAnnouncementFormAutosave();
         }
 
         function closeAddModal() {
+            if (announcementFormAutosaveHandle) {
+                announcementFormAutosaveHandle.save(true);
+                announcementFormAutosaveHandle.stop();
+                announcementFormAutosaveHandle = null;
+            }
             document.getElementById('add-modal').classList.add('hidden');
             const form = document.getElementById('add-announcement-form');
             if (form) form.reset();
+        }
+
+        function initAnnouncementFormAutosave() {
+            if (!window.ServerDraftAutosave) return;
+            const form = document.getElementById('add-announcement-form');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!form || !user.username) return;
+
+            if (announcementFormAutosaveHandle) {
+                announcementFormAutosaveHandle.stop();
+            }
+
+            const fields = Array.from(form.querySelectorAll('input, textarea, select'));
+            announcementFormAutosaveHandle = window.ServerDraftAutosave.register({
+                actorUsername: user.username,
+                draftType: 'admin_form',
+                draftKey: `admin:homepage-announcement:${editingId || 'new'}`,
+                fields,
+                collect() {
+                    return Object.fromEntries(new FormData(form).entries());
+                },
+                apply(data) {
+                    fields.forEach((field) => {
+                        if (Object.prototype.hasOwnProperty.call(data, field.name)) {
+                            field.value = data[field.name] || '';
+                        }
+                    });
+                },
+                shouldSave() {
+                    return true;
+                }
+            });
         }
 
         function submitAddForm() {
@@ -314,6 +354,9 @@
                 .then(result => {
                     if (result.success) {
                         alert(editingId ? '更新成功！' : '新增成功！');
+                        if (announcementFormAutosaveHandle) {
+                            announcementFormAutosaveHandle.clear();
+                        }
                         closeAddModal();
                         fetchAnnouncements(1);
                     } else {
@@ -345,6 +388,7 @@
             form.status_type.value = item.status_type || '';
 
             document.getElementById('add-modal').classList.remove('hidden');
+            initAnnouncementFormAutosave();
         }
 
         function deleteAnnouncement(id) {

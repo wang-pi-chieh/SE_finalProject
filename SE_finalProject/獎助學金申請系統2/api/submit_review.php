@@ -92,12 +92,55 @@ try {
     }
 
     $record_stage = $is_draft ? 'draft' : $stage;
-    $stmt_hist = $conn->prepare(
-        "INSERT INTO review_records
-            (application_id, review_date, result, note, score, stage, admin_username)
-         VALUES (?, CURRENT_DATE, ?, ?, ?, ?, ?)"
-    );
-    $stmt_hist->bind_param("issdss", $application_id, $numeric_result, $comment, $score, $record_stage, $reviewer_username);
+    if ($is_draft) {
+        $draft_lookup = $conn->prepare(
+            "SELECT id
+             FROM review_records
+             WHERE application_id = ? AND stage = 'draft' AND admin_username = ?
+             ORDER BY id DESC
+             LIMIT 1"
+        );
+        if (!$draft_lookup) {
+            throw new Exception("準備讀取審查草稿失敗：" . $conn->error);
+        }
+        $draft_lookup->bind_param("is", $application_id, $reviewer_username);
+        $draft_lookup->execute();
+        $draft_row = $draft_lookup->get_result()->fetch_assoc();
+        $draft_lookup->close();
+
+        if ($draft_row) {
+            $draft_id = (int) $draft_row['id'];
+            $stmt_hist = $conn->prepare(
+                "UPDATE review_records
+                 SET review_date = CURRENT_DATE, result = ?, note = ?, score = ?, stage = 'draft', admin_username = ?
+                 WHERE id = ?"
+            );
+            if (!$stmt_hist) {
+                throw new Exception("準備更新審查草稿失敗：" . $conn->error);
+            }
+            $stmt_hist->bind_param("ssdsi", $numeric_result, $comment, $score, $reviewer_username, $draft_id);
+        } else {
+            $stmt_hist = $conn->prepare(
+                "INSERT INTO review_records
+                    (application_id, review_date, result, note, score, stage, admin_username)
+                 VALUES (?, CURRENT_DATE, ?, ?, ?, ?, ?)"
+            );
+            if (!$stmt_hist) {
+                throw new Exception("準備新增審查草稿失敗：" . $conn->error);
+            }
+            $stmt_hist->bind_param("issdss", $application_id, $numeric_result, $comment, $score, $record_stage, $reviewer_username);
+        }
+    } else {
+        $stmt_hist = $conn->prepare(
+            "INSERT INTO review_records
+                (application_id, review_date, result, note, score, stage, admin_username)
+             VALUES (?, CURRENT_DATE, ?, ?, ?, ?, ?)"
+        );
+        if (!$stmt_hist) {
+            throw new Exception("準備新增審查紀錄失敗：" . $conn->error);
+        }
+        $stmt_hist->bind_param("issdss", $application_id, $numeric_result, $comment, $score, $record_stage, $reviewer_username);
+    }
 
     if (!$stmt_hist->execute()) {
         throw new Exception("寫入審查紀錄失敗：" . $stmt_hist->error);

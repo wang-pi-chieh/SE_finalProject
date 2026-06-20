@@ -76,10 +76,21 @@ setTeacherActiveState();
 function loadIssueReportWidget() {
     if (document.querySelector('script[data-issue-report-widget]')) return;
 
-    const script = document.createElement('script');
-    script.src = '../issue-report.js?v=20260604_autosave';
-    script.dataset.issueReportWidget = 'true';
-    document.body.appendChild(script);
+    const inject = () => {
+        if (document.querySelector('script[data-issue-report-widget]') || window.__issueReportWidgetLoaded) return;
+
+        const script = document.createElement('script');
+        script.src = '../issue-report.js?v=20260604_autosave';
+        script.dataset.issueReportWidget = 'true';
+        document.body.appendChild(script);
+    };
+
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(inject, { timeout: 2000 });
+        return;
+    }
+
+    window.setTimeout(inject, 1200);
 }
 
 function bindTeacherMobileMenu() {
