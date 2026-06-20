@@ -2,6 +2,7 @@
 // api/upload_profile_picture.php
 header('Content-Type: application/json');
 require 'db_connect.php';
+require_once __DIR__ . '/common/upload_storage.php';
 
 // Check method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -37,30 +38,31 @@ if ($file['size'] > $maxSize) {
     exit;
 }
 
-// Ensure directory exists
-$uploadDir = '../uploads/avatars/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
-
 // Generate unique filename
 $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 $filename = $username . '_' . time() . '.' . $ext;
-$targetPath = $uploadDir . $filename;
 
 // Move file
-if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-    // Return relative path for DB/Start from root (e.g., "uploads/avatars/...")
-    // But since API is in /api/, and file is in /uploads/, the relative path from root should be stored preferably or full URL.
-    // Let's store relative path from Document Root: "uploads/avatars/filename"
-    $dbPath = "uploads/avatars/" . $filename;
+try {
+    $dbPath = upload_storage_move_uploaded_file($file['tmp_name'], 'avatars', $filename);
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+if ($dbPath !== null) {
 
     // Update DB
     $stmt = $conn->prepare("UPDATE users SET avatar_url = ? WHERE username = ?");
     $stmt->bind_param("ss", $dbPath, $username);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Upload successful", "url" => "../" . $dbPath]);
+        echo json_encode([
+            "success" => true,
+            "message" => "Upload successful",
+            "path" => $dbPath,
+            "url" => upload_storage_download_url($dbPath)
+        ], JSON_UNESCAPED_UNICODE);
     } else {
         echo json_encode(["success" => false, "message" => "Database update failed: " . $stmt->error]);
     }

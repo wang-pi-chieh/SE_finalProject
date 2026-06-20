@@ -1,8 +1,9 @@
 <?php
 require_once 'db_connect.php';
 require_once __DIR__ . '/reviewer/_review_award_common.php';
+require_once __DIR__ . '/common/upload_storage.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
 header('Pragma: no-cache'); // HTTP 1.0.
 header('Expires: 0'); // Proxies.
@@ -71,13 +72,29 @@ try {
 
     $app_date = isset($application['application_date']) ? date('Y-m-d', strtotime($application['application_date'])) : date('Y-m-d');
 
-    // Helper closure to format file object
+    // Helper closure to format file object and expose real file availability.
     $formatFile = function ($path, $defaultName) use ($app_date) {
+        $relativePath = upload_storage_normalize_relative_path($path);
+        $originalName = $relativePath ? basename($relativePath) : basename((string) $path);
+        $exists = false;
+        $downloadUrl = '';
+        $missingReason = '檔案路徑格式不正確';
+
+        if ($relativePath) {
+            $absolutePath = upload_storage_absolute_path($relativePath);
+            $exists = is_file($absolutePath);
+            $downloadUrl = upload_storage_download_url($relativePath);
+            $missingReason = $exists ? '' : '線上檔案不存在';
+        }
+
         return [
             'name' => $defaultName,
-            'original_name' => basename($path),
-            'url' => $path,
-            'type' => pathinfo($path, PATHINFO_EXTENSION),
+            'original_name' => $originalName,
+            'url' => $downloadUrl,
+            'relative_path' => $relativePath,
+            'exists' => $exists,
+            'missing_reason' => $missingReason,
+            'type' => pathinfo($originalName, PATHINFO_EXTENSION),
             'date' => $app_date,
             'size' => 'Unknown'
         ];
@@ -120,10 +137,11 @@ try {
         $documents[] = $formatFile($other_raw, '其他有利審查資料');
     }
 
-    // Default Mock Documents ONLY if completely empty and strict checking is off
-    // But user wants REAL data, so let's stick to real data + maybe 1 mock if empty for demo? 
-    // No, user specifically said "put in separate fields". Let's show "None" if empty.
-
+    $recommendation_file = '';
+    $recommendation_file_path = upload_storage_normalize_relative_path($application['recommendation_file'] ?? '');
+    if ($recommendation_file_path !== null) {
+        $recommendation_file = upload_storage_download_url($recommendation_file_path);
+    }
 
     // 4. Determine latest GPA for profile
     $gpa = (count($real_grades) > 0) ? $real_grades[0]['gpa'] : '0.00';
@@ -156,7 +174,7 @@ try {
                 'recommendation' => [
                     'required' => $application['recommendation_required'] ?? 0,
                     'content' => $application['recommendation_content'] ?? '',
-                    'file' => $application['recommendation_file'] ?? '',
+                    'file' => $recommendation_file,
                     'status' => $application['recommendation_status'] ?? 'pending'
                 ],
                 'phone' => $application['phone'] ?? '',
@@ -176,9 +194,9 @@ try {
         ]
     ];
 
-    echo json_encode($response);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
