@@ -83,7 +83,7 @@ try {
         if ($relativePath) {
             $absolutePath = upload_storage_absolute_path($relativePath);
             $exists = is_file($absolutePath);
-            $downloadUrl = upload_storage_download_url($relativePath);
+            $downloadUrl = upload_storage_download_url($relativePath, true);
             $missingReason = $exists ? '' : '線上檔案不存在';
         }
 
@@ -140,7 +140,7 @@ try {
     $recommendation_file = '';
     $recommendation_file_path = upload_storage_normalize_relative_path($application['recommendation_file'] ?? '');
     if ($recommendation_file_path !== null) {
-        $recommendation_file = upload_storage_download_url($recommendation_file_path);
+        $recommendation_file = upload_storage_download_url($recommendation_file_path, true);
     }
 
     // 4. Determine latest GPA for profile

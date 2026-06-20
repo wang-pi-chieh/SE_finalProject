@@ -114,11 +114,13 @@ function upload_storage_move_uploaded_file($tmpPath, $subdir, $filename)
     return upload_storage_public_path($subdir, $filename);
 }
 
-function upload_storage_download_url($relativePath)
+function upload_storage_download_url($relativePath, $forceDownload = false)
 {
     $relativePath = upload_storage_normalize_relative_path($relativePath);
     if ($relativePath === null) {
         return '';
     }
-    return '../api/download_application_file.php?file=' . rawurlencode($relativePath);
+
+    $url = '../api/download_application_file.php?file=' . rawurlencode($relativePath);
+    return $forceDownload ? $url . '&download=1' : $url;
 }

@@ -45,9 +45,12 @@ if (!$mimeType) {
 }
 
 $downloadName = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($targetPath));
+$downloadMode = strtolower(trim((string) ($_GET['download'] ?? $_GET['disposition'] ?? '')));
+$forceDownload = in_array($downloadMode, ['1', 'true', 'yes', 'download', 'attachment'], true);
+$contentDisposition = $forceDownload ? 'attachment' : 'inline';
 
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($targetPath));
-header('Content-Disposition: inline; filename="' . $downloadName . '"');
+header('Content-Disposition: ' . $contentDisposition . '; filename="' . $downloadName . '"');
 header('X-Content-Type-Options: nosniff');
 readfile($targetPath);
