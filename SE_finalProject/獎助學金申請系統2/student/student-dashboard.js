@@ -166,6 +166,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         ];
 
+        if (!Array.isArray(scholarships) || scholarships.length === 0) {
+            container.innerHTML = `
+                <div class="md:col-span-2 lg:col-span-3 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                    <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-300">
+                        <span class="material-symbols-outlined text-[22px]">school</span>
+                    </div>
+                    <p class="font-bold text-slate-700 dark:text-slate-200">目前沒有新的推薦獎學金</p>
+                    <p class="mt-1">已申請、尚未開放、已截止或不符合資格條件的獎學金不會顯示在這裡。</p>
+                    <button type="button" class="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700"
+                        onclick="window.location.href='scholarships.html'">
+                        <span class="material-symbols-outlined text-[18px]">search</span>
+                        查看獎助學金列表
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
         scholarships.forEach((sch, index) => {
             const style = styles[index % styles.length];
             const amount = parseInt(sch.amount).toLocaleString();
