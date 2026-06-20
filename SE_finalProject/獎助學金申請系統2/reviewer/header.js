@@ -29,7 +29,7 @@ const reviewerHeaderHTML = `
             </button>
             <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-50 transform origin-top-right transition-all duration-200">
                 <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                    <p id="header-user-name" class="text-sm font-bold text-gray-900 dark:text-white">審查單位</p>
+                    <p id="header-user-name" class="text-sm font-bold text-gray-900 dark:text-white">獎助單位</p>
                     <p id="header-user-email" class="text-xs text-gray-500 dark:text-gray-400 truncate">reviewer@example.edu</p>
                 </div>
                 <a href="#" id="logout-btn" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
@@ -56,7 +56,7 @@ if (reviewerPreviewMode) {
         <div id="role-preview-banner" class="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 sm:px-6 py-3 text-sm font-bold flex items-center justify-between gap-3">
             <span class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">visibility</span>
-                目前正在以審查單位身分預覽
+                目前正在以獎助單位身分預覽
             </span>
             <button type="button" id="close-role-preview-btn" class="text-primary hover:underline font-bold">返回管理員介面</button>
         </div>
@@ -113,7 +113,7 @@ function bindReviewerMobileMenu() {
 
 function loadReviewerUserData() {
     if (reviewerPreviewMode) {
-        setReviewerHeaderUser('審查單位端預覽', 'reviewer-preview@example.edu');
+        setReviewerHeaderUser('獎助單位端預覽', 'reviewer-preview@example.edu');
         return;
     }
 
@@ -122,7 +122,7 @@ function loadReviewerUserData() {
 
     try {
         const user = JSON.parse(storedUser);
-        setReviewerHeaderUser(user.real_name || user.username || '審查單位', user.email || '');
+        setReviewerHeaderUser(user.real_name || user.username || '獎助單位', user.email || '');
     } catch (error) {
         console.error('Error parsing user data:', error);
     }

@@ -17,7 +17,7 @@ $links = [
     ],
     [
         'role' => 'reviewer',
-        'label' => '審查單位端',
+        'label' => '獎助單位端',
         'url' => '../reviewer/reviewer-dashboard.html?preview=reviewer&preview_user=reviewer-preview'
     ]
 ];
@@ -28,7 +28,7 @@ function ensure_preview_accounts($conn)
 {
     ensure_preview_user($conn, 'student-preview', '學生', '學生端預覽', 'student-preview@example.edu');
     ensure_preview_user($conn, 'teacher-preview', '老師', '老師端預覽', 'teacher-preview@example.edu');
-    ensure_preview_user($conn, 'reviewer-preview', '獎助單位', '審查單位端預覽', 'reviewer-preview@example.edu');
+    ensure_preview_user($conn, 'reviewer-preview', '獎助單位', '獎助單位端預覽', 'reviewer-preview@example.edu');
 
     $stmt = $conn->prepare("INSERT IGNORE INTO students (username, department, grade_level, class_name) VALUES (?, ?, ?, ?)");
     if ($stmt) {
@@ -53,7 +53,7 @@ function ensure_preview_accounts($conn)
     $stmt = $conn->prepare("INSERT IGNORE INTO scholarship_units (username, unit_name, person_in_charge) VALUES (?, ?, ?)");
     if ($stmt) {
         $username = 'reviewer-preview';
-        $unit_name = '審查單位端預覽';
+        $unit_name = '獎助單位端預覽';
         $person = '預覽承辦人';
         $stmt->bind_param("sss", $username, $unit_name, $person);
         $stmt->execute();

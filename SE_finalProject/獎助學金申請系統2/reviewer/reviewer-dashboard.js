@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewUser = {
         username: previewParams.get('preview_user') || 'reviewer-preview',
         role: '獎助單位',
-        real_name: '審查單位端預覽',
+        real_name: '獎助單位端預覽',
         email: 'reviewer-preview@example.edu'
     };
 

@@ -143,7 +143,7 @@ function work_draft_validate_access(mysqli $conn, string $draftType, string $act
         }
 
         if (!in_array($role, ['獎助單位', 'scholarship_unit', 'reviewer', 'system_admin', '系統管理員', '系管', 'admin'], true)) {
-            work_draft_json(['success' => false, 'message' => 'Permission denied: 只有審查單位可以暫存審查意見'], 403);
+            work_draft_json(['success' => false, 'message' => 'Permission denied: 只有獎助單位可以暫存審查意見'], 403);
         }
 
         reviewer_award_ensure_schema($conn);

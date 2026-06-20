@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS recommendation_templates (
 INSERT INTO recommendation_templates (template_key, title, category, content)
 VALUES
 ('general', '一般推薦信範本', '一般', '敬啟者：\n本人為 {student_name}（{student_username}）之導師。該生就讀 {department}，申請 {scholarship_name}。依平時觀察，該生學習態度穩定，具備良好責任感。最近平均成績為 {avg_score}，GPA 為 {gpa}，班排百分比為 {rank_percent}。本人推薦該生申請本獎助學金。\n導師：{teacher_name}'),
-('financial_need', '清寒學生推薦信範本', '清寒', '敬啟者：\n本人推薦 {student_name} 申請 {scholarship_name}。該生平時努力向學，雖面臨經濟壓力，仍能維持良好學習態度。最近平均成績為 {avg_score}，班排百分比為 {rank_percent}。懇請審查單位給予支持。\n導師：{teacher_name}'),
+('financial_need', '清寒學生推薦信範本', '清寒', '敬啟者：\n本人推薦 {student_name} 申請 {scholarship_name}。該生平時努力向學，雖面臨經濟壓力，仍能維持良好學習態度。最近平均成績為 {avg_score}，班排百分比為 {rank_percent}。懇請獎助單位給予支持。\n導師：{teacher_name}'),
 ('academic', '學術績優推薦信範本', '學術', '敬啟者：\n{student_name} 於 {department} 表現優良，申請 {scholarship_name}。其最近 GPA 為 {gpa}，平均成績 {avg_score}，具備持續精進與學術發展潛力，故本人予以推薦。\n導師：{teacher_name}')
 ON DUPLICATE KEY UPDATE title = VALUES(title), category = VALUES(category), content = VALUES(content), is_active = 1;
 
