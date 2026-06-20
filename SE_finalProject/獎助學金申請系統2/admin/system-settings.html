@@ -63,75 +63,24 @@
                 </h2>
                 <p class="text-[#616f89] dark:text-gray-400 text-sm font-normal mt-1">管理獎學金項目、期限與公告</p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-wrap justify-start md:justify-end gap-2">
+                <button id="open-scholarship-import-btn" type="button"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-[#111318] font-bold shadow-sm hover:border-primary/40 hover:bg-primary/5 dark:border-gray-700 dark:bg-[#1e2634] dark:text-white dark:hover:bg-gray-800 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">upload_file</span>
+                    匯入
+                </button>
+                <button id="scholarship-export-csv-btn" type="button"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-[#111318] font-bold shadow-sm hover:border-primary/40 hover:bg-primary/5 dark:border-gray-700 dark:bg-[#1e2634] dark:text-white dark:hover:bg-gray-800 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">download</span>
+                    匯出
+                </button>
                 <button onclick="openAddModal()"
-                    class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
                     <span class="material-symbols-outlined text-[20px]">add_circle</span>
                     新增獎學金
                 </button>
             </div>
         </div>
-
-        <!-- Scholarship Import / Export -->
-        <section
-            class="mb-6 bg-white dark:bg-[#1e2634] rounded-xl border border-[#e5e7eb] dark:border-[#2d3748] shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-[#e5e7eb] dark:border-[#2d3748]">
-                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                    <div>
-                        <h3 class="text-[#111318] dark:text-white text-lg font-bold">獎學金資料匯入 / 匯出</h3>
-                        <p class="text-[#616f89] dark:text-gray-400 text-sm mt-1">
-                            CSV 必填欄位：name、provider_username、amount、quota、application_end_date。
-                        </p>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button id="scholarship-template-btn" type="button"
-                            class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <span class="material-symbols-outlined text-[18px]">description</span>
-                            下載範本
-                        </button>
-                        <button id="scholarship-export-csv-btn" type="button"
-                            class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <span class="material-symbols-outlined text-[18px]">download</span>
-                            匯出 CSV
-                        </button>
-                    </div>
-                </div>
-
-                <div class="mt-5 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-5">
-                    <div>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <input id="scholarship-import-file" type="file" accept=".csv,text/csv"
-                                class="block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-white file:font-semibold">
-                            <button id="scholarship-import-preview-btn" type="button"
-                                class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-bold hover:bg-primary/90">
-                                <span class="material-symbols-outlined text-[18px]">fact_check</span>
-                                預覽匯入
-                            </button>
-                        </div>
-                        <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                            <input id="scholarship-import-announcement" type="checkbox"
-                                class="rounded border-gray-300 text-primary focus:ring-primary">
-                            匯入完成後同步建立首頁公告
-                        </label>
-                        <div id="scholarship-import-status" class="hidden"></div>
-                        <div id="scholarship-import-preview"></div>
-                        <div class="mt-4">
-                            <button id="scholarship-import-confirm-btn" type="button"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-white text-sm font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <span class="material-symbols-outlined text-[18px]">upload</span>
-                                確認匯入有效資料
-                            </button>
-                        </div>
-                    </div>
-                    <aside class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                        <h4 class="text-sm font-bold text-gray-900 dark:text-white">最近匯入紀錄</h4>
-                        <div id="scholarship-import-history" class="mt-2">
-                            <p class="text-sm text-gray-500">載入中...</p>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </section>
 
         <!-- Scholarship List Card -->
         <div
@@ -166,6 +115,84 @@
             </div>
         </div>
     </main>
+    <!-- Import Scholarships Modal -->
+    <div id="scholarship-import-modal" class="fixed inset-0 z-[9999] hidden" aria-labelledby="scholarship-import-title"
+        role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" data-import-modal-close></div>
+        <div class="fixed inset-0 z-[10000] w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-left sm:items-center">
+                <div
+                    class="relative w-full max-w-4xl overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-gray-800">
+                    <div
+                        class="flex flex-col gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-700 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h3 id="scholarship-import-title" class="text-xl font-bold text-gray-900 dark:text-white">
+                                匯入獎學金資料</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                上傳 CSV 後先預覽，確認無誤再寫入獎學金列表。
+                            </p>
+                        </div>
+                        <button type="button" data-import-modal-close aria-label="關閉匯入視窗"
+                            class="inline-flex size-10 items-center justify-center rounded-lg text-2xl leading-none text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="space-y-5 p-5">
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/40">
+                            <input id="scholarship-import-file" type="file" accept=".csv,text/csv" class="sr-only">
+                            <label for="scholarship-import-file" tabindex="0"
+                                class="flex min-h-[132px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white px-4 py-6 text-center transition hover:border-primary hover:bg-primary/5 dark:border-gray-600 dark:bg-gray-900 dark:hover:border-primary">
+                                <span class="text-base font-bold text-gray-900 dark:text-white">選擇 CSV 檔案</span>
+                                <span id="scholarship-import-file-name"
+                                    class="mt-2 text-sm text-gray-500 dark:text-gray-400">尚未選擇檔案</span>
+                            </label>
+                            <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                                必填欄位：name、provider_username、amount、quota、application_end_date。
+                            </p>
+                            <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <label class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                    <input id="scholarship-import-announcement" type="checkbox"
+                                        class="rounded border-gray-300 text-primary focus:ring-primary">
+                                    匯入完成後同步建立首頁公告
+                                </label>
+                                <div class="flex flex-col gap-2 sm:flex-row">
+                                    <button id="scholarship-template-btn" type="button"
+                                        class="inline-flex justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
+                                        下載範本
+                                    </button>
+                                    <button id="scholarship-import-preview-btn" type="button"
+                                        class="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90">
+                                        預覽匯入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="scholarship-import-status" class="hidden"></div>
+                        <div id="scholarship-import-preview"></div>
+                        <details class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+                            <summary class="cursor-pointer text-sm font-bold text-gray-900 dark:text-white">
+                                最近匯入紀錄
+                            </summary>
+                            <div id="scholarship-import-history" class="mt-2">
+                                <p class="text-sm text-gray-500">載入中...</p>
+                            </div>
+                        </details>
+                    </div>
+                    <div
+                        class="flex flex-col-reverse gap-2 border-t border-gray-200 bg-gray-50 px-5 py-4 dark:border-gray-700 dark:bg-gray-900/40 sm:flex-row sm:justify-end">
+                        <button type="button" data-import-modal-close
+                            class="inline-flex justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700">
+                            取消
+                        </button>
+                        <button id="scholarship-import-confirm-btn" type="button"
+                            class="inline-flex min-w-[10rem] justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50">
+                            確認匯入有效資料
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Add Scholarship Modal -->
     <div id="add-modal" class="fixed inset-0 z-[9999] hidden" aria-labelledby="modal-title" role="dialog"
         aria-modal="true">
