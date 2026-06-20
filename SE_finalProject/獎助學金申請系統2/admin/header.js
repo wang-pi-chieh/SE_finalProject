@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="system-settings.html" class="admin-nav-link px-4 py-2 rounded-lg text-sm font-medium text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">系統設定</a>
                     <a href="home-announcements.html" class="admin-nav-link px-4 py-2 rounded-lg text-sm font-medium text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">首頁公告</a>
                     <a href="user-management.html" class="admin-nav-link px-4 py-2 rounded-lg text-sm font-medium text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">使用者管理</a>
-                    <a href="../help.html" class="admin-nav-link px-4 py-2 rounded-lg text-sm font-medium text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Help</a>
                 </nav>
 
                 <div class="flex items-center gap-2 sm:gap-3">
@@ -59,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="system-settings.html" class="admin-mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-[#616f89] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">系統設定</a>
                 <a href="home-announcements.html" class="admin-mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-[#616f89] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">首頁公告</a>
                 <a href="user-management.html" class="admin-mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-[#616f89] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">使用者管理</a>
-                <a href="../help.html" class="admin-mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-[#616f89] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Help</a>
             </div>
         </nav>
     </header>

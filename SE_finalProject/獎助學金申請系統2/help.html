@@ -55,12 +55,17 @@
                         </span>
                         <span>獎助學金申請系統</span>
                     </a>
-                    <nav class="hidden md:flex items-center gap-8 text-sm font-bold">
-                        <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="index.html">首頁</a>
-                        <a class="text-primary-600" href="#faq">FAQ</a>
-                        <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="#apply">申請須知</a>
-                        <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="#privacy">隱私權政策</a>
-                    </nav>
+                    <div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+                        <nav class="flex items-center gap-6 text-sm font-bold">
+                            <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="index.html">首頁</a>
+                            <a class="text-slate-600 hover:text-primary-600 dark:text-white/70 dark:hover:text-white transition-colors" href="https://www.nuk.edu.tw/" target="_blank">回校首頁</a>
+                            <a class="text-primary-600" href="#faq">FAQ</a>
+                        </nav>
+                        <button type="button" onclick="window.location.href='login.html'"
+                            class="flex items-center justify-center rounded-lg h-9 px-5 bg-primary hover:bg-blue-700 text-white text-sm font-bold shadow-lg shadow-primary/30 transition-all">
+                            登入
+                        </button>
+                    </div>
                     <details class="relative md:hidden">
                         <summary class="mobile-menu-summary flex cursor-pointer list-none items-center justify-center p-2 text-slate-800 dark:text-white">
                             <span class="material-symbols-outlined">menu</span>
@@ -68,9 +73,10 @@
                         <div
                             class="absolute right-0 top-full mt-3 min-w-40 overflow-hidden rounded-md bg-slate-900/95 text-white shadow-xl ring-1 ring-white/10">
                             <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="index.html">首頁</a>
+                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="https://www.nuk.edu.tw/" target="_blank">回校首頁</a>
                             <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="#faq">FAQ</a>
-                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="#apply">申請須知</a>
-                            <a class="block px-5 py-3 text-sm font-bold hover:bg-white/10" href="#privacy">隱私權政策</a>
+                            <button type="button" onclick="window.location.href='login.html'"
+                                class="block w-full px-5 py-3 text-left text-sm font-bold hover:bg-white/10">登入</button>
                         </div>
                     </details>
                 </div>
