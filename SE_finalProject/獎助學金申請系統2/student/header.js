@@ -80,10 +80,10 @@ bindLogout();
 setActiveState();
 
 function loadIssueReportWidget() {
-    if (document.querySelector('script[data-issue-report-widget]')) return;
+    if (isIssueReportWidgetDisabled() || document.querySelector('script[data-issue-report-widget]')) return;
 
     const inject = () => {
-        if (document.querySelector('script[data-issue-report-widget]') || window.__issueReportWidgetLoaded) return;
+        if (isIssueReportWidgetDisabled() || document.querySelector('script[data-issue-report-widget]') || window.__issueReportWidgetLoaded) return;
 
         const script = document.createElement('script');
         script.src = '../issue-report.js?v=20260604_autosave';
@@ -97,6 +97,10 @@ function loadIssueReportWidget() {
     }
 
     window.setTimeout(inject, 1200);
+}
+
+function isIssueReportWidgetDisabled() {
+    return window.__disableIssueReportWidget === true || document.body?.dataset.issueReportWidget === 'disabled';
 }
 
 function bindMobileMenu() {
