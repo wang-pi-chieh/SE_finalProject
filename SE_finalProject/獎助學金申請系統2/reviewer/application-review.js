@@ -47,18 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pageContainer.insertAdjacentHTML('beforeend', `
             <section id="missing-application-state" class="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
-                <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-blue-50 text-primary dark:bg-blue-900/30">
-                    <span class="material-symbols-outlined">fact_check</span>
+                <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-blue-50 text-lg font-black text-primary dark:bg-blue-900/30">
+                    i
                 </div>
                 <h2 class="text-lg font-bold text-slate-900 dark:text-white">請先選擇要審查的申請案件</h2>
                 <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">審查詳情頁需要申請 ID，請從待審申請清單進入。</p>
                 <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                    <a href="${buildReviewerUrl('applications.html')}" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-blue-700">
-                        <span class="material-symbols-outlined text-[18px]">list_alt</span>
+                    <a href="${buildReviewerUrl('applications.html')}" class="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-blue-700">
                         前往待審申請
                     </a>
-                    <a href="${buildReviewerUrl('reviewer-dashboard.html')}" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700">
-                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    <a href="${buildReviewerUrl('reviewer-dashboard.html')}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700">
                         返回儀表板
                     </a>
                 </div>
