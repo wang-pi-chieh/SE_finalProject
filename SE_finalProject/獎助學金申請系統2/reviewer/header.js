@@ -9,8 +9,7 @@ const reviewerHeaderHTML = `
 
     <nav class="hidden md:flex items-center gap-6">
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="reviewer-dashboard.html">儀表板</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html">待審申請</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html?tab=history">審查紀錄</a>
+        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html">申請審核</a>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-4">
@@ -44,8 +43,7 @@ const reviewerHeaderHTML = `
 <nav id="reviewer-mobile-menu" class="hidden md:hidden sticky top-16 z-40 border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3">
     <div class="grid grid-cols-1 gap-2">
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="reviewer-dashboard.html">儀表板</a>
-        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="applications.html">待審申請</a>
-        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="applications.html?tab=history">審查紀錄</a>
+        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="applications.html">申請審核</a>
     </div>
 </nav>
 `;
@@ -168,8 +166,6 @@ function bindReviewerLogout() {
 
 window.updateHeaderActiveState = function (overrideTab) {
     const currentPath = window.location.pathname;
-    const urlParams = new URLSearchParams(window.location.search);
-    const activeTab = overrideTab || urlParams.get('tab') || 'pending';
     const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
 
     navLinks.forEach((link) => {
@@ -182,11 +178,7 @@ window.updateHeaderActiveState = function (overrideTab) {
         if (currentPath.endsWith('application-review.html')) {
             isActive = href === 'applications.html';
         } else if (currentPath.endsWith('applications.html')) {
-            if (href.includes('tab=history')) {
-                isActive = activeTab === 'history';
-            } else if (href === 'applications.html') {
-                isActive = activeTab !== 'history';
-            }
+            isActive = href === 'applications.html';
         } else if (currentPath.endsWith(href)) {
             isActive = true;
         }
