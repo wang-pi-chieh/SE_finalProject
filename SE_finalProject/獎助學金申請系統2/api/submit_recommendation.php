@@ -2,6 +2,7 @@
 // api/submit_recommendation.php
 header('Content-Type: application/json');
 require 'db_connect.php';
+require_once __DIR__ . '/common/upload_storage.php';
 
 // Handle POST request with FormData (Files)
 $teacher_username = $_POST['teacher_username'] ?? '';
@@ -17,24 +18,19 @@ if (empty($teacher_username) || empty($application_id)) {
 // Handle File Upload
 $file_path = null;
 if (isset($_FILES['file-upload']) && $_FILES['file-upload']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = '../uploads/recommendations/';
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
     $fileTmpPath = $_FILES['file-upload']['tmp_name'];
     $fileName = $_FILES['file-upload']['name'];
-    $fileSize = $_FILES['file-upload']['size'];
-    $fileType = $_FILES['file-upload']['type'];
 
     // Generate unique name: rec_{app_id}_{timestamp}_{original}
     $newFileName = 'rec_' . $application_id . '_' . time() . '_' . preg_replace("/[^a-zA-Z0-9\.]/", "", $fileName);
-    $destPath = $uploadDir . $newFileName;
+    try {
+        $file_path = upload_storage_move_uploaded_file($fileTmpPath, 'recommendations', $newFileName);
+    } catch (Exception $e) {
+        echo json_encode(["success" => false, "message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
-    if (move_uploaded_file($fileTmpPath, $destPath)) {
-        // Store relative path in DB
-        $file_path = 'uploads/recommendations/' . $newFileName;
-    } else {
+    if ($file_path === null) {
         echo json_encode(["success" => false, "message" => "File upload failed"]);
         exit;
     }

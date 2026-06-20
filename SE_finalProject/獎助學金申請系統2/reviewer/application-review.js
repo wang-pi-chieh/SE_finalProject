@@ -1,13 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Auth Check
-    const user = JSON.parse(localStorage.getItem('user'));
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPreviewMode = urlParams.get('preview') === 'reviewer';
+    const previewUser = {
+        username: urlParams.get('preview_user') || 'reviewer-preview',
+        role: '獎助單位',
+        real_name: '審查單位端預覽',
+        email: 'reviewer-preview@example.edu'
+    };
+    const user = isPreviewMode ? previewUser : JSON.parse(localStorage.getItem('user'));
     if (!user) {
         window.location.href = '../login.html';
         return;
     }
 
     // 2. Get Application ID
-    const urlParams = new URLSearchParams(window.location.search);
     const appId = urlParams.get('id');
 
     if (!appId) {
@@ -28,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('loading-state').classList.remove('hidden');
             document.getElementById('main-content').classList.add('hidden');
 
-            const res = await fetch(`../api/get_application_details.php?id=${id}&reviewer_username=${user.username}`);
+            const res = await fetch(`../api/get_application_details.php?id=${encodeURIComponent(id)}&reviewer_username=${encodeURIComponent(user.username)}`);
             const result = await res.json();
 
             document.getElementById('loading-state').classList.add('hidden');
@@ -100,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (app.biography_files && app.biography_files.length > 0) {
                 bioFilesContainer.classList.remove('hidden');
                 bioFilesContainer.innerHTML = app.biography_files.map(file => createFileCardHTML(file)).join('');
+                bindFileCards(bioFilesContainer);
             } else {
                 bioFilesContainer.classList.add('hidden');
             }
@@ -112,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.documents && data.documents.length > 0) {
                 docsContainer.classList.remove('hidden');
                 docsContainer.innerHTML = data.documents.map(doc => createFileCardHTML(doc)).join('');
+                bindFileCards(docsContainer);
             } else {
                 docsContainer.innerHTML = '<p class="text-slate-500 text-sm">無上傳檔案</p>';
                 docsContainer.classList.remove('hidden');
@@ -189,109 +198,75 @@ document.addEventListener('DOMContentLoaded', () => {
     function createFileCardHTML(file) {
         if (!file) return '';
 
-        // Support both string (legacy/fallback) and object (new API)
+        // Support both legacy string paths and structured API file objects.
         let path, filename;
+        let exists = true;
+        let missingReason = '';
         if (typeof file === 'string') {
             path = file;
             filename = path.split('/').pop();
         } else {
             path = file.url;
             filename = file.original_name || file.name || 'unknown_file';
+            exists = file.exists !== false;
+            missingReason = file.missing_reason || '線上檔案不存在';
         }
 
         const isPdf = filename.toLowerCase().endsWith('.pdf');
-        const icon = isPdf ? 'picture_as_pdf' : 'image';
-        const iconColor = isPdf ? 'text-red-500' : 'text-blue-500';
-        const fileTypeLabel = isPdf ? 'PDF' : 'IMAGE';
+        const icon = exists ? (isPdf ? 'picture_as_pdf' : 'image') : 'error_outline';
+        const iconColor = exists ? (isPdf ? 'text-red-500' : 'text-blue-500') : 'text-amber-500';
+        const fileTypeLabel = exists ? (isPdf ? 'PDF' : 'IMAGE') : '檔案不存在';
+        const safeFilename = escapeHTML(filename);
+        const safePath = escapeHTML(path || '');
+        const safeReason = escapeHTML(missingReason);
+
+        if (!exists || !path) {
+            return `
+                <div class="relative flex aspect-square flex-col items-center justify-center rounded-xl border border-amber-200 bg-amber-50 p-3 text-center opacity-90 dark:border-amber-900/60 dark:bg-amber-950/20" title="${safeReason}">
+                    <div class="mb-1">
+                        <span class="material-symbols-outlined ${iconColor} text-4xl">${icon}</span>
+                    </div>
+                    <div class="w-full px-1 overflow-hidden">
+                        <p class="text-[10px] font-semibold text-slate-900 dark:text-white truncate w-full leading-tight">${safeFilename}</p>
+                        <p class="text-[9px] text-amber-700 dark:text-amber-300 mt-0.5">${fileTypeLabel}</p>
+                    </div>
+                </div>
+            `;
+        }
 
         return `
-            <div class="relative group flex flex-col items-center justify-center p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all text-center aspect-square cursor-pointer" onclick="window.open('${path}', '_blank');" title="${filename}">
+            <button type="button" class="relative group flex flex-col items-center justify-center p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all text-center aspect-square cursor-pointer" data-file-url="${safePath}" title="${safeFilename}">
                 <div class="mb-1 transform group-hover:scale-110 transition-transform duration-300">
                     <span class="material-symbols-outlined ${iconColor} text-4xl">${icon}</span>
                 </div>
                 <div class="w-full px-1 overflow-hidden">
-                    <p class="text-[10px] font-semibold text-slate-900 dark:text-white truncate w-full leading-tight">${filename}</p>
+                    <p class="text-[10px] font-semibold text-slate-900 dark:text-white truncate w-full leading-tight">${safeFilename}</p>
                     <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-wide">${fileTypeLabel}</p>
                 </div>
                 <!-- Open Icon -->
                 <div class="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                      <span class="material-symbols-outlined text-slate-400 text-[18px]">open_in_new</span>
                 </div>
-            </div>
+            </button>
         `;
     }
 
-    function renderFiles(pathData, container, type) {
-        if (!container) return;
-        container.innerHTML = '';
-        container.classList.add('hidden');
-
-        if (!pathData) {
-            if (type === 'biography') {
-                // Do nothing, text might be there
-            } else {
-                container.classList.remove('hidden');
-                container.innerHTML = '<p class="text-sm text-slate-400 col-span-full">無上傳檔案</p>';
-            }
-            return;
-        }
-
-        let files = [];
-        try {
-            // Prepare inputs that might be messy
-            if (Array.isArray(pathData)) {
-                files = pathData;
-            } else {
-                // Try JSON parse
-                try {
-                    files = JSON.parse(pathData);
-                } catch (e) {
-                    // Assume single string path
-                    if (typeof pathData === 'string' && pathData.length > 1) {
-                        files = [pathData];
-                    }
-                }
-            }
-
-            if (!Array.isArray(files)) files = [files]; // fallback
-        } catch (e) {
-            console.error('File parse error', e);
-            files = [];
-        }
-
-        if (files.length === 0) return;
-
-        container.classList.remove('hidden');
-        // Ensure grid classes are there (in HTML or add here)
-        // container.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6 border-t border-slate-100 dark:border-slate-700 pt-4"; // Already in HTML for bio, need ensuring for docs
-
-        files.forEach(path => {
-            if (!path) return;
-
-            // Extract filename
-            const filename = path.split('/').pop() || 'unknown_file';
-            const isPdf = filename.toLowerCase().endsWith('.pdf');
-            const icon = isPdf ? 'picture_as_pdf' : 'image';
-            const iconColor = isPdf ? 'text-red-500' : 'text-blue-500';
-            const fileTypeLabel = isPdf ? 'PDF' : 'IMAGE';
-
-            const card = `
-            <div class="relative group flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all text-center aspect-square cursor-pointer" onclick="window.open('${path}', '_blank');" title="${filename}">
-                <div class="mb-2 transform group-hover:scale-110 transition-transform duration-300">
-                    <span class="material-symbols-outlined ${iconColor} text-5xl">${icon}</span>
-                </div>
-                <div class="w-full px-1 overflow-hidden">
-                    <p class="text-xs font-semibold text-slate-900 dark:text-white truncate w-full">${filename}</p>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wide">${fileTypeLabel}</p>
-                </div>
-                <!-- Open Icon -->
-                <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                     <span class="material-symbols-outlined text-slate-400 text-sm">open_in_new</span>
-                </div>
-            </div>
-            `;
-            container.insertAdjacentHTML('beforeend', card);
+    function bindFileCards(container) {
+        container.querySelectorAll('[data-file-url]').forEach(card => {
+            card.addEventListener('click', () => {
+                window.open(card.dataset.fileUrl, '_blank', 'noopener');
+            });
         });
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
     }
 
     function setText(id, val) {

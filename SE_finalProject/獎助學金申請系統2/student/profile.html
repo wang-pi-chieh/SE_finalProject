@@ -396,7 +396,7 @@
 
                         // 更新大頭貼
                         if (data.avatar_url) {
-                            document.getElementById('avatar-img').src = '../' + data.avatar_url;
+                            document.getElementById('avatar-img').src = resolveUploadUrl(data.avatar_url);
                         }
                     } else {
                         alert('無法載入個人資料：' + result.message);
@@ -551,7 +551,7 @@
                         .then(res => res.json())
                         .then(result => {
                             if (result.success) {
-                                avatarImg.src = '../' + result.url.replace('../', ''); // 調整路徑
+                                avatarImg.src = result.url ? '../' + result.url.replace('../', '') : resolveUploadUrl(result.path);
                             } else {
                                 alert('大頭貼上傳失敗：' + result.message);
                             }
@@ -561,6 +561,17 @@
                             alert('上傳發生錯誤');
                         });
                 });
+            }
+
+            function resolveUploadUrl(path) {
+                if (!path) return '';
+                if (/^https?:\/\//.test(path) || path.startsWith('data:')) return path;
+                if (path.startsWith('../api/')) return path;
+                if (path.startsWith('api/')) return '../' + path;
+                if (path.startsWith('uploads/')) {
+                    return '../api/download_application_file.php?file=' + encodeURIComponent(path);
+                }
+                return '../' + path.replace(/^(\.\/|\/)+/, '');
             }
         });
     </script>

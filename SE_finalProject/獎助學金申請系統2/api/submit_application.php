@@ -2,6 +2,7 @@
 // api/submit_application.php
 header('Content-Type: application/json');
 require 'db_connect.php';
+require_once __DIR__ . '/common/upload_storage.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Method not allowed"]);
@@ -74,14 +75,8 @@ if (!empty($academic_year) && !empty($semester)) {
     $dupStmt->close();
 }
 
-// 處理檔案上傳
-$uploadDir = '../uploads/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
-
 // Helper to handle upload (Single or Array)
-function handleUpload($fileKey, $prefix, $username, $uploadDir)
+function handleUpload($fileKey, $prefix, $username)
 {
     // Check if it's an array upload (multiple files)
     if (isset($_FILES[$fileKey]) && is_array($_FILES[$fileKey]['name'])) {
@@ -91,9 +86,9 @@ function handleUpload($fileKey, $prefix, $username, $uploadDir)
             if ($_FILES[$fileKey]['error'][$i] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES[$fileKey]['name'][$i], PATHINFO_EXTENSION);
                 $filename = $prefix . '_' . $username . '_' . time() . '_' . $i . '.' . $ext;
-                $targetPath = $uploadDir . $filename;
-                if (move_uploaded_file($_FILES[$fileKey]['tmp_name'][$i], $targetPath)) {
-                    $paths[] = $targetPath;
+                $storedPath = upload_storage_move_uploaded_file($_FILES[$fileKey]['tmp_name'][$i], '', $filename);
+                if ($storedPath !== null) {
+                    $paths[] = $storedPath;
                 }
             }
         }
@@ -103,18 +98,23 @@ function handleUpload($fileKey, $prefix, $username, $uploadDir)
     elseif (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION);
         $filename = $prefix . '_' . $username . '_' . time() . '.' . $ext;
-        $targetPath = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
-            return $targetPath;
+        $storedPath = upload_storage_move_uploaded_file($_FILES[$fileKey]['tmp_name'], '', $filename);
+        if ($storedPath !== null) {
+            return $storedPath;
         }
     }
     return '';
 }
 
 // biography 存的是檔案路徑 (對應 "自傳/讀書計畫") - Single
-$biographyPath = handleUpload('biography_file', 'bio', $student_username, $uploadDir);
-// application_documents 存的是檔案路徑 (對應 "其他有利審查資料") - Multiple supported
-$otherDocsPath = handleUpload('other_docs_file', 'other', $student_username, $uploadDir);
+try {
+    $biographyPath = handleUpload('biography_file', 'bio', $student_username);
+    // application_documents 存的是檔案路徑 (對應 "其他有利審查資料") - Multiple supported
+    $otherDocsPath = handleUpload('other_docs_file', 'other', $student_username);
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 
 // 決定初始狀態

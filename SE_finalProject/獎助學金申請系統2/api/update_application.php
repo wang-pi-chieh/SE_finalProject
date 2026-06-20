@@ -2,6 +2,7 @@
 // 更新既有申請（學生補件或修改資料用）
 header('Content-Type: application/json');
 require 'db_connect.php';
+require_once __DIR__ . '/common/upload_storage.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Method not allowed"]);
@@ -61,12 +62,7 @@ $email = $_POST['email'] ?? '';
 $bank_account = $_POST['bank_account'] ?? '';
 
 // 檔案上傳處理（邏輯與 submit_application.php 類似）
-$uploadDir = '../uploads/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
-
-function handleUploadUpdate($fileKey, $prefix, $username, $uploadDir)
+function handleUploadUpdate($fileKey, $prefix, $username)
 {
     if (isset($_FILES[$fileKey]) && is_array($_FILES[$fileKey]['name'])) {
         $paths = [];
@@ -75,9 +71,9 @@ function handleUploadUpdate($fileKey, $prefix, $username, $uploadDir)
             if ($_FILES[$fileKey]['error'][$i] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES[$fileKey]['name'][$i], PATHINFO_EXTENSION);
                 $filename = $prefix . '_' . $username . '_' . time() . '_' . $i . '.' . $ext;
-                $targetPath = $uploadDir . $filename;
-                if (move_uploaded_file($_FILES[$fileKey]['tmp_name'][$i], $targetPath)) {
-                    $paths[] = $targetPath;
+                $storedPath = upload_storage_move_uploaded_file($_FILES[$fileKey]['tmp_name'][$i], '', $filename);
+                if ($storedPath !== null) {
+                    $paths[] = $storedPath;
                 }
             }
         }
@@ -85,16 +81,21 @@ function handleUploadUpdate($fileKey, $prefix, $username, $uploadDir)
     } elseif (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION);
         $filename = $prefix . '_' . $username . '_' . time() . '.' . $ext;
-        $targetPath = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
-            return $targetPath;
+        $storedPath = upload_storage_move_uploaded_file($_FILES[$fileKey]['tmp_name'], '', $filename);
+        if ($storedPath !== null) {
+            return $storedPath;
         }
     }
     return '';
 }
 
-$biographyPath = handleUploadUpdate('biography_file', 'bio', $student_username, $uploadDir);
-$otherDocsPath = handleUploadUpdate('other_docs_file', 'other', $student_username, $uploadDir);
+try {
+    $biographyPath = handleUploadUpdate('biography_file', 'bio', $student_username);
+    $otherDocsPath = handleUploadUpdate('other_docs_file', 'other', $student_username);
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 // 若沒有重新上傳，保留舊值
 if ($biographyPath === '') {

@@ -425,7 +425,7 @@ function renderTable() {
             </td>
             <td class="p-4 whitespace-nowrap">${statusHtml}</td>
             <td class="p-4 text-right whitespace-nowrap">
-                 <a href="application-review.html?id=${app.application_id}"
+                 <a href="${buildReviewUrl(app.application_id)}"
                     class="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-primary-dark transition-colors inline-block">
                     開始審查
                 </a>
@@ -433,6 +433,16 @@ function renderTable() {
         `;
         tbody.appendChild(row);
     });
+}
+
+function buildReviewUrl(applicationId) {
+    const currentParams = new URLSearchParams(window.location.search);
+    const reviewParams = new URLSearchParams({ id: applicationId });
+    if (currentParams.get('preview') === 'reviewer') {
+        reviewParams.set('preview', 'reviewer');
+        reviewParams.set('preview_user', currentParams.get('preview_user') || 'reviewer-preview');
+    }
+    return `application-review.html?${reviewParams.toString()}`;
 }
 
 function renderPagination() {

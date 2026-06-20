@@ -95,7 +95,7 @@
     class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white flex flex-col min-h-screen overflow-x-hidden">
     <!-- Top Navigation -->
     <!-- Header injected by header.js -->
-    <script src="header.js?v=20260601_issue_report"></script>
+    <script src="header.js?v=20260620_reviewer_header_fix"></script>
     <script src="../issue-report.js?v=20260604_autosave"></script>
     <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex flex-col w-full gap-6">
@@ -153,11 +153,11 @@
                             <div class="flex-1 text-center sm:text-left">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                                     <h2 class="text-xl font-bold text-slate-900 dark:text-white" id="student-name">
-                                        頛銝?..</h2>
+                                        載入中...</h2>
                                     <span
                                         class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300"
                                         id="student-id">
-                                        摮貉?: ...
+                                        學號: ...
                                     </span>
                                 </div>
                                 <div
@@ -169,12 +169,12 @@
                                     <div class="flex items-center gap-2 justify-center sm:justify-start">
                                         <span
                                             class="material-symbols-outlined text-[18px] text-slate-400">workspace_premium</span>
-                                        <span id="student-grade">撟渡?嚗?..</span>
+                                        <span id="student-grade">年級: ...</span>
                                     </div>
                                     <div class="flex items-center gap-2 justify-center sm:justify-start">
                                         <span
                                             class="material-symbols-outlined text-[18px] text-slate-400">analytics</span>
-                                        <span id="student-gpa">撟喳??蜀嚗?.. / 4.0</span>
+                                        <span id="student-gpa">平均成績: ... / 4.0</span>
                                     </div>
                                     <div class="flex items-center gap-2 justify-center sm:justify-start">
                                         <span class="material-symbols-outlined text-[18px] text-slate-400">mail</span>
@@ -187,7 +187,7 @@
                                     <div class="flex items-center gap-2 justify-center sm:justify-start md:col-span-2">
                                         <span
                                             class="material-symbols-outlined text-[18px] text-slate-400">account_balance_wallet</span>
-                                        <span id="student-bank">?舀狡撣單嚗?..</span>
+                                        <span id="student-bank">匯款帳戶: ...</span>
                                     </div>
                                 </div>
                             </div>
@@ -198,15 +198,15 @@
                         <nav aria-label="Tabs" class="-mb-px flex space-x-8 overflow-x-auto">
                             <button
                                 class="border-primary text-primary whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                                ?唾?閰單?
+                                申請資料
                             </button>
                             <button
                                 class="border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                                摮豢平?蜀
+                                成績資料
                             </button>
                             <button
                                 class="border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                                ?辣瑼?
+                                檢附文件
                             </button>
                         </nav>
                     </div>
@@ -216,29 +216,29 @@
                         class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">info</span>
-                            ?唾?閰喟敦鞈?
+                            申請基本資料
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">?唾?摮詨僑/摮豢?</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">申請學年/學期</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-semester">...</p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">?唾??</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">申請獎項</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-scholarship">...
                                 </p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">?唾??交?</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">申請日期</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-date">...</p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">銝飛??摮賊?</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">曾獲獎助紀錄</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-prev-award">...
                                 </p>
                             </div>
                             <div class="md:col-span-2">
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">??虫犖??</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">推薦人資訊</p>
                                 <p class="text-sm font-medium text-slate-900 dark:text-white" id="info-recommender">...
                                 </p>
                             </div>
@@ -337,11 +337,11 @@
                                 <thead
                                     class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
                                     <tr>
-                                        <th class="px-4 py-3 tracking-wider">摮詨僑</th>
-                                        <th class="px-4 py-3 tracking-wider">摮豢?</th>
-                                        <th class="px-4 py-3 tracking-wider text-center">撟喳??蜀</th>
+                                        <th class="px-4 py-3 tracking-wider">學年度</th>
+                                        <th class="px-4 py-3 tracking-wider">學期</th>
+                                        <th class="px-4 py-3 tracking-wider text-center">平均成績</th>
                                         <th class="px-4 py-3 tracking-wider text-center">GPA</th>
-                                        <th class="px-4 py-3 tracking-wider text-center">?剜?/鈭箸</th>
+                                        <th class="px-4 py-3 tracking-wider text-center">排名/班級人數</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-200 dark:divide-slate-700" id="grades-table-body">
@@ -355,7 +355,7 @@
                         class="animate-on-scroll bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">folder_open</span>
-                            雿??辣
+                            檢附文件
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="documents-list">
                             <!-- Dynamic Documents Here -->
@@ -372,21 +372,21 @@
                                 class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                                 <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                     <span class="material-symbols-outlined text-primary">gavel</span>
-                                    撖拇瘙箄降
+                                    審查決策
                                 </h3>
                             </div>
                             <div class="p-5 flex flex-col gap-6">
 
                                 <!-- Status Toggle -->
                                 <div class="flex flex-col gap-2">
-                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">撱箄降蝯?</span>
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">審查狀態</span>
                                     <div class="grid grid-cols-3 gap-3">
                                         <label class="cursor-pointer relative">
                                             <input class="peer sr-only" name="status" type="radio" value="1" />
                                             <div
                                                 class="flex flex-col items-center justify-center p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-900/20 text-slate-500 peer-checked:text-emerald-700 dark:peer-checked:text-emerald-400 transition-all">
                                                 <span class="material-symbols-outlined mb-1">check_circle</span>
-                                                <span class="text-sm font-bold">??</span>
+                                                <span class="text-sm font-bold">通過</span>
                                             </div>
                                         </label>
                                         <label class="cursor-pointer relative">
@@ -394,7 +394,7 @@
                                             <div
                                                 class="flex flex-col items-center justify-center p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 dark:peer-checked:bg-yellow-900/20 text-slate-500 peer-checked:text-yellow-700 dark:peer-checked:text-yellow-400 transition-all">
                                                 <span class="material-symbols-outlined mb-1">assignment_return</span>
-                                                <span class="text-sm font-bold">?鋆辣</span>
+                                                <span class="text-sm font-bold">需補件</span>
                                             </div>
                                         </label>
                                         <label class="cursor-pointer relative">
@@ -402,7 +402,7 @@
                                             <div
                                                 class="flex flex-col items-center justify-center p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 text-slate-500 peer-checked:text-red-700 dark:peer-checked:text-red-400 transition-all">
                                                 <span class="material-symbols-outlined mb-1">cancel</span>
-                                                <span class="text-sm font-bold">擏?</span>
+                                                <span class="text-sm font-bold">駁回</span>
                                             </div>
                                         </label>
                                     </div>
@@ -429,22 +429,22 @@
                                 <!-- Comments Area -->
                                 <div class="flex flex-col gap-2">
                                     <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        ?折撖拇??
+                                        審查意見
                                     </label>
                                     <textarea id="review-comment"
                                         class="w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-primary focus:border-primary p-3 text-sm leading-relaxed"
-                                        placeholder="隢撓?仿?/擏????擃遣霅?.." rows="5"></textarea>
+                                        placeholder="請輸入通過、需補件或駁回的審查說明..." rows="5"></textarea>
                                 </div>
                                 <!-- Action Buttons -->
                                 <div class="flex flex-col gap-3 pt-2">
                                     <button id="submit-review-btn"
                                         class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2">
                                         <span class="material-symbols-outlined text-[20px]">send</span>
-                                        ?撖拇
+                                        送出審查
                                     </button>
                                     <button id="save-draft-btn"
                                         class="w-full bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-medium py-2.5 px-4 rounded-lg transition-colors">
-                                        ?脣??阮
+                                        儲存草稿
                                     </button>
                                 </div>
                             </div>
@@ -452,14 +452,14 @@
                         <!-- Quick Links (Optional Helper) -->
                         <div class="hidden lg:block">
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">
-                                撠汗</p>
+                                快速導覽</p>
                             <ul class="space-y-1">
                                 <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                                         href="#student-info"><span
-                                            class="size-1.5 rounded-full bg-slate-400"></span>摮貊?鞈?</a></li>
+                                            class="size-1.5 rounded-full bg-slate-400"></span>學生資料</a></li>
                                 <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                                         href="#biography-section"><span
-                                            class="size-1.5 rounded-full bg-slate-400"></span>?芸</a>
+                                            class="size-1.5 rounded-full bg-slate-400"></span>自傳</a>
                                 </li>
                                 <li><a class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                                         href="#grades-section"><span
@@ -476,7 +476,7 @@
         </div>
     </main>
     <script src="../global.js"></script>
-    <script src="application-review.js?v=18"></script>
+    <script src="application-review.js?v=20260620_file_state"></script>
 </body>
 
 </html>

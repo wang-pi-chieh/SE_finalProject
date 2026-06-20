@@ -6,6 +6,13 @@
 report_text.txt
 *.tmp
 *.log
+__pycache__/
+*.pyc
+
+# Generated SDD / Word report artifacts
+assets/sdd_screenshots/
+output/
+tools/generate_sdd_template_matched.py
 
 # Runtime uploads and generated backups
 SE_finalProject/獎助學金申請系統2/uploads/
