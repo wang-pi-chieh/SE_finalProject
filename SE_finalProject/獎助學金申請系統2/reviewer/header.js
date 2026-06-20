@@ -11,7 +11,6 @@ const reviewerHeaderHTML = `
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="reviewer-dashboard.html">儀表板</a>
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html">待審申請</a>
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="applications.html?tab=history">審查紀錄</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="application-review.html">審查作業</a>
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="../help.html">Help</a>
     </nav>
 
@@ -48,7 +47,6 @@ const reviewerHeaderHTML = `
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="reviewer-dashboard.html">儀表板</a>
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="applications.html">待審申請</a>
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="applications.html?tab=history">審查紀錄</a>
-        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="application-review.html">審查作業</a>
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="../help.html">Help</a>
     </div>
 </nav>
@@ -168,7 +166,9 @@ window.updateHeaderActiveState = function (overrideTab) {
         link.classList.add('text-text-secondary-light', 'dark:text-text-secondary-dark', 'font-medium');
         link.classList.remove('text-primary', 'font-bold');
 
-        if (currentPath.endsWith('applications.html')) {
+        if (currentPath.endsWith('application-review.html')) {
+            isActive = href === 'applications.html';
+        } else if (currentPath.endsWith('applications.html')) {
             if (href.includes('tab=history')) {
                 isActive = activeTab === 'history';
             } else if (href === 'applications.html') {
