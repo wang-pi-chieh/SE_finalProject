@@ -1,6 +1,6 @@
 <?php
 // api/get_scholarships.php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require 'db_connect.php';
 
 // 只顯示啟用且未過期的獎學金 (可選邏輯)
@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-echo json_encode(["success" => true, "data" => $scholarships]);
+echo json_encode(["success" => true, "data" => $scholarships], JSON_UNESCAPED_UNICODE);
 
 $conn->close();
 ?>

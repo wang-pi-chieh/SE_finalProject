@@ -100,10 +100,10 @@
                     </div>
                 </div>
 
-                <button type="submit"
+                <button type="submit" id="login-submit-btn"
                     class="btn-particle-effect w-full h-12 rounded-xl text-white font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-2 group transition-all duration-300 relative animate-on-scroll"
                     style="animation-delay: 0.5s;">
-                    <span>登入系統</span>
+                    <span id="login-submit-text">登入系統</span>
                     <span
                         class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </button>
@@ -160,6 +160,17 @@
                     // 1. 抓取使用者輸入的資料
                     const usernameInput = document.getElementById('email').value; // 這裡雖然 ID 叫 email，但我們當作帳號用
                     const passwordInput = document.getElementById('password').value;
+                    const submitBtn = document.getElementById('login-submit-btn');
+                    const submitText = document.getElementById('login-submit-text');
+
+                    const setLoginLoading = (isLoading) => {
+                        if (submitBtn) submitBtn.disabled = isLoading;
+                        if (submitBtn) submitBtn.classList.toggle('opacity-70', isLoading);
+                        if (submitBtn) submitBtn.classList.toggle('cursor-wait', isLoading);
+                        if (submitText) submitText.textContent = isLoading ? '登入中...' : '登入系統';
+                    };
+
+                    setLoginLoading(true);
 
                     // 2. 傳送給後端檢查
                     fetch('api/login.php', {
@@ -188,7 +199,7 @@
                         })
                         .then(data => {
                             if (data.success) {
-                                alert('登入成功！你好，' + data.user.real_name); // 顯示使用者的名字
+                                alert('登入成功！你好，' + data.user.real_name);
 
                                 // 儲存使用者資料到 LocalStorage
                                 localStorage.setItem('user', JSON.stringify(data.user));
@@ -196,22 +207,24 @@
                                 // 依照身分跳轉到不同頁面
                                 const role = data.user.role;
                                 if (role === '學生' || role === 'student') {
-                                    window.location.href = 'student/student-dashboard.html';
+                                    window.location.replace('student/student-dashboard.html');
                                 } else if (role === '老師' || role === 'teacher') {
-                                    window.location.href = 'teacher/teacher-dashboard.html?v=20260617_teacher_dashboard_fix';
+                                    window.location.replace('teacher/teacher-dashboard.html?v=20260617_teacher_dashboard_fix');
                                 } else if (role === '管理員' || role === '系管' || role === '系統管理員') {
-                                    window.location.href = 'admin/admin-dashboard.html';
+                                    window.location.replace('admin/admin-dashboard.html');
                                 } else if (role === '獎學金單位' || role === '獎助單位') {
-                                    window.location.href = 'reviewer/reviewer-dashboard.html';
+                                    window.location.replace('reviewer/reviewer-dashboard.html');
                                 } else {
                                     // 未知身分或預設
-                                    window.location.href = 'index.html';
+                                    window.location.replace('index.html');
                                 }
                             } else {
+                                setLoginLoading(false);
                                 alert('登入失敗：' + data.message);
                             }
                         })
                         .catch(error => {
+                            setLoginLoading(false);
                             console.error('Error:', error);
                             const isLocalHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
                             let msg = '連線錯誤。';

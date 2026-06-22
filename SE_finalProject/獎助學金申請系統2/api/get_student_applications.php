@@ -1,12 +1,12 @@
 <?php
 // api/get_student_applications.php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require 'db_connect.php';
 
 $username = $_GET['student_username'] ?? '';
 
 if (empty($username)) {
-    echo json_encode(["success" => false, "message" => "Missing student_username"]);
+    echo json_encode(["success" => false, "message" => "Missing student_username"], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -29,7 +29,7 @@ while ($row = $result->fetch_assoc()) {
     $applications[] = $row;
 }
 
-echo json_encode(["success" => true, "data" => $applications]);
+echo json_encode(["success" => true, "data" => $applications], JSON_UNESCAPED_UNICODE);
 
 $stmt->close();
 $conn->close();
