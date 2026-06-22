@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../db_connect.php';
 require_once __DIR__ . '/_admin_ops_common.php';
+require_once __DIR__ . '/_backup_storage.php';
 
 admin_ops_require_table($conn, 'backup_jobs');
 
@@ -19,8 +20,7 @@ $result = $stmt->get_result();
 $jobs = [];
 while ($row = $result->fetch_assoc()) {
     if ($row['status'] === 'completed' && !empty($row['file_path'])) {
-        $absolute_path = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $row['file_path']);
-        if (!is_file($absolute_path)) {
+        if (admin_backup_resolve_file_path($row['file_path']) === null) {
             $row['status'] = 'failed';
             $row['message'] = '備份紀錄不一致：找不到 ZIP 檔案。';
 

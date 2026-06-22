@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../db_connect.php';
 require_once __DIR__ . '/../log_utils.php';
 require_once __DIR__ . '/_admin_ops_common.php';
+require_once __DIR__ . '/_backup_storage.php';
 
 admin_ops_require_table($conn, 'backup_jobs');
 
@@ -24,26 +25,19 @@ if (!$stmt->execute()) {
 $job_id = $stmt->insert_id;
 $stmt->close();
 
-$backup_dir = realpath(__DIR__ . '/../../');
-if ($backup_dir === false) {
-    mark_backup_job_failed($conn, $job_id, '無法取得專案目錄。');
-    admin_ops_json(['success' => false, 'message' => '無法取得專案目錄'], 500);
-}
-
-$backup_dir .= DIRECTORY_SEPARATOR . 'backups';
-if (!is_dir($backup_dir) && !mkdir($backup_dir, 0775, true)) {
-    mark_backup_job_failed($conn, $job_id, '無法建立備份資料夾。');
-    admin_ops_json(['success' => false, 'message' => '無法建立備份資料夾'], 500);
-}
-
 $zip_filename = $job_name . '.zip';
-$zip_path = $backup_dir . DIRECTORY_SEPARATOR . $zip_filename;
-$relative_path = 'backups/' . $zip_filename;
-$sql_dump = build_database_dump($conn);
+try {
+    $target = admin_backup_prepare_target($zip_filename);
+    $zip_path = $target['absolute_path'];
+    $relative_path = $target['relative_path'];
+    $sql_dump = build_database_dump($conn);
 
-if (!create_backup_zip($zip_path, $sql_dump)) {
-    mark_backup_job_failed($conn, $job_id, '無法建立 ZIP 檔案，請確認 PHP ZipArchive 或 PowerShell Compress-Archive 可用。');
-    admin_ops_json(['success' => false, 'message' => '無法建立 ZIP 檔案，請確認 PHP ZipArchive 或 PowerShell Compress-Archive 可用。'], 500);
+    if (!admin_backup_write_zip($zip_path, ['database_dump.sql' => $sql_dump])) {
+        throw new Exception('無法建立 ZIP 檔案。');
+    }
+} catch (Throwable $e) {
+    mark_backup_job_failed($conn, $job_id, $e->getMessage());
+    admin_ops_json(['success' => false, 'message' => $e->getMessage()], 500);
 }
 
 $completed_status = 'completed';
@@ -67,6 +61,7 @@ admin_ops_json([
         'id' => $job_id,
         'job_name' => $job_name,
         'status' => $completed_status,
+        'file_path' => $relative_path,
         'download_url' => "download_backup_job.php?id={$job_id}"
     ]
 ]);
@@ -121,76 +116,6 @@ function build_database_dump($conn)
     $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
 
     return $sql;
-}
-
-function create_backup_zip($zip_path, $sql_dump)
-{
-    if (class_exists('ZipArchive')) {
-        $zip = new ZipArchive();
-        if ($zip->open($zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            return false;
-        }
-
-        $zip->addFromString('database_dump.sql', $sql_dump);
-        $zip->close();
-
-        return is_file($zip_path) && filesize($zip_path) > 0;
-    }
-
-    return create_backup_zip_with_powershell($zip_path, $sql_dump);
-}
-
-function create_backup_zip_with_powershell($zip_path, $sql_dump)
-{
-    if (!function_exists('exec')) {
-        return false;
-    }
-
-    $tmp_root = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'wang_backup_' . bin2hex(random_bytes(6));
-    if (!mkdir($tmp_root, 0775, true)) {
-        return false;
-    }
-
-    $sql_path = $tmp_root . DIRECTORY_SEPARATOR . 'database_dump.sql';
-    if (file_put_contents($sql_path, $sql_dump) === false) {
-        remove_directory($tmp_root);
-        return false;
-    }
-
-    if (is_file($zip_path)) {
-        @unlink($zip_path);
-    }
-
-    $source = escapeshellarg($sql_path);
-    $dest = escapeshellarg($zip_path);
-    $command = "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Compress-Archive -Path {$source} -DestinationPath {$dest} -Force\"";
-    exec($command, $output, $exit_code);
-    remove_directory($tmp_root);
-
-    return $exit_code === 0 && is_file($zip_path) && filesize($zip_path) > 0;
-}
-
-function remove_directory($dir)
-{
-    if (!is_dir($dir)) {
-        return;
-    }
-
-    $items = scandir($dir);
-    foreach ($items as $item) {
-        if ($item === '.' || $item === '..') {
-            continue;
-        }
-
-        $path = $dir . DIRECTORY_SEPARATOR . $item;
-        if (is_dir($path)) {
-            remove_directory($path);
-        } else {
-            @unlink($path);
-        }
-    }
-
-    @rmdir($dir);
 }
 
 function mark_backup_job_failed($conn, $job_id, $message)

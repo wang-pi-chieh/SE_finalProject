@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../db_connect.php';
 require_once __DIR__ . '/_admin_ops_common.php';
+require_once __DIR__ . '/_backup_storage.php';
 
 admin_ops_require_table($conn, 'backup_jobs');
 
@@ -36,11 +37,8 @@ if ($job['status'] !== 'completed' || trim((string) $job['file_path']) === '') {
     exit;
 }
 
-$project_root = realpath(__DIR__ . '/../../');
-$file_path = realpath($project_root . DIRECTORY_SEPARATOR . $job['file_path']);
-$backup_root = realpath($project_root . DIRECTORY_SEPARATOR . 'backups');
-
-if ($file_path === false || $backup_root === false || strpos($file_path, $backup_root) !== 0 || !is_file($file_path)) {
+$file_path = admin_backup_resolve_file_path($job['file_path']);
+if ($file_path === null) {
     http_response_code(404);
     echo 'Backup file not found';
     exit;
