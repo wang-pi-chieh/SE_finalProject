@@ -14,6 +14,7 @@ $quota = $_POST['quota'] ?? 0;
 $deadline = $_POST['deadline'] ?? '';
 $desc = $_POST['description'] ?? '';
 $requested_provider = $_POST['provider_username'] ?? '';
+$requested_provider = trim((string) $requested_provider);
 
 if (empty($name) || empty($amount) || empty($deadline)) {
     echo json_encode(["success" => false, "message" => "請填寫必要欄位"]);
@@ -25,8 +26,25 @@ session_start();
 $session_username = $_SESSION['username'] ?? 'admin';
 $session_role = $_SESSION['role'] ?? '';
 
-// 1. 先以表單選擇的「負責單位」為主
-$provider_username = !empty($requested_provider) ? $requested_provider : $session_username;
+$is_system_admin = false;
+$checkSysAdmin = $conn->prepare("SELECT username FROM system_admins WHERE username = ?");
+if ($checkSysAdmin) {
+    $checkSysAdmin->bind_param("s", $session_username);
+    $checkSysAdmin->execute();
+    $is_system_admin = $checkSysAdmin->get_result()->num_rows > 0;
+    $checkSysAdmin->close();
+}
+$is_system_admin = $is_system_admin || in_array($session_role, ['system_admin', '系統管理員', '系管'], true);
+
+// 系統管理員可以替任一獎助單位新增，獎助單位只能以自己為發布單位。
+if ($requested_provider !== '') {
+    $provider_username = $requested_provider;
+} elseif ($is_system_admin) {
+    echo json_encode(["success" => false, "message" => "請選擇負責單位"]);
+    exit;
+} else {
+    $provider_username = $session_username;
+}
 
 // 檢查這個 provider 是否是合法的獎助單位
 $checkUnit = $conn->prepare("SELECT username FROM scholarship_units WHERE username = ?");
@@ -36,20 +54,13 @@ $unitExists = $checkUnit->get_result()->num_rows > 0;
 $checkUnit->close();
 
 if (!$unitExists) {
-    // 2. 如果選到的 provider 不是獎助單位，再看登入者是不是系統管理員
-    $checkSysAdmin = $conn->prepare("SELECT username FROM system_admins WHERE username = ?");
-    $checkSysAdmin->bind_param("s", $session_username);
-    $checkSysAdmin->execute();
-    $isSysAdmin = $checkSysAdmin->get_result()->num_rows > 0;
-    $checkSysAdmin->close();
+    echo json_encode(["success" => false, "message" => "選擇的負責單位不存在，請重新整理後再試"]);
+    exit;
+}
 
-    if ($isSysAdmin || $session_role === 'system_admin' || $session_role === '系統管理員' || $session_role === '系管') {
-        // 系統管理員：若沒指定或指定錯誤，就用預設 admin 單位
-        $provider_username = 'admin';
-    } else {
-        echo json_encode(["success" => false, "message" => "您沒有發布獎學金的權限 (非獎助單位)"]);
-        exit;
-    }
+if (!$is_system_admin && $provider_username !== $session_username) {
+    echo json_encode(["success" => false, "message" => "您只能以自己的獎助單位發布獎學金"]);
+    exit;
 }
 
 $application_start_date = date('Y-m-d'); // Default start date to today
@@ -65,7 +76,7 @@ if ($stmt->execute()) {
 
     echo json_encode(["success" => true, "id" => $conn->insert_id]);
 } else {
-    echo json_encode(["success" => false, "message" => "DB Error: " . $conn->error]);
+    echo json_encode(["success" => false, "message" => "新增失敗，請確認資料格式與負責單位後再試"]);
 }
 
 $stmt->close();

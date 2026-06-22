@@ -237,9 +237,9 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">負責單位
                                             (審查員)</label>
-                                        <select name="provider_username" id="provider-select"
+                                        <select name="provider_username" id="provider-select" required
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border">
-                                            <option value="">(預設：系統管理員)</option>
+                                            <option value="" disabled selected>請選擇負責單位</option>
                                             <!-- JS will populate options -->
                                         </select>
                                     </div>
@@ -371,11 +371,11 @@
                 .then(res => res.json())
                 .then(result => {
                     if (result.success && result.data) {
-                        select.innerHTML = '<option value="">(預設：系統管理員)</option>';
+                        select.innerHTML = '<option value="" disabled selected>請選擇負責單位</option>';
                         result.data.forEach(unit => {
                             const option = document.createElement('option');
                             option.value = unit.username;
-                            option.textContent = `${unit.unit_name} (${unit.username})`;
+                            option.textContent = `${unit.unit_name || unit.username} (${unit.username})`;
                             select.appendChild(option);
                         });
                     }
