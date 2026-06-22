@@ -1,6 +1,7 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require_once 'db_connect.php';
+require_once 'auth_password.php';
 
 // Get JSON input
 $data = json_decode(file_get_contents('php://input'), true);
@@ -32,8 +33,8 @@ try {
         exit;
     }
 
-    // Hash password
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    auth_password_ensure_column($conn);
+    $hashed_password = auth_password_hash($password);
 
     // Insert user
     $insertStmt = $conn->prepare("INSERT INTO users (username, password, real_name, email, role) VALUES (?, ?, ?, ?, ?)");

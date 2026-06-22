@@ -1,7 +1,8 @@
 <?php
 // api/register.php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require 'db_connect.php';
+require_once 'auth_password.php';
 
 // 讀取前端傳來的 JSON 資料
 $data = json_decode(file_get_contents("php://input"), true);
@@ -48,6 +49,14 @@ if ($role === '獎助單位' && empty($contact_person)) {
 }
 
 // 1. 插入 users 主表
+try {
+    auth_password_ensure_column($conn);
+} catch (Throwable $e) {
+    echo json_encode(["success" => false, "message" => "密碼欄位初始化失敗"]);
+    exit;
+}
+
+$password_hash = auth_password_hash($password);
 $sqlUser = "INSERT INTO users (username, role, real_name, password, phone, email) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sqlUser);
 
@@ -56,7 +65,7 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("ssssss", $username, $role, $real_name, $password, $phone, $email);
+$stmt->bind_param("ssssss", $username, $role, $real_name, $password_hash, $phone, $email);
 
 if ($stmt->execute()) {
     // 主表插入成功，接著處理子表

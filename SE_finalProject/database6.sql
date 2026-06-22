@@ -1001,7 +1001,7 @@ CREATE TABLE `users` (
   `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '種類: 學生/老師/系管/獎助單位',
   `real_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
-  `password` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密碼',
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密碼雜湊或舊明文密碼',
   `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手機',
   `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'email',
   `avatar_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

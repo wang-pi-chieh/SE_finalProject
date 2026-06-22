@@ -1,7 +1,8 @@
 <?php
 // api/forgot_password.php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require 'db_connect.php';
+require_once 'auth_password.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Invalid method"]);
@@ -39,9 +40,18 @@ if ($result->num_rows === 0) {
 
 $stmt->close();
 
-// 更新密碼
+try {
+    auth_password_ensure_column($conn);
+} catch (Throwable $e) {
+    echo json_encode(["success" => false, "message" => "密碼欄位初始化失敗"]);
+    exit;
+}
+
+$new_password_hash = auth_password_hash($new_password);
+
+// 更新密碼雜湊
 $update = $conn->prepare("UPDATE users SET password = ? WHERE username = ?");
-$update->bind_param("ss", $new_password, $username);
+$update->bind_param("ss", $new_password_hash, $username);
 
 if ($update->execute()) {
     echo json_encode(["success" => true, "message" => "密碼重設成功"]);

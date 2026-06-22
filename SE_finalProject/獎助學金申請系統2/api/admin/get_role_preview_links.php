@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../db_connect.php';
 require_once __DIR__ . '/_admin_ops_common.php';
+require_once __DIR__ . '/../auth_password.php';
 
 ensure_preview_accounts($conn);
 
@@ -68,7 +69,13 @@ function ensure_preview_user($conn, $username, $role, $real_name, $email)
         return;
     }
 
-    $password = 'preview';
+    try {
+        auth_password_ensure_column($conn);
+        $password = auth_password_hash('preview');
+    } catch (Throwable $e) {
+        $password = 'preview';
+    }
+
     $phone = '0900000000';
     $stmt->bind_param("ssssss", $username, $role, $real_name, $password, $phone, $email);
     $stmt->execute();

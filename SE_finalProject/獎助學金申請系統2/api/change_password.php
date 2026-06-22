@@ -1,7 +1,8 @@
 <?php
 // api/change_password.php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 require 'db_connect.php';
+require_once 'auth_password.php';
 
 // 僅允許 POST + JSON
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -25,7 +26,6 @@ if (strlen($new_password) < 6) {
     exit;
 }
 
-// 目前系統登入是以明文密碼比對，因此這裡也沿用相同做法
 $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
 $stmt->bind_param("s", $username);
 $stmt->execute();
@@ -40,7 +40,7 @@ if ($result->num_rows === 0) {
 
 $row = $result->fetch_assoc();
 
-if ($row['password'] !== $old_password) {
+if (!auth_password_verify($old_password, (string) $row['password'])) {
     echo json_encode(["success" => false, "message" => "目前密碼不正確"]);
     $stmt->close();
     $conn->close();
@@ -49,9 +49,18 @@ if ($row['password'] !== $old_password) {
 
 $stmt->close();
 
-// 更新成新密碼
+try {
+    auth_password_ensure_column($conn);
+} catch (Throwable $e) {
+    echo json_encode(["success" => false, "message" => "密碼欄位初始化失敗"]);
+    exit;
+}
+
+$new_password_hash = auth_password_hash($new_password);
+
+// 更新成新密碼雜湊
 $update = $conn->prepare("UPDATE users SET password = ? WHERE username = ?");
-$update->bind_param("ss", $new_password, $username);
+$update->bind_param("ss", $new_password_hash, $username);
 
 if ($update->execute()) {
     echo json_encode(["success" => true, "message" => "密碼更新成功"]);
