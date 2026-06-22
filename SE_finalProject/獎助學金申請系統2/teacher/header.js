@@ -9,9 +9,8 @@ const teacherHeaderHTML = `
 
     <nav class="hidden md:flex items-center gap-6">
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="teacher-dashboard.html">儀表板</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="teacher-dashboard.html#mentor-students-panel">學生成績</a>
         <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="recommendations.html">推薦獎助學金</a>
-        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="student-search.html">學生查詢</a>
+        <a class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="student-search.html">學生成績</a>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-4">
@@ -40,9 +39,8 @@ const teacherHeaderHTML = `
 <nav id="teacher-mobile-menu" class="hidden md:hidden sticky top-16 z-40 border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3">
     <div class="grid grid-cols-1 gap-2">
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="teacher-dashboard.html">儀表板</a>
-        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="teacher-dashboard.html#mentor-students-panel">學生成績</a>
         <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="recommendations.html">推薦獎助學金</a>
-        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="student-search.html">學生查詢</a>
+        <a class="mobile-nav-link rounded-lg px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="student-search.html">學生成績</a>
     </div>
 </nav>
 `;
