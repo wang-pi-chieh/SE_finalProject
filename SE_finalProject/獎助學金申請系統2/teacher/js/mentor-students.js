@@ -53,6 +53,18 @@
         target.prepend(buildPanel());
         document.getElementById('refreshMentorStudents')?.addEventListener('click', loadStudents);
         loadStudents();
+        scrollToPanelFromHash();
+    }
+
+    function scrollToPanelFromHash() {
+        if (window.location.hash !== '#mentor-students-panel') return;
+
+        requestAnimationFrame(() => {
+            document.getElementById('mentor-students-panel')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
     }
 
     async function loadStudents() {
