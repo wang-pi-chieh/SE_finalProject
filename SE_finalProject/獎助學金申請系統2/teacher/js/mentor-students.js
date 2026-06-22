@@ -28,7 +28,6 @@
         panel.innerHTML = `
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <p class="text-sm font-semibold text-blue-600">胡詠瀚負責模組</p>
                     <h2 class="text-2xl font-bold text-slate-900">導師學生管理與成績圖表</h2>
                     <p class="mt-1 text-sm text-slate-500">依奇偶導師規則列出名下學生，並顯示平均成績、GPA 與排名趨勢。</p>
                 </div>
@@ -75,6 +74,10 @@
         if (!container) return;
         if (students.length === 0) {
             container.innerHTML = `<p class="rounded-lg bg-slate-50 p-3 text-slate-500">目前沒有符合 ${escapeHtml(assignment.parity_rule || 'all')} 規則的學生。</p>`;
+            const chartContainer = document.getElementById('mentorGradeChart');
+            if (chartContainer) {
+                chartContainer.innerHTML = '<p class="rounded-lg bg-slate-50 p-3 text-slate-500">名下學生載入後會顯示成績資料。</p>';
+            }
             return;
         }
         container.innerHTML = `
@@ -92,13 +95,33 @@
             `).join('')}
         `;
         container.querySelectorAll('.viewGrade').forEach(button => {
-            button.addEventListener('click', () => loadGradeChart(button.dataset.username));
+            button.addEventListener('click', () => {
+                setGradeChartLoading();
+                loadGradeChart(button.dataset.username).catch(showGradeChartError);
+            });
         });
+
+        setGradeChartLoading();
+        loadGradeChart(students[0].username).catch(showGradeChartError);
     }
 
     async function loadGradeChart(studentUsername) {
         const payload = await fetchJson(`${API_BASE}/get_student_grade_chart.php?student_username=${encodeURIComponent(studentUsername)}`);
         renderGradeChart(payload.data || [], payload.summary || {});
+    }
+
+    function setGradeChartLoading() {
+        const container = document.getElementById('mentorGradeChart');
+        if (container) {
+            container.innerHTML = '<p class="rounded-lg bg-slate-50 p-3 text-slate-500">載入成績中...</p>';
+        }
+    }
+
+    function showGradeChartError(error) {
+        const container = document.getElementById('mentorGradeChart');
+        if (container) {
+            container.innerHTML = `<p class="rounded-lg bg-red-50 p-3 text-red-600">成績載入失敗：${escapeHtml(error.message)}</p>`;
+        }
     }
 
     function renderGradeChart(rows, summary) {

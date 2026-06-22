@@ -297,6 +297,7 @@ CREATE TABLE `grades` (
 
 LOCK TABLES `grades` WRITE;
 /*!40000 ALTER TABLE `grades` DISABLE KEYS */;
+INSERT INTO `grades` VALUES ('111','111','1',88.00,3.90,3,48),('111','111','2',89.50,4.00,2,48);
 INSERT INTO `grades` VALUES ('a1125544','111','上',90.10,4.00,1,45),('a1125544','111','下',86.20,3.85,5,45),('a1125544','112','上',88.50,3.92,3,45);
 /*!40000 ALTER TABLE `grades` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -423,6 +424,7 @@ CREATE TABLE `mentor_assignments` (
 
 LOCK TABLES `mentor_assignments` WRITE;
 /*!40000 ALTER TABLE `mentor_assignments` DISABLE KEYS */;
+INSERT INTO `mentor_assignments` VALUES (1,'222','工藝與創意設計學系','all','2026-06-22 11:40:00');
 /*!40000 ALTER TABLE `mentor_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 

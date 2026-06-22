@@ -30,7 +30,6 @@
         panel.innerHTML = `
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <p class="text-sm font-semibold text-blue-600">胡詠瀚負責模組</p>
                     <h2 class="text-2xl font-bold text-slate-900">推薦信範本與提醒</h2>
                     <p class="mt-1 text-sm text-slate-500">快速產生推薦信、退回補件，並列出截止日前 5 天提醒。</p>
                 </div>

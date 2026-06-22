@@ -1,50 +1,51 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/_mentor_common.php';
 
 $teacher = trim($_GET['teacher_username'] ?? '');
 $scholarshipId = intval($_GET['scholarship_id'] ?? 0);
 if ($teacher === '' || $scholarshipId <= 0) {
-    echo json_encode(['success' => false, 'message' => '缺少導師帳號或獎學金 ID'], JSON_UNESCAPED_UNICODE);
-    exit;
+    mentor_json_response(['success' => false, 'message' => '缺少導師帳號或獎學金 ID'], 400);
 }
 
+mentor_ensure_scholarship_rules_table($conn);
+
 $ruleStmt = $conn->prepare("SELECT s.name, s.description, r.department_filter, r.min_avg_score, r.max_rank_percent FROM scholarships s LEFT JOIN mentor_scholarship_rules r ON r.scholarship_id = s.id WHERE s.id = ?");
+if (!$ruleStmt) {
+    mentor_json_response(['success' => false, 'message' => '獎學金規則查詢初始化失敗'], 500);
+}
 $ruleStmt->bind_param('i', $scholarshipId);
 $ruleStmt->execute();
 $rule = $ruleStmt->get_result()->fetch_assoc();
 $ruleStmt->close();
 if (!$rule) {
-    echo json_encode(['success' => false, 'message' => '找不到獎學金'], JSON_UNESCAPED_UNICODE);
-    exit;
+    mentor_json_response(['success' => false, 'message' => '找不到獎學金'], 404);
 }
 
-$assignmentStmt = $conn->prepare("SELECT department, parity_rule FROM mentor_assignments WHERE teacher_username = ? LIMIT 1");
-$assignmentStmt->bind_param('s', $teacher);
-$assignmentStmt->execute();
-$assignment = $assignmentStmt->get_result()->fetch_assoc();
-$assignmentStmt->close();
-if (!$assignment) {
-    $teacherStmt = $conn->prepare("SELECT department FROM teachers WHERE username = ? LIMIT 1");
-    $teacherStmt->bind_param('s', $teacher);
-    $teacherStmt->execute();
-    $teacherRow = $teacherStmt->get_result()->fetch_assoc();
-    $teacherStmt->close();
-    $assignment = ['department' => $teacherRow['department'] ?? '', 'parity_rule' => 'all'];
-}
+$assignment = mentor_get_assignment($conn, $teacher);
 
-$whereParity = '';
-if ($assignment['parity_rule'] === 'odd') $whereParity = " AND CAST(RIGHT(st.username, 1) AS UNSIGNED) % 2 = 1";
-if ($assignment['parity_rule'] === 'even') $whereParity = " AND CAST(RIGHT(st.username, 1) AS UNSIGNED) % 2 = 0";
+$whereParity = mentor_parity_sql('st.username', $assignment['parity_rule'] ?? 'all');
 
 $sql = "SELECT u.username, u.real_name, st.department, g.avg_score, g.class_rank, g.class_size
         FROM students st
         JOIN users u ON st.username = u.username
-        LEFT JOIN grades g ON g.student_username = st.username
+        LEFT JOIN (
+            SELECT g1.student_username, g1.avg_score, g1.class_rank, g1.class_size
+            FROM grades g1
+            INNER JOIN (
+                SELECT student_username, MAX(CONCAT(LPAD(academic_year, 4, '0'), '-', LPAD(semester, 2, '0'))) AS latest_term
+                FROM grades
+                GROUP BY student_username
+            ) latest_grade ON latest_grade.student_username = g1.student_username
+                AND latest_grade.latest_term = CONCAT(LPAD(g1.academic_year, 4, '0'), '-', LPAD(g1.semester, 2, '0'))
+        ) g ON g.student_username = st.username
         WHERE st.department = ? $whereParity
-        GROUP BY u.username, u.real_name, st.department, g.avg_score, g.class_rank, g.class_size
         ORDER BY u.username";
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    mentor_json_response(['success' => false, 'message' => '符合資格學生查詢初始化失敗'], 500);
+}
 $stmt->bind_param('s', $assignment['department']);
 $stmt->execute();
 $result = $stmt->get_result();
